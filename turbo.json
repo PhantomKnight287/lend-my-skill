@@ -3,6 +3,7 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
+      "env": ["NODE_ENV"],
       "outputs": ["dist/**", ".next/**"]
     },
     "lint": {
