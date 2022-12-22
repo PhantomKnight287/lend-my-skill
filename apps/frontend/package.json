@@ -9,16 +9,38 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/server": "^11.10.0",
+    "@mantine/carousel": "^5.9.5",
+    "@mantine/core": "^5.9.5",
+    "@mantine/dates": "^5.9.5",
+    "@mantine/dropzone": "^5.9.5",
+    "@mantine/form": "^5.9.5",
+    "@mantine/hooks": "^5.9.5",
+    "@mantine/next": "^5.9.5",
+    "@mantine/notifications": "^5.9.5",
+    "@mantine/nprogress": "^5.9.5",
     "@next/font": "13.0.7",
+    "@tabler/icons": "^1.117.0",
     "@types/node": "18.11.17",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
+    "clsx": "^1.2.1",
+    "dayjs": "^1.11.7",
+    "db": "workspace:*",
+    "embla-carousel-react": "^7.0.5",
     "eslint": "8.30.0",
     "eslint-config-next": "13.0.0",
+    "framer-motion": "^8.0.1",
     "next": "13.0.7",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
-    "typescript": "4.9.4",
-    "db": "workspace:*"
+    "typescript": "4.9.4"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.13",
+    "cypress": "^12.2.0",
+    "postcss": "^8.4.20",
+    "tailwindcss": "^3.2.4"
   }
 }
