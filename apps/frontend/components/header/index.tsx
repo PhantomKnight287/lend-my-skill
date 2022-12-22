@@ -236,12 +236,12 @@ export function Header() {
 
           <Group className={classes.hiddenMobile}>
             <Link href="/auth/login">
-              <Button variant="default" data-testingId="header__login_button">
+              <Button variant="default" data-testingid="header__login_button">
                 Log in
               </Button>
             </Link>
             <Link href="/auth/register">
-              <Button data-testingId="header__register_button">Register</Button>
+              <Button data-testingid="header__register_button">Register</Button>
             </Link>
           </Group>
 
