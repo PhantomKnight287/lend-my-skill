@@ -1,3 +1,4 @@
+import { useUser } from "@hooks/user";
 import {
   createStyles,
   Header as H,
@@ -28,7 +29,9 @@ import {
   IconCoin,
   IconChevronDown,
 } from "@tabler/icons";
+import clsx from "clsx";
 import Link from "next/link";
+import HeaderMenu from "./menu";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -137,6 +140,7 @@ export function Header() {
     useDisclosure(false);
   const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
   const { classes, theme } = useStyles();
+  const { username } = useUser();
 
   const links = mockdata.map((item) => (
     <UnstyledButton className={classes.subLink} key={item.title}>
@@ -164,92 +168,114 @@ export function Header() {
             <Avatar size={30} />
           </Link>
 
-          <Group
-            sx={{ height: "100%" }}
-            spacing={0}
-            className={classes.hiddenMobile}
-          >
-            <a href="#" className={classes.link}>
-              Home
-            </a>
-            <HoverCard
-              width={600}
-              position="bottom"
-              radius="md"
-              shadow="md"
-              withinPortal
+          {!username ? (
+            <Group
+              sx={{ height: "100%" }}
+              spacing={0}
+              className={classes.hiddenMobile}
             >
-              <HoverCard.Target>
-                <a href="#" className={classes.link}>
-                  <Center inline>
-                    <Box component="span" mr={5}>
-                      Features
-                    </Box>
-                    <IconChevronDown
-                      size={16}
-                      color={theme.fn.primaryColor()}
-                    />
-                  </Center>
-                </a>
-              </HoverCard.Target>
+              <a href="#" className={classes.link}>
+                Home
+              </a>
+              <HoverCard
+                width={600}
+                position="bottom"
+                radius="md"
+                shadow="md"
+                withinPortal
+              >
+                <HoverCard.Target>
+                  <a href="#" className={classes.link}>
+                    <Center inline>
+                      <Box component="span" mr={5}>
+                        Features
+                      </Box>
+                      <IconChevronDown
+                        size={16}
+                        color={theme.fn.primaryColor()}
+                      />
+                    </Center>
+                  </a>
+                </HoverCard.Target>
 
-              <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
-                <Group position="apart" px="md">
-                  <Text weight={500}>Features</Text>
-                  <Anchor href="#" size="xs">
-                    View all
-                  </Anchor>
-                </Group>
-
-                <Divider
-                  my="sm"
-                  mx="-md"
-                  color={theme.colorScheme === "dark" ? "dark.5" : "gray.1"}
-                />
-
-                <SimpleGrid cols={2} spacing={0}>
-                  {links}
-                </SimpleGrid>
-
-                <div className={classes.dropdownFooter}>
-                  <Group position="apart">
-                    <div>
-                      <Text weight={500} size="sm">
-                        Get started
-                      </Text>
-                      <Text size="xs" color="dimmed">
-                        Their food sources have decreased, and their numbers
-                      </Text>
-                    </div>
-                    <Button variant="default">Get started</Button>
+                <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
+                  <Group position="apart" px="md">
+                    <Text weight={500}>Features</Text>
+                    <Anchor href="#" size="xs">
+                      View all
+                    </Anchor>
                   </Group>
-                </div>
-              </HoverCard.Dropdown>
-            </HoverCard>
-            <a href="#" className={classes.link}>
-              Learn
-            </a>
-            <a href="#" className={classes.link}>
-              Academy
-            </a>
-          </Group>
+
+                  <Divider
+                    my="sm"
+                    mx="-md"
+                    color={theme.colorScheme === "dark" ? "dark.5" : "gray.1"}
+                  />
+
+                  <SimpleGrid cols={2} spacing={0}>
+                    {links}
+                  </SimpleGrid>
+
+                  <div className={classes.dropdownFooter}>
+                    <Group position="apart">
+                      <div>
+                        <Text weight={500} size="sm">
+                          Get started
+                        </Text>
+                        <Text size="xs" color="dimmed">
+                          Their food sources have decreased, and their numbers
+                        </Text>
+                      </div>
+                      <Button variant="default">Get started</Button>
+                    </Group>
+                  </div>
+                </HoverCard.Dropdown>
+              </HoverCard>
+              <a href="#" className={classes.link}>
+                Learn
+              </a>
+              <a href="#" className={classes.link}>
+                Academy
+              </a>
+            </Group>
+          ) : null}
 
           <Group className={classes.hiddenMobile}>
-            <Link href="/auth/login">
-              <Button variant="default" data-testingid="header__login_button">
-                Log in
-              </Button>
-            </Link>
-            <Link href="/auth/register">
-              <Button data-testingid="header__register_button">Register</Button>
-            </Link>
+            {!username ? (
+              <>
+                <Link href="/auth/login">
+                  <Button
+                    variant="default"
+                    data-testingid="header__login_button"
+                  >
+                    Log in
+                  </Button>
+                </Link>
+                <Link href="/auth/register">
+                  <Button
+                    variant="outline"
+                    color="green"
+                    data-testingid="header__register_button"
+                  >
+                    Register
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <HeaderMenu />
+            )}
           </Group>
-
-          <Burger
-            opened={drawerOpened}
-            onClick={toggleDrawer}
-            className={classes.hiddenDesktop}
-          />
+          {!username ? (
+            <Burger
+              opened={drawerOpened}
+              onClick={toggleDrawer}
+              className={classes.hiddenDesktop}
+            />
+          ) : (
+            <div className={classes.hiddenDesktop}>
+              <HeaderMenu />
+            </div>
+          )}
         </Group>
       </H>
 
