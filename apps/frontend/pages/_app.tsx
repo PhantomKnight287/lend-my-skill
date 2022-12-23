@@ -11,6 +11,10 @@ import { Header } from "@components/header";
 import { inter } from "@fonts";
 import { RouterTransition } from "@components/progress";
 import { AnimatePresence, motion } from "framer-motion";
+import { NotificationsProvider } from "@mantine/notifications";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const client = new QueryClient();
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
@@ -39,26 +43,30 @@ export default function App(props: AppProps) {
             withGlobalStyles
             withNormalizeCSS
           >
-            <Header />
-            <AnimatePresence mode="wait">
-              <motion.div
-                variants={{
-                  exit: {
-                    filter: "blur(8px)",
-                  },
-                  enter: {
-                    filter: "blur(0px)",
-                  },
-                }}
-                animate="enter"
-                initial="initial"
-                // animate="animate"
-                exit="exit"
-                key={props.router.pathname}
-              >
-                <Component {...pageProps} key={props.router.asPath} />
-              </motion.div>
-            </AnimatePresence>
+            <NotificationsProvider>
+              <Header />
+              <AnimatePresence mode="wait">
+                <motion.div
+                  variants={{
+                    exit: {
+                      filter: "blur(8px)",
+                    },
+                    enter: {
+                      filter: "blur(0px)",
+                    },
+                  }}
+                  animate="enter"
+                  initial="initial"
+                  // animate="animate"
+                  exit="exit"
+                  key={props.router.pathname}
+                >
+                  <QueryClientProvider client={client}>
+                    <Component {...pageProps} key={props.router.asPath} />
+                  </QueryClientProvider>
+                </motion.div>
+              </AnimatePresence>
+            </NotificationsProvider>
           </MantineProvider>
         </ColorSchemeProvider>
       </UserProvider>
