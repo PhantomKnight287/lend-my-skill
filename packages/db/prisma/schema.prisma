@@ -7,12 +7,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Freelancer {
   id       String @id @unique @default(cuid())
   name     String
   username String
   email    String @unique
   password String
+  country  String @default("India")
+
+  kycDocuments String[]
+
+  profileCompleted Boolean @default(false)
 
   avatarUrl   String?
   bio         String?
@@ -23,4 +28,92 @@ model User {
 
   verified      Boolean @default(false)
   emailVerified Boolean @default(false)
+
+  gigs            Gig[]
+  quotations      Quotation[]
+  claimedJobPosts JobPost[]
+}
+
+model Client {
+  id       String @id @unique @default(cuid())
+  name     String
+  username String
+  email    String @unique
+  password String
+  country  String @default("India")
+
+  kycDocuments String[]
+
+  profileCompleted Boolean @default(false)
+
+  avatarUrl   String?
+  bio         String?
+  paypalEmail String?
+  upiId       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  verified      Boolean   @default(false)
+  emailVerified Boolean   @default(false)
+  JobPost       JobPost[]
+}
+
+model Gig {
+  id           String      @id @unique @default(cuid())
+  title        String
+  description  String
+  slug         String      @unique
+  category     Category    @relation(fields: [categoryId], references: [id])
+  tags         String[]
+  images       String[]
+  bannerImage  String
+  price        Int
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  freelancer   Freelancer? @relation(fields: [freelancerId], references: [id])
+  freelancerId String?
+  categoryId   String
+}
+
+model JobPost {
+  id          String   @id @unique @default(cuid())
+  title       String
+  description String
+  slug        String   @unique
+  category    Category @relation(fields: [categoryId], references: [id])
+  tags        String[]
+  images      String[]
+  price       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  quotation  Quotation[]
+  author     Client      @relation(fields: [clientId], references: [id])
+  clientId   String
+  categoryId String
+
+  claimed      Boolean     @default(false)
+  claimedBy    Freelancer? @relation(fields: [freelancerId], references: [id])
+  freelancerId String
+}
+
+model Quotation {
+  id           String      @id @unique @default(cuid())
+  description  String
+  price        Int
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  freelancer   Freelancer? @relation(fields: [freelancerId], references: [id])
+  freelancerId String?
+  JobPost      JobPost?    @relation(fields: [jobPostId], references: [id])
+  jobPostId    String?
+}
+
+model Category {
+  id        String    @id @unique @default(cuid())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Gig       Gig[]
+  JobPost   JobPost[]
 }
