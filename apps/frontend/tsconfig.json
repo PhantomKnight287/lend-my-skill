@@ -21,7 +21,9 @@
       "@fonts": ["./fonts"],
       "@styles/*": ["./styles/*"],
       "@utils/*": ["./utils/*"],
-      "@helpers/*": ["./helpers/*"]
+      "@helpers/*": ["./helpers/*"],
+      "~/constants": ["./constants"],
+      "~/types/*": ["./types/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
