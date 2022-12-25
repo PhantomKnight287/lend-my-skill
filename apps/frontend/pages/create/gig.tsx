@@ -4,6 +4,7 @@ import { MetaTags } from "@components/meta";
 import { outfit } from "@fonts";
 import {
   Button,
+  Divider,
   FileButton,
   Group,
   Image,
@@ -12,17 +13,21 @@ import {
   NumberInput,
   Paper,
   Select,
+  SimpleGrid,
   Stepper,
   Text,
+  TextInput,
   Title,
   useMantineColorScheme,
+  Textarea as T,
+  Checkbox,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import clsx from "clsx";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DatePicker } from "@mantine/dates";
 import useHydrateUserContext from "@hooks/hydrate/user";
-import { IconCheck, IconCross, IconX } from "@tabler/icons";
+import { IconCheck, IconCross, IconPlus, IconX } from "@tabler/icons";
 import { uploadFiles } from "@helpers/upload";
 import { readCookie } from "@helpers/cookie";
 import { showNotification } from "@mantine/notifications";
@@ -31,14 +36,36 @@ import { URLBuilder } from "@utils/url";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useUser } from "@hooks/user";
+import Editor from "@components/editor";
 
 function CreateJobPost() {
-  const formState = useForm({
+  const formState = useForm<{
+    title: string;
+    description: string;
+    price: string;
+    category: string;
+    packages?: {
+      name: string;
+      price: number;
+      description: string;
+      features: { [key: string]: string };
+    }[];
+    features: string[];
+  }>({
     initialValues: {
       title: "I will ",
       description: "",
       price: "",
       category: "",
+      packages: [
+        {
+          name: "Package",
+          price: 0,
+          description: "",
+          features: {},
+        },
+      ],
+      features: ["Feature 1", "Feature 2"],
     },
     validateInputOnBlur: true,
     validate: {
@@ -46,20 +73,20 @@ function CreateJobPost() {
         value.length < 20
           ? "Title should be atleast 20 characters long"
           : value.length > 100
-          ? "Title should be less than 100 characters long"
-          : null,
+            ? "Title should be less than 100 characters long"
+            : null,
       description: (value) =>
         value.length < 100
           ? "Description should be atleast 100 characters long"
           : value.length > 1000
-          ? "Description should be less than 1000 characters long"
-          : null,
+            ? "Description should be less than 1000 characters long"
+            : null,
       price: (value) =>
         !value
           ? null
           : Number(value) < 100
-          ? "Price should be atleast 100"
-          : null,
+            ? "Price should be atleast 100"
+            : null,
     },
   });
   const [tags, setTags] = useState<{ value: string; label: string }[]>([]);
@@ -75,7 +102,7 @@ function CreateJobPost() {
   const { colorScheme: theme } = useMantineColorScheme();
   const [deadline, setDeadline] = useState<Date>();
   const { username } = useUser();
-  const { push } = useRouter();
+  const { push, isReady } = useRouter();
   useHydrateUserContext();
   const nextStep = () =>
     setActive((current) => (current < 1 ? current + 1 : current));
@@ -139,6 +166,8 @@ function CreateJobPost() {
       })
       .finally(() => setLoading(false));
   };
+
+
   return (
     <>
       <MetaTags
@@ -147,23 +176,25 @@ function CreateJobPost() {
       />
       <div className={clsx("flex flex-col p-20")}>
         <div className="flex flex-row flex-wrap xl:items-center justify-center  gap-4">
-          <div className={clsx("mr-20")}>
-            <Title
-              order={1}
-              className={clsx("text-center", {
-                [outfit.className]: true,
-              })}
-            >
-              Let&apos;s Create A Gig!
-            </Title>
-            <Text
-              className={clsx("text-lg font-bold ", {
-                [outfit.className]: true,
-              })}
-            >
-              We&apos;ll try to find buyers for your gig.
-            </Text>
-          </div>
+          {active === 0 ? (
+            <div className={clsx("mr-20")}>
+              <Title
+                order={1}
+                className={clsx("text-center", {
+                  [outfit.className]: true,
+                })}
+              >
+                Let&apos;s Create A Gig!
+              </Title>
+              <Text
+                className={clsx("text-lg font-bold ", {
+                  [outfit.className]: true,
+                })}
+              >
+                We&apos;ll try to find buyers for your gig.
+              </Text>
+            </div>
+          ) : null}
           <div className={clsx("flex flex-col")}>
             <form onSubmit={formState.onSubmit((d) => handleSubmit(d))}>
               <Stepper
@@ -241,7 +272,7 @@ function CreateJobPost() {
                                     formState.values.description.length < 100,
                                   "text-[#28a745]":
                                     formState.values.description.length >=
-                                      100 &&
+                                    100 &&
                                     formState.values.description.length < 1000,
                                 })}
                               >
@@ -280,29 +311,6 @@ function CreateJobPost() {
                           }
                         />
                       </div>
-                      <FileButton
-                        onChange={(d) => {
-                          if (!d) return;
-
-                          setFiles((o) => [...o, d]);
-                        }}
-                        accept="image/png,image/jpeg"
-                      >
-                        {(props) => (
-                          <Button
-                            disabled={files.length >= 5}
-                            {...props}
-                            className={clsx(
-                              "bg-[#1e88e5] hover:bg-[#1976d2] mt-4",
-                              {
-                                [outfit.className]: true,
-                              }
-                            )}
-                          >
-                            Attach Files
-                          </Button>
-                        )}
-                      </FileButton>
 
                       <div>
                         <LoadingOverlay overlayBlur={2} visible={loading} />
@@ -312,9 +320,9 @@ function CreateJobPost() {
                           data={
                             data
                               ? data?.map((d) => ({
-                                  value: d.id,
-                                  label: d.name,
-                                }))
+                                value: d.id,
+                                label: d.name,
+                              }))
                               : []
                           }
                           {...formState.getInputProps("category")}
@@ -351,7 +359,6 @@ function CreateJobPost() {
                                 refetch().then(() => setLoading(false))
                               )
                               .catch((err) => {
-                                console.log(err);
                                 showNotification({
                                   color: "red",
                                   message:
@@ -400,75 +407,212 @@ function CreateJobPost() {
                     </>
                   </Paper>
                 </Stepper.Step>
-                <Stepper.Step label="Pricing" allowStepSelect={active > 1}>
-                  Lorem, ipsum.
+                <Stepper.Step label="Features">
+                  <div className="flex flex-col items-center justify-center mt-3   gap-4 w-full">
+                    <Text
+                      align="center"
+                      className={clsx("text-lg font-bold text-center", {
+                        [outfit.className]: true,
+                      })}
+                    >
+                      List the features of your Gig.
+                    </Text>
+                    <div className="mt-5 w-full">
+                      {formState.values.features.map((feature, id) => (
+                        <div
+                          className="flex flex-row gap-2 w-full my-2"
+                          key={id}
+                        >
+                          <TextInput
+                            {...formState.getInputProps(`features.${id}`)}
+                            placeholder="Feature"
+                            className="w-full"
+                          />
+                          <Button
+                            variant="filled"
+                            className="bg-[#e53935] hover:bg-[#d32f2f]"
+                            onClick={() => {
+                              formState.removeListItem("features", id);
+                            }}
+                          >
+                            <IconX />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="mt-10">
+                    <Group position="center">
+                      <Button
+                        onClick={() => setActive(0)}
+                        variant="filled"
+                        className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
+                      >
+                        Back
+                      </Button>
+                      <Button
+                        color="purple"
+                        className={clsx("bg-purple-600 hover:bg-purple-700")}
+                        onClick={() => {
+                          formState.insertListItem("features", "Feature");
+                        }}
+                      >
+                        Add feature
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          if (formState.values.features.length === 0) {
+                            return showNotification({
+                              color: "red",
+                              message: "You must add at least one feature",
+                            });
+                          }
+                          setActive(2);
+                        }}
+                        variant="filled"
+                        className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
+                      >
+                        Next step
+                      </Button>
+                    </Group>
+                  </div>
+                </Stepper.Step>
+                <Stepper.Step label="Packages" allowStepSelect={active > 1}>
+                  <div className="flex flex-row gap-4 mt-8">
+                    <div className="flex flex-col">
+                      <Text
+                        className={clsx("text-lg font-bold", {
+                          [outfit.className]: true,
+                          "text-black": theme === "light",
+                        })}
+                      >
+                        Packages
+                      </Text>
+                      <Button
+                        onClick={() => {
+                          formState.insertListItem("packages", {
+                            name: "Package",
+                            price: 0,
+                            description: "",
+                            features: {},
+                          });
+                        }}
+                        disabled={formState.values.packages!.length === 3}
+                        variant="filled"
+                        className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
+                      >
+                        <IconPlus />
+                      </Button>
+                    </div>
+                    <SimpleGrid
+                      cols={
+                        formState.values.packages!.length === 1
+                          ? 1
+                          : formState.values.packages!.length === 2
+                            ? 2
+                            : 3
+                      }
+                      className="w-full"
+                    >
+                      {formState.values.packages?.map((p, index) => (
+                        <div
+                          className={clsx(
+                            "flex flex-col border-l-[1px] w-full border-gray-400 pl-3"
+                          )}
+                          key={index}
+                        >
+                          <Text
+                            className={clsx("text-sm font-bold text-center", {
+                              [outfit.className]: true,
+                            })}
+                          >
+                            {formState.values.packages![index].name}
+                          </Text>
+                          <TextInput
+                            placeholder="Package name"
+                            required
+                            {...formState.getInputProps(
+                              `packages.${index}.name`
+                            )}
+                          />
+                          <Divider className={"my-2"} />
+                          <T
+                            placeholder="Package description"
+                            required
+                            {...formState.getInputProps(
+                              `packages.${index}.description`
+                            )}
+                          />
+                          <Text
+                            className={clsx(
+                              "text-sm font-bold text-center mt-2",
+                              {
+                                [outfit.className]: true,
+                              }
+                            )}
+                          >
+                            Features
+                          </Text>
+                          {formState.values.features.map((feature, id) => (
+                            <div
+                              className="flex flex-row gap-2 w-full my-2"
+                              key={id}
+                            >
+                              <Checkbox
+                                {...formState.getInputProps(
+                                  `packages.${index}.features.${id}`
+                                )}
+                                className="w-full"
+                                label={feature}
+                              />
+                            </div>
+                          ))}
+                          <TextInput
+                            placeholder="Price"
+                            required
+                            label="Price"
+                            {...formState.getInputProps(
+                              `packages.${index}.price`
+                            )}
+                            type="number"
+                          />
+                        </div>
+                      ))}
+                    </SimpleGrid>
+                  </div>
+                  <div className="flex flex-row gap-4 items-center justify-center mt-4">
+                    <Button
+                      onClick={() => setActive(1)}
+                      variant="filled"
+                      className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        if (formState.values.packages!.length === 0) {
+                          return showNotification({
+                            color: "red",
+                            message: "You must add at least one package",
+                          });
+                        }
+                        setActive(3);
+                      }}
+                      variant="filled"
+                      className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
+                    >
+                      Next step
+                    </Button>
+                  </div>
                 </Stepper.Step>
                 <Stepper.Step label="Description" allowStepSelect={active > 2}>
-                  <Paper
-                    radius={"md"}
-                    p="xl"
-                    className={clsx("max-w-3xl lg:min-w-[30vw]")}
-                  >
-                    <>
-                      <Text
-                        className={clsx(
-                          "text-sm font-bold text-[#495057] py-2",
-                          {
-                            [outfit.className]: true,
-                          }
-                        )}
-                      >
-                        Deadline(optional)
-                      </Text>
-                      <DatePicker
-                        onChange={(d) => {
-                          if (d) setDeadline(d);
-                        }}
-                        value={deadline}
-                        excludeDate={(date) =>
-                          date.getMonth() < new Date().getMonth() &&
-                          date.getFullYear() <= new Date().getFullYear()
-                        }
-                      />
-                      <Text
-                        className={clsx(
-                          "text-sm font-bold text-[#495057] py-2 mt-5",
-                          {
-                            [outfit.className]: true,
-                          }
-                        )}
-                      >
-                        Budget(optional)
-                      </Text>
-                      <NumberInput
-                        {...formState.getInputProps("price")}
-                        labelProps={{
-                          className: clsx({
-                            [outfit.className]: true,
-                          }),
-                        }}
-                        min={1}
-                        icon={"$"}
-                      />
-                      <Group position="center" mt="xl">
-                        <Button
-                          variant="default"
-                          loading={loading}
-                          onClick={prevStep}
-                        >
-                          Back
-                        </Button>
-                        <Button
-                          type={"submit"}
-                          variant="filled"
-                          loading={loading}
-                          className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
-                        >
-                          Next step
-                        </Button>
-                      </Group>
-                    </>
-                  </Paper>
+                  <Editor
+                    onSubmit={(d) => {
+                      formState.setFieldValue("description", d);
+                      setActive(o => o + 1);
+                    }}
+                    setActive={setActive}
+                  />
                 </Stepper.Step>
                 <Stepper.Step label="Requirements">Lorem, ipsum.</Stepper.Step>
                 <Stepper.Step label={"Assets"}>Lorem, ipsum.</Stepper.Step>
