@@ -30,6 +30,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { profileImageRouteGenerator } from "@utils/profile";
 import { Countries } from "~/constants";
+import useHydrateUserContext from "@hooks/hydrate/user";
 
 export default function Login() {
   const form = useForm({
@@ -57,10 +58,11 @@ export default function Login() {
   const dispatch = useSetUser();
   const { isReady, replace } = useRouter();
   const { id } = useUser();
+  useHydrateUserContext();
   function handleSubmit(values: typeof form.values) {
     const { email, password } = values;
     axios
-      .post<RegisterResponse>(URLBuilder("/auth/login"), {
+      .post<RegisterResponse>(URLBuilder("/login"), {
         email,
         password,
       })
@@ -81,6 +83,7 @@ export default function Login() {
         });
       })
       .catch((err) => {
+        console.log(err);
         const error = err?.response?.data?.errors?.[0].message;
         showNotification({
           message:
@@ -157,7 +160,7 @@ export default function Login() {
                     colorScheme === "dark",
                 })}
               >
-                Register
+                Login
               </Button>
             </Group>
           </form>
