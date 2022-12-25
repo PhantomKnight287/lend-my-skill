@@ -194,6 +194,7 @@ function Settings() {
                                 color: "green",
                               });
                               formState.resetDirty();
+                              setAvatar(undefined);
                             })
                             .catch((err) => {
                               showNotification({
