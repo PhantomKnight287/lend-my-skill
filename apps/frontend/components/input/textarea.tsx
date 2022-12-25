@@ -59,9 +59,17 @@ export default function Textarea({
           }}
           minLength={20}
           maxLength={1000}
+          error={null}
         />
         {wordsComponent}
       </div>
+      <span
+        className={clsx("text-red-500 text-sm", {
+          [outfit.className]: true,
+        })}
+      >
+        {props.error}
+      </span>
     </div>
   );
 }
