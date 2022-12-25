@@ -8,12 +8,17 @@ datasource db {
 }
 
 model Freelancer {
-  id       String @id @unique @default(cuid())
-  name     String
-  username String
-  email    String @unique
-  password String
-  country  String @default("India")
+  id                String  @id @unique @default(cuid())
+  name              String
+  username          String
+  email             String  @unique
+  password          String
+  country           String  @default("India")
+  githubId    String?
+  linkedinUsername  String?
+  twitterUsername   String?
+  facebookUsername  String?
+  instagramUsername String?
 
   kycDocuments String[]
 
@@ -21,6 +26,7 @@ model Freelancer {
 
   avatarUrl   String?
   bio         String?
+  aboutMe     String?
   paypalEmail String?
   upiId       String?
   createdAt   DateTime @default(now())
@@ -35,12 +41,19 @@ model Freelancer {
 }
 
 model Client {
-  id       String @id @unique @default(cuid())
+  id       String  @id @unique @default(cuid())
   name     String
   username String
-  email    String @unique
+  email    String  @unique
   password String
-  country  String @default("India")
+  country  String  @default("India")
+  aboutMe  String?
+
+  githubId    String?
+  linkedinUsername  String?
+  twitterUsername   String?
+  facebookUsername  String?
+  instagramUsername String?
 
   kycDocuments String[]
 
@@ -76,16 +89,17 @@ model Gig {
 }
 
 model JobPost {
-  id          String   @id @unique @default(cuid())
+  id          String    @id @unique @default(cuid())
   title       String
   description String
-  slug        String   @unique
-  category    Category @relation(fields: [categoryId], references: [id])
+  slug        String    @unique
+  category    Category  @relation(fields: [categoryId], references: [id])
   tags        String[]
   images      String[]
-  price       Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  budget      Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deadline    DateTime?
 
   quotation  Quotation[]
   author     Client      @relation(fields: [clientId], references: [id])
@@ -94,7 +108,7 @@ model JobPost {
 
   claimed      Boolean     @default(false)
   claimedBy    Freelancer? @relation(fields: [freelancerId], references: [id])
-  freelancerId String
+  freelancerId String?
 }
 
 model Quotation {
