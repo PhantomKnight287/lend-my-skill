@@ -1,3 +1,4 @@
+import { outfit } from "@fonts";
 import { useUser } from "@hooks/user";
 import {
   createStyles,
@@ -247,6 +248,9 @@ export function Header() {
                   <Button
                     variant="default"
                     data-testingid="header__login_button"
+                    className={clsx("", {
+                      [outfit.className]: true,
+                    })}
                   >
                     Log in
                   </Button>
@@ -254,7 +258,9 @@ export function Header() {
                 <Link href="/auth/register">
                   <Button
                     variant="outline"
-                    color="green"
+                    className={clsx("", {
+                      [outfit.className]: true,
+                    })}
                     data-testingid="header__register_button"
                   >
                     Register
