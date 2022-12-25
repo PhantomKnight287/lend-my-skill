@@ -38,12 +38,14 @@ export default function HeaderMenu() {
                 push("/create/job-post");
               }}
             >
-              Post a Request
+              Post a Job Request
             </Menu.Item>
           ) : (
             <>
               {userType === "freelancer" ? (
-                <Menu.Item>Dashboard</Menu.Item>
+                <Menu.Item color="green" onClick={() => push(`/create/gig`)}>
+                  Post a Gig
+                </Menu.Item>
               ) : null}
             </>
           )}
