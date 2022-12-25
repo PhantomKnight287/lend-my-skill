@@ -13,11 +13,13 @@ import { RouterTransition } from "@components/progress";
 import { AnimatePresence, motion } from "framer-motion";
 import { NotificationsProvider } from "@mantine/notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { SessionProvider } from "next-auth/react";
 
 const client = new QueryClient();
 
 export default function App(props: AppProps) {
-  const { Component, pageProps } = props;
+  const { Component, session, pageProps } = props as any;
 
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: "mantine-color-scheme",
@@ -32,44 +34,65 @@ export default function App(props: AppProps) {
 
   return (
     <>
-      <RouterTransition />
-      <UserProvider>
-        <ColorSchemeProvider
-          colorScheme={colorScheme}
-          toggleColorScheme={toggleColorScheme}
-        >
-          <MantineProvider
-            theme={{ colorScheme, fontFamily: inter.style.fontFamily }}
-            withGlobalStyles
-            withNormalizeCSS
+      <SessionProvider session={session}>
+        <RouterTransition />
+        <UserProvider>
+          <ColorSchemeProvider
+            colorScheme={colorScheme}
+            toggleColorScheme={toggleColorScheme}
           >
-            <NotificationsProvider>
-              <Header />
-              <AnimatePresence mode="wait">
-                <motion.div
-                  variants={{
-                    exit: {
-                      filter: "blur(8px)",
-                    },
-                    enter: {
-                      filter: "blur(0px)",
-                    },
-                  }}
-                  animate="enter"
-                  initial="initial"
-                  // animate="animate"
-                  exit="exit"
-                  key={props.router.pathname}
-                >
-                  <QueryClientProvider client={client}>
-                    <Component {...pageProps} key={props.router.asPath} />
-                  </QueryClientProvider>
-                </motion.div>
-              </AnimatePresence>
-            </NotificationsProvider>
-          </MantineProvider>
-        </ColorSchemeProvider>
-      </UserProvider>
+            <MantineProvider
+              theme={{
+                colorScheme,
+                fontFamily: inter.style.fontFamily,
+                colors: {
+                  brand: [
+                    "#e3f2fd",
+                    "#bbdefb",
+                    "#90caf9",
+                    "#64b5f6",
+                    "#42a5f5",
+                    "#2196f3",
+                    "#1e88e5",
+                    "#1976d2",
+                    "#1565c0",
+                  ],
+                },
+                primaryColor: "brand",
+              }}
+              withGlobalStyles
+              withNormalizeCSS
+              withCSSVariables
+            >
+              <NotificationsProvider>
+                <Header />
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    variants={{
+                      exit: {
+                        filter: "blur(8px)",
+                      },
+                      enter: {
+                        filter: "blur(0px)",
+                      },
+                    }}
+                    animate="enter"
+                    initial="initial"
+                    // animate="animate"
+                    exit="exit"
+                    key={props.router.pathname}
+                  >
+                    <QueryClientProvider client={client}>
+                      <Component {...pageProps} key={props.router.asPath} />
+                      {/* <ReactQueryDevtools /> */}
+                    </QueryClientProvider>
+                  </motion.div>
+                </AnimatePresence>
+              </NotificationsProvider>
+            </MantineProvider>
+          </ColorSchemeProvider>
+        </UserProvider>
+      </SessionProvider>
     </>
   );
 }
