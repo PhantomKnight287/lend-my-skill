@@ -27,6 +27,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { profileImageRouteGenerator } from "@utils/profile";
 import { Countries } from "~/constants";
+import useHydrateUserContext from "@hooks/hydrate/user";
 
 export default function Register() {
   const form = useForm({
@@ -60,7 +61,7 @@ export default function Register() {
   const { id } = useUser();
   const [userType, setUserType] = useState<"client" | "freelancer" | "">("");
   const [checked, setChecked] = useState<"client" | "freelancer" | "">("");
-
+  useHydrateUserContext();
   function handleSubmit(values: typeof form.values) {
     const { confirmPass, email, name, password, username, country } = values;
     axios
