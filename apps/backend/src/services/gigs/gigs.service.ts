@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { titleToSlug } from 'src/utils/slug';
 import { PrismaService } from '../prisma/prisma.service';
 
 interface CreateGigInput {
@@ -35,6 +36,7 @@ export class GigsService {
             id: props.userId,
           },
         },
+        slug: titleToSlug(props.title),
       },
     });
   }
