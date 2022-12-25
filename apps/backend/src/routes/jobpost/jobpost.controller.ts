@@ -42,6 +42,7 @@ export class JobpostController {
         budget: true,
         title: true,
         tags: true,
+        slug: true,
       },
       orderBy: [
         {
@@ -96,6 +97,7 @@ export class JobpostController {
         budget: true,
         title: true,
         tags: true,
+        slug: true,
       },
       orderBy: [
         {
@@ -155,5 +157,123 @@ export class JobpostController {
       },
     });
     return post;
+  }
+  @Get(':username/:slug')
+  async getJobPost(
+    @Param('username') username: string,
+    @Param('slug') slug: string,
+  ) {
+    const jobPost = await this.prisma.jobPost.findFirst({
+      where: {
+        author: {
+          username: {
+            equals: username,
+            mode: 'insensitive',
+          },
+        },
+        slug: {
+          equals: titleToSlug(slug),
+          mode: 'insensitive',
+        },
+      },
+      select: {
+        author: {
+          select: {
+            username: true,
+            avatarUrl: true,
+            name: true,
+            verified: true,
+          },
+        },
+        budget: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+        claimed: true,
+        claimedBy: {
+          select: {
+            username: true,
+            avatarUrl: true,
+            name: true,
+          },
+        },
+        createdAt: true,
+        deadline: true,
+        description: true,
+        id: true,
+        images: true,
+        tags: true,
+        title: true,
+      },
+    });
+    if (!jobPost)
+      throw new HttpException(
+        'No Post found with provided queries',
+        HttpStatus.NOT_FOUND,
+      );
+    return jobPost;
+  }
+  @Get(':username/:slug/quotations')
+  async getQuotations(
+    @Param('username') username: string,
+    @Param('slug') slug: string,
+    @Query('take') take: string,
+  ) {
+    const toTake = Number.isNaN(parseInt(take)) ? 10 : parseInt(take);
+    const quotations = await this.prisma.quotation.findMany({
+      where: {
+        JobPost: {
+          author: {
+            username: {
+              equals: username,
+              mode: 'insensitive',
+            },
+          },
+          slug: {
+            equals: titleToSlug(slug),
+            mode: 'insensitive',
+          },
+        },
+      },
+      select: {
+        createdAt: true,
+        price: true,
+        id: true,
+        freelancer: {
+          select: {
+            avatarUrl: true,
+            name: true,
+            username: true,
+            verified: true,
+          },
+        },
+        description: true,
+      },
+      take: toTake,
+      skip: toTake > 10 ? toTake - 10 : undefined,
+      orderBy: [
+        {
+          createdAt: 'desc',
+        },
+        {
+          updatedAt: 'desc',
+        },
+      ],
+    });
+    if (!quotations)
+      throw new HttpException(
+        'No post found with provided details',
+        HttpStatus.NOT_FOUND,
+      );
+    if (quotations.length === 10)
+      return {
+        quotations,
+        next: toTake + 10,
+      };
+    return { quotations };
   }
 }
