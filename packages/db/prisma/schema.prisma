@@ -14,7 +14,7 @@ model Freelancer {
   email             String  @unique
   password          String
   country           String  @default("India")
-  githubId    String?
+  githubId          String?
   linkedinUsername  String?
   twitterUsername   String?
   facebookUsername  String?
@@ -49,7 +49,7 @@ model Client {
   country  String  @default("India")
   aboutMe  String?
 
-  githubId    String?
+  githubId          String?
   linkedinUsername  String?
   twitterUsername   String?
   facebookUsername  String?
@@ -72,20 +72,22 @@ model Client {
 }
 
 model Gig {
-  id           String      @id @unique @default(cuid())
+  id           String        @id @unique @default(cuid())
   title        String
   description  String
-  slug         String      @unique
-  category     Category    @relation(fields: [categoryId], references: [id])
+  slug         String        @unique
+  category     Category      @relation(fields: [categoryId], references: [id])
   tags         String[]
   images       String[]
   bannerImage  String
   price        Int
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  freelancer   Freelancer? @relation(fields: [freelancerId], references: [id])
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  freelancer   Freelancer?   @relation(fields: [freelancerId], references: [id])
   freelancerId String?
   categoryId   String
+  requirements Requirement[]
+  questions    Question[]
 }
 
 model JobPost {
@@ -105,6 +107,7 @@ model JobPost {
   author     Client      @relation(fields: [clientId], references: [id])
   clientId   String
   categoryId String
+  packages   Package[]
 
   claimed      Boolean     @default(false)
   claimedBy    Freelancer? @relation(fields: [freelancerId], references: [id])
@@ -128,6 +131,48 @@ model Category {
   name      String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  slug      String    @unique @default(cuid())
   Gig       Gig[]
   JobPost   JobPost[]
+}
+
+model Package {
+  id          String  @id @unique @default(cuid())
+  name        String
+  price       Int
+  description String?
+
+  JobPost   JobPost? @relation(fields: [jobPostId], references: [id])
+  jobPostId String?
+
+  features Features[]
+}
+
+model Features {
+  id       String    @id @unique @default(cuid())
+  name     String
+  packages Package[]
+}
+
+model Requirement {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  description String?
+  Gig         Gig?    @relation(fields: [gigId], references: [id])
+  gigId       String?
+}
+
+model Question {
+  id         String     @id @default(cuid())
+  question   String     @unique
+  answerType AnswerType @default(TEXT)
+  isRequired Boolean
+  gig        Gig        @relation(references: [id], fields: [gigId])
+  gigId      String
+}
+
+enum AnswerType {
+  TEXT
+  MULTIPLE_CHOICE
+  ATTACHMENT
 }
