@@ -29,11 +29,13 @@ import { showNotification } from "@mantine/notifications";
 import axios from "axios";
 import { URLBuilder } from "@utils/url";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/router";
+import { useUser } from "@hooks/user";
 
 function CreateJobPost() {
   const formState = useForm({
     initialValues: {
-      title: "",
+      title: "I want ",
       description: "",
       price: "",
       category: "",
@@ -72,9 +74,11 @@ function CreateJobPost() {
   const [active, setActive] = useState(0);
   const { colorScheme: theme } = useMantineColorScheme();
   const [deadline, setDeadline] = useState<Date>();
+  const { username } = useUser();
+  const { push } = useRouter();
   useHydrateUserContext();
   const nextStep = () =>
-    setActive((current) => (current < 3 ? current + 1 : current));
+    setActive((current) => (current < 1 ? current + 1 : current));
   const prevStep = () =>
     setActive((current) => (current > 0 ? current - 1 : current));
   const [loading, setLoading] = useState(false);
@@ -87,6 +91,7 @@ function CreateJobPost() {
         message: "Session Expired. Please login again.",
         color: "red",
       });
+    setLoading(true);
     let urls: string[] = [];
     if (files.length > 0) {
       const data = await uploadFiles(files, token).catch((err) => {
@@ -94,12 +99,13 @@ function CreateJobPost() {
           message: err?.response?.data?.message || "Something went wrong",
           color: "red",
         });
+        setLoading(false);
         return null;
       });
       if (data === null) return;
       urls = data.data.paths;
     }
-    const res = await axios
+    await axios
       .post(
         URLBuilder("/jobpost/create"),
         {
@@ -123,13 +129,15 @@ function CreateJobPost() {
           message: "Job Post Created Successfully",
           color: "green",
         });
+        return push(`/profile/${username}/post/${d.slug}`);
       })
       .catch((err) => {
         showNotification({
           message: err?.response?.data?.message || "Something went wrong",
           color: "red",
         });
-      });
+      })
+      .finally(() => setLoading(false));
   };
   return (
     <>
@@ -380,6 +388,18 @@ function CreateJobPost() {
                         }}
                         maxSelectedValues={5}
                       />
+                      <Group position="center" mt="xl">
+                        <Button variant="default" disabled>
+                          Back
+                        </Button>
+                        <Button
+                          onClick={() => setActive(1)}
+                          variant="filled"
+                          className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
+                        >
+                          Next step
+                        </Button>
+                      </Group>
                     </>
                   </Paper>
                 </Stepper.Step>
@@ -434,24 +454,27 @@ function CreateJobPost() {
                         min={1}
                         icon={"$"}
                       />
+                      <Group position="center" mt="xl">
+                        <Button
+                          variant="default"
+                          loading={loading}
+                          onClick={prevStep}
+                        >
+                          Back
+                        </Button>
+                        <Button
+                          type={"submit"}
+                          variant="filled"
+                          loading={loading}
+                          className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
+                        >
+                          Next step
+                        </Button>
+                      </Group>
                     </>
                   </Paper>
                 </Stepper.Step>
               </Stepper>
-
-              <Group position="center" mt="xl">
-                <Button variant="default" onClick={prevStep}>
-                  Back
-                </Button>
-                <Button
-                  type={active == 1 ? "submit" : "button"}
-                  onClick={active == 1 ? undefined : nextStep}
-                  variant="filled"
-                  className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
-                >
-                  Next step
-                </Button>
-              </Group>
             </form>
           </div>
         </div>
