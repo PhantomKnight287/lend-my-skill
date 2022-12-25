@@ -8,8 +8,9 @@ import { Request } from 'express';
 import { JwtPayload, verify } from 'jsonwebtoken';
 import { SIGN_SECRET } from 'src/constants';
 
-interface DecodedJWT extends JwtPayload {
+export interface DecodedJWT extends JwtPayload {
   id: string;
+  userType: 'client' | 'freelancer';
 }
 
 export const Token = createParamDecorator(
