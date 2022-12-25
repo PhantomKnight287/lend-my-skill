@@ -3,6 +3,7 @@ import { Avatar, Menu } from "@mantine/core";
 import { profileImageRouteGenerator } from "@utils/profile";
 import { eraseCookie } from "@helpers/cookie";
 import { useRouter } from "next/router";
+import { assetURLBuilder } from "@utils/url";
 
 export default function HeaderMenu() {
   const { avatarUrl, username, userType } = useUser();
@@ -14,12 +15,22 @@ export default function HeaderMenu() {
         <Menu.Target>
           <Avatar
             className="cursor-pointer"
-            src={avatarUrl ? avatarUrl : profileImageRouteGenerator(username)}
+            src={
+              avatarUrl
+                ? assetURLBuilder(avatarUrl)
+                : profileImageRouteGenerator(username)
+            }
             radius="xl"
           />
         </Menu.Target>
         <Menu.Dropdown>
-          <Menu.Item>Profile</Menu.Item>
+          <Menu.Item
+            onClick={() => {
+              push(`/profile/${username}`);
+            }}
+          >
+            Profile
+          </Menu.Item>
           {userType === "client" ? (
             <Menu.Item
               color="green"
@@ -47,6 +58,7 @@ export default function HeaderMenu() {
                 type: "LOG_OUT",
                 payload: {},
               });
+              push("/auth/login");
             }}
           >
             Logout
