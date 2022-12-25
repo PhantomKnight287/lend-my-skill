@@ -245,3 +245,5 @@ export const Countries = [
   "Zambia",
   "Zimbabwe",
 ];
+
+export const STORAGE_URL = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET_URL;
