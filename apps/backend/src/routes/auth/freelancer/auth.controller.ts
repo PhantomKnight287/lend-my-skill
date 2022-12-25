@@ -54,6 +54,19 @@ export class AuthController {
         HttpStatus.CONFLICT,
       );
     }
+    const oldClientWithSameUsername = await this.prisma.client.findFirst({
+      where: {
+        username: {
+          equals: username,
+          mode: 'insensitive',
+        },
+      },
+    });
+    if (oldClientWithSameUsername)
+      throw new HttpException(
+        'Username is already taken.',
+        HttpStatus.CONFLICT,
+      );
     const isAlreadyRegistered =
       await this.verification.isEmailAlreadyRegistered(email, 'buyer');
     if (isAlreadyRegistered) {
@@ -76,12 +89,20 @@ export class AuthController {
         name: true,
       },
     });
-    const token = sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: '1d',
-    });
-    const refreshToken = sign({ id: user.id }, process.env.REFRESH_TOKEN, {
-      expiresIn: '7d',
-    });
+    const token = sign(
+      { id: user.id, userType: 'freelancer' },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: '1d',
+      },
+    );
+    const refreshToken = sign(
+      { id: user.id, userType: 'freelancer' },
+      process.env.REFRESH_TOKEN,
+      {
+        expiresIn: '7d',
+      },
+    );
 
     return {
       user,
@@ -93,7 +114,7 @@ export class AuthController {
   }
   @Get('refresh')
   async refresh(@RefreshToken({ serialize: true }) { id }) {
-    const token = sign({ id }, process.env.JWT_SECRET, {
+    const token = sign({ id, userType: 'freelancer' }, process.env.JWT_SECRET, {
       expiresIn: '1d',
     });
     return {
@@ -126,12 +147,16 @@ export class AuthController {
     if (!isPasswordCorrect) {
       throw new HttpException('Incorrect Password', HttpStatus.UNAUTHORIZED);
     }
-    const token = sign({ id: user.id }, SIGN_SECRET, {
+    const token = sign({ id: user.id, userType: 'freelancer' }, SIGN_SECRET, {
       expiresIn: '1d',
     });
-    const refreshToken = sign({ id: user.id }, REFRESH_SECRET, {
-      expiresIn: '7d',
-    });
+    const refreshToken = sign(
+      { id: user.id, userType: 'freelancer' },
+      REFRESH_SECRET,
+      {
+        expiresIn: '7d',
+      },
+    );
     delete user.password;
     return {
       user,

@@ -45,12 +45,23 @@ export class AuthController {
         },
       },
     });
+    const oldFreelancerWithSameUsername =
+      await this.prisma.freelancer.findFirst({
+        where: {
+          username: {
+            equals: username,
+            mode: 'insensitive',
+          },
+        },
+      });
     if (oldUserWithSameUsername) {
       throw new HttpException(
-        'User with same username already exists',
+        'Username is already taken.',
         HttpStatus.CONFLICT,
       );
     }
+    if (oldFreelancerWithSameUsername)
+      throw new HttpException('Username is already taken', HttpStatus.CONFLICT);
     const isAlreadyRegistered =
       await this.verification.isEmailAlreadyRegistered(email, 'seller');
     if (isAlreadyRegistered) {
@@ -73,12 +84,20 @@ export class AuthController {
         name: true,
       },
     });
-    const token = sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: '1d',
-    });
-    const refreshToken = sign({ id: user.id }, process.env.REFRESH_TOKEN, {
-      expiresIn: '7d',
-    });
+    const token = sign(
+      { id: user.id, userType: 'client' },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: '1d',
+      },
+    );
+    const refreshToken = sign(
+      { id: user.id, userType: 'client' },
+      process.env.REFRESH_TOKEN,
+      {
+        expiresIn: '7d',
+      },
+    );
 
     return {
       user,
@@ -90,7 +109,7 @@ export class AuthController {
   }
   @Get('refresh')
   async refresh(@RefreshToken({ serialize: true }) { id }) {
-    const token = sign({ id }, process.env.JWT_SECRET, {
+    const token = sign({ id, userType: 'client' }, process.env.JWT_SECRET, {
       expiresIn: '1d',
     });
     return {
@@ -123,12 +142,16 @@ export class AuthController {
     if (!isPasswordCorrect) {
       throw new HttpException('Incorrect Password', HttpStatus.UNAUTHORIZED);
     }
-    const token = sign({ id: user.id }, SIGN_SECRET, {
+    const token = sign({ id: user.id, userType: 'client' }, SIGN_SECRET, {
       expiresIn: '1d',
     });
-    const refreshToken = sign({ id: user.id }, REFRESH_SECRET, {
-      expiresIn: '7d',
-    });
+    const refreshToken = sign(
+      { id: user.id, userType: 'client' },
+      REFRESH_SECRET,
+      {
+        expiresIn: '7d',
+      },
+    );
     delete user.password;
     return {
       user,
