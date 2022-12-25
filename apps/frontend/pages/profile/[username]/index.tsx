@@ -23,6 +23,7 @@ import {
   NextPage,
 } from "next";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
@@ -48,6 +49,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
         null;
       });
   }, []);
+  const { query, push } = useRouter();
   return (
     <div
       className={clsx("mt-20", {
@@ -184,13 +186,27 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
           </div>
         </Paper>
         <div className="m-4">
-          <Tabs className={clsx("w-full")} defaultValue={"job-posts"}>
+          <Tabs
+            className={clsx("w-full")}
+            defaultValue={(query.tab as string) || "job-posts"}
+            onTabChange={(d) => {
+              if (d) {
+                push(`/profile/${props.username}?tab=${d}`);
+              }
+            }}
+          >
             <Tabs.List>
-              <Tabs.Tab value="job-posts">Job Posts</Tabs.Tab>
+              {props.type === "client" ? (
+                <Tabs.Tab value="job-posts">Job Posts</Tabs.Tab>
+              ) : props.type === "freelancer" ? (
+                <Tabs.Tab value="gigs">Gigs</Tabs.Tab>
+              ) : null}
             </Tabs.List>
-            <Tabs.Panel value="job-posts">
-              <JobPosts username={props.username} />
-            </Tabs.Panel>
+            {props.type === "client" ? (
+              <Tabs.Panel value="job-posts">
+                <JobPosts username={props.username} />
+              </Tabs.Panel>
+            ) : null}
           </Tabs>
         </div>
       </div>
