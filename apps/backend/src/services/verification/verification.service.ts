@@ -97,4 +97,28 @@ export class VerificationService {
     if (category) return true;
     else return false;
   }
+  async verifyFreelancerByUsername(username: string) {
+    const profile = await this.prisma.freelancer.findFirst({
+      where: {
+        username: {
+          equals: username,
+          mode: 'insensitive',
+        },
+      },
+    });
+    if (profile) return true;
+    return false;
+  }
+  async verifyClientByUsername(username: string) {
+    const profile = await this.prisma.client.findFirst({
+      where: {
+        username: {
+          equals: username,
+          mode: 'insensitive',
+        },
+      },
+    });
+    if (profile) return true;
+    return false;
+  }
 }
