@@ -19,4 +19,27 @@ export class StaticController {
     });
     return [...clients, ...freelancers];
   }
+  @Get('job-posts')
+  async generateJobPosts() {
+    const jobPosts = await this.prisma.jobPost.findMany({
+      select: {
+        slug: true,
+        author: {
+          select: {
+            username: true,
+          },
+        },
+      },
+    });
+    return jobPosts;
+  }
+  @Get('categories')
+  async generateCategories() {
+    const categories = await this.prisma.category.findMany({
+      select: {
+        slug: true,
+      },
+    });
+    return categories;
+  }
 }
