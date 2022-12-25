@@ -34,65 +34,65 @@ export default function App(props: AppProps) {
 
   return (
     <>
-      <SessionProvider session={session}>
-        <RouterTransition />
-        <UserProvider>
-          <ColorSchemeProvider
-            colorScheme={colorScheme}
-            toggleColorScheme={toggleColorScheme}
-          >
-            <MantineProvider
-              theme={{
-                colorScheme,
-                fontFamily: inter.style.fontFamily,
-                colors: {
-                  brand: [
-                    "#e3f2fd",
-                    "#bbdefb",
-                    "#90caf9",
-                    "#64b5f6",
-                    "#42a5f5",
-                    "#2196f3",
-                    "#1e88e5",
-                    "#1976d2",
-                    "#1565c0",
-                  ],
-                },
-                primaryColor: "brand",
-              }}
-              withGlobalStyles
-              withNormalizeCSS
-              withCSSVariables
+      <QueryClientProvider client={client}>
+        <SessionProvider session={session}>
+          <RouterTransition />
+          <UserProvider>
+            <ColorSchemeProvider
+              colorScheme={colorScheme}
+              toggleColorScheme={toggleColorScheme}
             >
-              <NotificationsProvider>
-                <Header />
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    variants={{
-                      exit: {
-                        filter: "blur(8px)",
-                      },
-                      enter: {
-                        filter: "blur(0px)",
-                      },
-                    }}
-                    animate="enter"
-                    initial="initial"
-                    // animate="animate"
-                    exit="exit"
-                    key={props.router.pathname}
-                  >
-                    <QueryClientProvider client={client}>
+              <MantineProvider
+                theme={{
+                  colorScheme,
+                  fontFamily: inter.style.fontFamily,
+                  colors: {
+                    brand: [
+                      "#e3f2fd",
+                      "#bbdefb",
+                      "#90caf9",
+                      "#64b5f6",
+                      "#42a5f5",
+                      "#2196f3",
+                      "#1e88e5",
+                      "#1976d2",
+                      "#1565c0",
+                    ],
+                  },
+                  primaryColor: "brand",
+                }}
+                withGlobalStyles
+                withNormalizeCSS
+                withCSSVariables
+              >
+                <NotificationsProvider>
+                  <Header />
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      variants={{
+                        exit: {
+                          filter: "blur(8px)",
+                        },
+                        enter: {
+                          filter: "blur(0px)",
+                        },
+                      }}
+                      animate="enter"
+                      initial="initial"
+                      // animate="animate"
+                      exit="exit"
+                      key={props.router.pathname}
+                    >
                       <Component {...pageProps} key={props.router.asPath} />
-                      {/* <ReactQueryDevtools /> */}
-                    </QueryClientProvider>
-                  </motion.div>
-                </AnimatePresence>
-              </NotificationsProvider>
-            </MantineProvider>
-          </ColorSchemeProvider>
-        </UserProvider>
-      </SessionProvider>
+                    </motion.div>
+                  </AnimatePresence>
+                </NotificationsProvider>
+                <ReactQueryDevtools />
+              </MantineProvider>
+            </ColorSchemeProvider>
+          </UserProvider>
+        </SessionProvider>
+      </QueryClientProvider>
     </>
   );
 }
