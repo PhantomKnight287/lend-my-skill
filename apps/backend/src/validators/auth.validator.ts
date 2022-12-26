@@ -1,7 +1,7 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'nestjs-zod/z';
 
-const RegisterSchema = z
+const SellerRegisterSchema = z
   .object({
     email: z
       .string({
@@ -35,6 +35,11 @@ const RegisterSchema = z
       required_error: 'Name is required',
       invalid_type_error: 'Name must be a string',
     }),
+    country: z
+      .string({
+        invalid_type_error: 'Country must be a string',
+      })
+      .optional(),
   })
   .superRefine(({ confirmPassword, password }, ctx) => {
     if (password !== confirmPassword) {
@@ -46,4 +51,24 @@ const RegisterSchema = z
     }
   });
 
-export class RegisterDto extends createZodDto(RegisterSchema) {}
+export class SellerRegisterDto extends createZodDto(SellerRegisterSchema) {}
+export class BuyerRegisterDto extends createZodDto(SellerRegisterSchema) {}
+
+const SellerLoginSchema = z.object({
+  email: z
+    .string({
+      required_error: 'Email is required',
+      invalid_type_error: 'Email must be a string',
+    })
+    .email(),
+  password: z
+
+    .string({
+      required_error: 'Password is required',
+      invalid_type_error: 'Password must be a string',
+    })
+    .min(8),
+});
+
+export class SellerLoginDto extends createZodDto(SellerLoginSchema) {}
+export class BuyerLoginDto extends createZodDto(SellerLoginSchema) {}

@@ -9,6 +9,8 @@ interface UserContextType {
     id: string;
     name: string;
     username: string;
+    avatarUrl?: string;
+    userType?: "client" | "freelancer";
   };
   setUser: (action: {
     type: keyof typeof UserActionType;
@@ -44,6 +46,7 @@ export const UserProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
     id: "",
     name: "",
     username: "",
+    userType: "seller",
   });
   return (
     <UserContext.Provider value={{ user, setUser }}>

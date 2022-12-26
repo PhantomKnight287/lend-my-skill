@@ -11,9 +11,15 @@ import { Header } from "@components/header";
 import { inter } from "@fonts";
 import { RouterTransition } from "@components/progress";
 import { AnimatePresence, motion } from "framer-motion";
+import { NotificationsProvider } from "@mantine/notifications";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { SessionProvider } from "next-auth/react";
+
+const client = new QueryClient();
 
 export default function App(props: AppProps) {
-  const { Component, pageProps } = props;
+  const { Component, session, pageProps } = props as any;
 
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: "mantine-color-scheme",
@@ -28,40 +34,65 @@ export default function App(props: AppProps) {
 
   return (
     <>
-      <RouterTransition />
-      <UserProvider>
-        <ColorSchemeProvider
-          colorScheme={colorScheme}
-          toggleColorScheme={toggleColorScheme}
-        >
-          <MantineProvider
-            theme={{ colorScheme, fontFamily: inter.style.fontFamily }}
-            withGlobalStyles
-            withNormalizeCSS
-          >
-            <Header />
-            <AnimatePresence mode="wait">
-              <motion.div
-                variants={{
-                  exit: {
-                    filter: "blur(8px)",
+      <QueryClientProvider client={client}>
+        <SessionProvider session={session}>
+          <RouterTransition />
+          <UserProvider>
+            <ColorSchemeProvider
+              colorScheme={colorScheme}
+              toggleColorScheme={toggleColorScheme}
+            >
+              <MantineProvider
+                theme={{
+                  colorScheme,
+                  fontFamily: inter.style.fontFamily,
+                  colors: {
+                    brand: [
+                      "#e3f2fd",
+                      "#bbdefb",
+                      "#90caf9",
+                      "#64b5f6",
+                      "#42a5f5",
+                      "#2196f3",
+                      "#1e88e5",
+                      "#1976d2",
+                      "#1565c0",
+                    ],
                   },
-                  enter: {
-                    filter: "blur(0px)",
-                  },
+                  primaryColor: "brand",
                 }}
-                animate="enter"
-                initial="initial"
-                // animate="animate"
-                exit="exit"
-                key={props.router.pathname}
+                withGlobalStyles
+                withNormalizeCSS
+                withCSSVariables
               >
-                <Component {...pageProps} key={props.router.asPath} />
-              </motion.div>
-            </AnimatePresence>
-          </MantineProvider>
-        </ColorSchemeProvider>
-      </UserProvider>
+                <NotificationsProvider>
+                  <Header />
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      variants={{
+                        exit: {
+                          filter: "blur(8px)",
+                        },
+                        enter: {
+                          filter: "blur(0px)",
+                        },
+                      }}
+                      animate="enter"
+                      initial="initial"
+                      // animate="animate"
+                      exit="exit"
+                      key={props.router.pathname}
+                    >
+                      <Component {...pageProps} key={props.router.asPath} />
+                    </motion.div>
+                  </AnimatePresence>
+                </NotificationsProvider>
+                <ReactQueryDevtools />
+              </MantineProvider>
+            </ColorSchemeProvider>
+          </UserProvider>
+        </SessionProvider>
+      </QueryClientProvider>
     </>
   );
 }

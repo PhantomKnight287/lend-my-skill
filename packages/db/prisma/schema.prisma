@@ -7,12 +7,57 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id       String @id @unique @default(cuid())
+model Freelancer {
+  id                String  @id @unique @default(cuid())
+  name              String
+  username          String
+  email             String  @unique
+  password          String
+  country           String  @default("India")
+  githubId          String?
+  linkedinUsername  String?
+  twitterUsername   String?
+  facebookUsername  String?
+  instagramUsername String?
+
+  kycDocuments String[]
+
+  profileCompleted Boolean @default(false)
+
+  avatarUrl   String?
+  bio         String?
+  aboutMe     String?
+  paypalEmail String?
+  upiId       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  verified      Boolean @default(false)
+  emailVerified Boolean @default(false)
+
+  gigs            Gig[]
+  quotations      Quotation[]
+  claimedJobPosts JobPost[]
+}
+
+model Client {
+  id       String  @id @unique @default(cuid())
   name     String
   username String
-  email    String @unique
+  email    String  @unique
   password String
+  country  String  @default("India")
+  aboutMe  String?
+
+  githubId          String?
+  linkedinUsername  String?
+  twitterUsername   String?
+  facebookUsername  String?
+  instagramUsername String?
+
+  kycDocuments String[]
+
+  profileCompleted Boolean @default(false)
 
   avatarUrl   String?
   bio         String?
@@ -21,6 +66,113 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  verified      Boolean @default(false)
-  emailVerified Boolean @default(false)
+  verified      Boolean   @default(false)
+  emailVerified Boolean   @default(false)
+  JobPost       JobPost[]
+}
+
+model Gig {
+  id           String        @id @unique @default(cuid())
+  title        String
+  description  String
+  slug         String        @unique
+  category     Category      @relation(fields: [categoryId], references: [id])
+  tags         String[]
+  images       String[]
+  bannerImage  String
+  price        Int
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  freelancer   Freelancer?   @relation(fields: [freelancerId], references: [id])
+  freelancerId String?
+  categoryId   String
+  requirements Requirement[]
+  questions    Question[]
+}
+
+model JobPost {
+  id          String    @id @unique @default(cuid())
+  title       String
+  description String
+  slug        String    @unique
+  category    Category  @relation(fields: [categoryId], references: [id])
+  tags        String[]
+  images      String[]
+  budget      Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deadline    DateTime?
+
+  quotation  Quotation[]
+  author     Client      @relation(fields: [clientId], references: [id])
+  clientId   String
+  categoryId String
+  packages   Package[]
+
+  claimed      Boolean     @default(false)
+  claimedBy    Freelancer? @relation(fields: [freelancerId], references: [id])
+  freelancerId String?
+}
+
+model Quotation {
+  id           String      @id @unique @default(cuid())
+  description  String
+  price        Int
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  freelancer   Freelancer? @relation(fields: [freelancerId], references: [id])
+  freelancerId String?
+  JobPost      JobPost?    @relation(fields: [jobPostId], references: [id])
+  jobPostId    String?
+}
+
+model Category {
+  id        String    @id @unique @default(cuid())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  slug      String    @unique @default(cuid())
+  Gig       Gig[]
+  JobPost   JobPost[]
+}
+
+model Package {
+  id          String  @id @unique @default(cuid())
+  name        String
+  price       Int
+  description String?
+
+  JobPost   JobPost? @relation(fields: [jobPostId], references: [id])
+  jobPostId String?
+
+  features Features[]
+}
+
+model Features {
+  id       String    @id @unique @default(cuid())
+  name     String
+  packages Package[]
+}
+
+model Requirement {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  description String?
+  Gig         Gig?    @relation(fields: [gigId], references: [id])
+  gigId       String?
+}
+
+model Question {
+  id         String     @id @default(cuid())
+  question   String     @unique
+  answerType AnswerType @default(TEXT)
+  isRequired Boolean
+  gig        Gig        @relation(references: [id], fields: [gigId])
+  gigId      String
+}
+
+enum AnswerType {
+  TEXT
+  MULTIPLE_CHOICE
+  ATTACHMENT
 }
