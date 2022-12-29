@@ -20,9 +20,10 @@ model Freelancer {
   facebookUsername  String?
   instagramUsername String?
 
-  kycDocuments String[]
-
-  profileCompleted Boolean @default(false)
+  kycDocuments     String[]
+  kycCompleted     Boolean  @default(false)
+  phoneNumber      String?
+  profileCompleted Boolean  @default(false)
 
   avatarUrl   String?
   bio         String?
@@ -38,6 +39,7 @@ model Freelancer {
   gigs            Gig[]
   quotations      Quotation[]
   claimedJobPosts JobPost[]
+  Order           Order[]
 }
 
 model Client {
@@ -56,6 +58,8 @@ model Client {
   instagramUsername String?
 
   kycDocuments String[]
+  kycCompleted Boolean  @default(false)
+  phoneNumber  String?
 
   profileCompleted Boolean @default(false)
 
@@ -69,25 +73,27 @@ model Client {
   verified      Boolean   @default(false)
   emailVerified Boolean   @default(false)
   JobPost       JobPost[]
+  Order         Order[]
 }
 
 model Gig {
-  id           String        @id @unique @default(cuid())
+  id           String      @id @unique @default(cuid())
   title        String
   description  String
-  slug         String        @unique
-  category     Category      @relation(fields: [categoryId], references: [id])
+  slug         String      @unique
+  category     Category    @relation(fields: [categoryId], references: [id])
   tags         String[]
   images       String[]
   bannerImage  String
-  price        Int
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  freelancer   Freelancer?   @relation(fields: [freelancerId], references: [id])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  freelancer   Freelancer? @relation(fields: [freelancerId], references: [id])
   freelancerId String?
   categoryId   String
-  requirements Requirement[]
   questions    Question[]
+  Package      Package[]
+  features     Features[]
+  Order        Order[]
 }
 
 model JobPost {
@@ -107,7 +113,6 @@ model JobPost {
   author     Client      @relation(fields: [clientId], references: [id])
   clientId   String
   categoryId String
-  packages   Package[]
 
   claimed      Boolean     @default(false)
   claimedBy    Freelancer? @relation(fields: [freelancerId], references: [id])
@@ -137,42 +142,92 @@ model Category {
 }
 
 model Package {
-  id          String  @id @unique @default(cuid())
-  name        String
-  price       Int
-  description String?
+  id           String  @id @unique @default(cuid())
+  name         String
+  price        Int
+  description  String?
+  deliveryDays Int
 
-  JobPost   JobPost? @relation(fields: [jobPostId], references: [id])
-  jobPostId String?
+  gig Gig @relation(fields: [gigId], references: [id])
 
   features Features[]
+  gigId    String
+  Order    Order[]
 }
 
 model Features {
-  id       String    @id @unique @default(cuid())
-  name     String
-  packages Package[]
-}
-
-model Requirement {
-  id          String  @id @default(cuid())
-  name        String  @unique
-  description String?
-  Gig         Gig?    @relation(fields: [gigId], references: [id])
-  gigId       String?
+  id         String    @id @unique @default(cuid())
+  name       String
+  packages   Package[]
+  includedIn String[]
+  Gig        Gig?      @relation(fields: [gigId], references: [id])
+  gigId      String?
 }
 
 model Question {
-  id         String     @id @default(cuid())
-  question   String     @unique
-  answerType AnswerType @default(TEXT)
-  isRequired Boolean
-  gig        Gig        @relation(references: [id], fields: [gigId])
-  gigId      String
+  id          String     @id @default(cuid())
+  question    String
+  answerType  AnswerType @default(TEXT)
+  attachments String[]
+  isRequired  Boolean    @default(false)
+  gig         Gig        @relation(references: [id], fields: [gigId])
+  gigId       String
+  choices     Choices[]
+}
+
+model Choices {
+  id         String   @id @default(cuid())
+  choice     String
+  question   Question @relation(references: [id], fields: [questionId])
+  questionId String
 }
 
 enum AnswerType {
   TEXT
   MULTIPLE_CHOICE
   ATTACHMENT
+}
+
+model Order {
+  id             String        @id @default(cuid())
+  gig            Gig           @relation(fields: [gigId], references: [id])
+  gigId          String
+  freelancer     Freelancer    @relation(fields: [freelancerId], references: [id])
+  freelancerId   String
+  client         Client        @relation(fields: [clientId], references: [id])
+  clientId       String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  status         OrderStatus   @default(PENDING)
+  price          Int
+  deliveryDays   Int
+  attachments    String[]
+  deadline       DateTime?
+  package        Package?      @relation(fields: [packageId], references: [id])
+  packageId      String?
+  DiscountCode   DiscountCode? @relation(fields: [discountCodeId], references: [id])
+  discountCodeId String?
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+model DiscountCode {
+  id                 String           @id @default(cuid())
+  code               String           @unique
+  discountAmount     Int?
+  discountPercentage Int?
+  order              Order[]
+  expiryDate         DateTime
+  type               DiscountCodeType @default(PERCENTAGE)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+}
+
+enum DiscountCodeType {
+  PERCENTAGE
+  AMOUNT
 }
