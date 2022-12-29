@@ -1,0 +1,8 @@
+POST https://c305-157-37-172-171.in.ngrok.io/order/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNsYzJ6NGFuNDAwMDBldzVvaHoycnZheDAiLCJ1c2VyVHlwZSI6ImNsaWVudCIsImlhdCI6MTY3MjI2MDgyMywiZXhwIjoxNjcyMzQ3MjIzfQ.uK5dLziniBVWDAMhWD7zFUMRYlYpxh8j9Qtf2ycg_D4
+
+{
+    "packageId":"clc5zotyn0001ewfojjs3ncqt",
+    "sellerUsername":"gurpalsingh"
+}
