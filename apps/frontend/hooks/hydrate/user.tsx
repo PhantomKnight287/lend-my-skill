@@ -8,10 +8,12 @@ import { useEffect } from "react";
 export default function useHydrateUserContext(
   action: "push" | "replace" = "replace",
   redirect?: boolean,
-  redirectTarget?: string
+  redirectTarget?: string,
+  redirectIfNoAuthToken?: boolean,
+  goTo?: string
 ) {
   const dispatch = useSetUser();
-  const { push, replace } = useRouter();
+  const { push, replace, asPath, isReady } = useRouter();
   async function fetcher(token: string, updateState = false) {
     const res = await axios
       .get(URLBuilder("/profile"), {
@@ -23,9 +25,13 @@ export default function useHydrateUserContext(
     if (res === null) {
       if (redirect) {
         if (redirectTarget) {
-          action === "push" ? push(redirectTarget) : replace(redirectTarget);
+          action === "push"
+            ? push(`${redirectTarget}?to=${asPath}`)
+            : replace(`${redirectTarget}?to=${asPath}`);
         } else {
-          action === "push" ? push("/") : replace("/");
+          action === "push"
+            ? push(`${redirectTarget}?to=${asPath}`)
+            : replace(`${redirectTarget}?to=${asPath}`);
         }
       }
       return null;
@@ -38,12 +44,21 @@ export default function useHydrateUserContext(
           userType: res.data.type,
         },
       });
+      if (goTo) {
+        replace(goTo);
+      }
     }
   }
 
   useEffect(() => {
+    if (!isReady) return;
     const token = readCookie("token");
     const refreshToken = readCookie("refreshToken");
+    if (!token && redirectIfNoAuthToken) {
+      action === "push"
+        ? push(`${redirectTarget}?to=${asPath}`)
+        : replace(`${redirectTarget}?to=${asPath}`);
+    }
     if (token) {
       fetcher(token, true);
     }
@@ -60,6 +75,6 @@ export default function useHydrateUserContext(
         })
         .catch((err) => null);
     }
-  }, []);
+  }, [isReady]);
   return fetcher;
 }
