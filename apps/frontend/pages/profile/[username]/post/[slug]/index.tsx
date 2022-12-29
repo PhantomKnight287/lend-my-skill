@@ -13,6 +13,7 @@ import {
   Text,
   Tooltip,
 } from "@mantine/core";
+import { IconCheck } from "@tabler/icons";
 import { profileImageRouteGenerator } from "@utils/profile";
 import { assetURLBuilder, URLBuilder } from "@utils/url";
 import clsx from "clsx";
@@ -82,7 +83,22 @@ const Slug: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
             radius="xl"
           />
           <div className="flex flex-col ml-2">
-            <h2 className="text-base font-semibold">{props.author.name}</h2>
+            <h2 className="text-base font-semibold">
+              {props.author.name}
+              {props.author.verified ? (
+                <Tooltip label="Verified Buyer" withArrow>
+                  <Badge
+                    color="green"
+                    variant="light"
+                    className="rounded-full ml-2"
+                  >
+                    <div className="flex flex-row flex-nowrap items-center justify-center">
+                      <IconCheck color="green" size={15} />
+                    </div>
+                  </Badge>
+                </Tooltip>
+              ) : null}
+            </h2>
             <Text
               color={"dimmed"}
               className={clsx({
@@ -97,19 +113,6 @@ const Slug: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
               >
                 @{props.author.username}
               </a>
-              {props.author.verified ? (
-                <Tooltip label="Verified User">
-                  <Chip
-                    color="green"
-                    variant="filled"
-                    radius="xl"
-                    size="sm"
-                    className="ml-2"
-                  >
-                    Verified
-                  </Chip>
-                </Tooltip>
-              ) : null}
             </Text>
           </div>
         </div>
