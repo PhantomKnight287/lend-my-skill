@@ -129,6 +129,7 @@ export class AuthController {
         name: true,
         avatarUrl: true,
         password: true,
+        profileCompleted: true,
       },
     });
     if (!user) {
