@@ -49,7 +49,7 @@ const useStyles = createStyles((theme, _params, getRef) => {
       borderRadius: theme.radius.sm,
       fontWeight: 500,
       cursor: "pointer",
-
+      marginTop: "10px",
       "&:hover": {
         backgroundColor:
           theme.colorScheme === "dark"
@@ -106,6 +106,11 @@ const links = [
     title: "Account",
     icon: IconUsers,
   },
+  {
+    id: 2,
+    title: "Complete Profile",
+    icon: IconFingerprint,
+  },
 ];
 
 export function SettingsSidebar({
@@ -128,7 +133,11 @@ export function SettingsSidebar({
               onClick={() => {
                 setActive(link.title.toLowerCase());
                 setActiveTab(link.title.toLowerCase());
-                push(`/settings?activeTab=${link.title.toLowerCase()}`);
+                push(
+                  `/settings?activeTab=${link.title
+                    .toLowerCase()
+                    .replace(" ", "-")}`
+                );
               }}
             >
               <link.icon className={classes.linkIcon} stroke={1.5} />
