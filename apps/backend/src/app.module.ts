@@ -21,6 +21,7 @@ import { ProfileController as ClientProfileController } from './routes/client/pr
 import { EditableController } from './routes/editable/editable.controller';
 import { AccountsController } from './routes/accounts/accounts.controller';
 import { LoginController } from './routes/login/login.controller';
+import { OrderController } from './routes/order/order.controller';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { LoginController } from './routes/login/login.controller';
     EditableController,
     AccountsController,
     LoginController,
+    OrderController,
   ],
   providers: [
     AppService,
