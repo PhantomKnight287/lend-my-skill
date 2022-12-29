@@ -29,7 +29,7 @@ import { createCookie } from "@helpers/cookie";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { profileImageRouteGenerator } from "@utils/profile";
-import { Countries } from "~/constants";
+
 import useHydrateUserContext from "@hooks/hydrate/user";
 
 export default function Login() {
@@ -56,7 +56,7 @@ export default function Login() {
 
   const { colorScheme } = useMantineColorScheme();
   const dispatch = useSetUser();
-  const { isReady, replace } = useRouter();
+  const { isReady, replace, query } = useRouter();
   const { id } = useUser();
   useHydrateUserContext();
   function handleSubmit(values: typeof form.values) {
@@ -81,6 +81,7 @@ export default function Login() {
           message: "Successfully Registered",
           color: "green",
         });
+        replace((query.to as string) || "/dashboard");
       })
       .catch((err) => {
         console.log(err);
@@ -94,10 +95,11 @@ export default function Login() {
   }
 
   useEffect(() => {
-    if (isReady && id) {
-      replace("/");
+    if (!isReady) return;
+    if (id) {
+      replace((query.to as string) || "/dashboard");
     }
-  }, [isReady, id]);
+  }, [isReady]);
 
   return (
     <>
