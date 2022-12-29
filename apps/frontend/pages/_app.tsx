@@ -15,6 +15,9 @@ import { NotificationsProvider } from "@mantine/notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { SessionProvider } from "next-auth/react";
+import "react-phone-input-2/lib/style.css";
+import Script from "next/script";
+import { ModalsProvider } from "@mantine/modals";
 
 const client = new QueryClient();
 
@@ -66,26 +69,28 @@ export default function App(props: AppProps) {
                 withCSSVariables
               >
                 <NotificationsProvider>
-                  <Header />
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      variants={{
-                        exit: {
-                          filter: "blur(8px)",
-                        },
-                        enter: {
-                          filter: "blur(0px)",
-                        },
-                      }}
-                      animate="enter"
-                      initial="initial"
-                      // animate="animate"
-                      exit="exit"
-                      key={props.router.pathname}
-                    >
-                      <Component {...pageProps} key={props.router.asPath} />
-                    </motion.div>
-                  </AnimatePresence>
+                  <ModalsProvider>
+                    <Header />
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        variants={{
+                          exit: {
+                            filter: "blur(8px)",
+                          },
+                          enter: {
+                            filter: "blur(0px)",
+                          },
+                        }}
+                        animate="enter"
+                        initial="initial"
+                        // animate="animate"
+                        exit="exit"
+                        key={props.router.pathname}
+                      >
+                        <Component {...pageProps} key={props.router.asPath} />
+                      </motion.div>
+                    </AnimatePresence>
+                  </ModalsProvider>
                 </NotificationsProvider>
                 <ReactQueryDevtools />
               </MantineProvider>
@@ -93,6 +98,10 @@ export default function App(props: AppProps) {
           </UserProvider>
         </SessionProvider>
       </QueryClientProvider>
+      <Script
+        src={"https://checkout.razorpay.com/v1/checkout.js"}
+        strategy="lazyOnload"
+      />
     </>
   );
 }
