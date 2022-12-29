@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { assetURLBuilder } from "@utils/url";
 
 export default function HeaderMenu() {
-  const { avatarUrl, username, userType } = useUser();
+  const { avatarUrl, username, userType, profileCompleted } = useUser();
   const dispatch = useSetUser();
   const { push } = useRouter();
   return (
@@ -48,6 +48,14 @@ export default function HeaderMenu() {
                 </Menu.Item>
               ) : null}
             </>
+          )}
+          {profileCompleted ? null : (
+            <Menu.Item
+              color="yellow"
+              onClick={() => push(`/settings?tab=complete-profile`)}
+            >
+              Complete Profile
+            </Menu.Item>
           )}
           <Menu.Divider />
           <Menu.Label>Danger</Menu.Label>
