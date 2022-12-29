@@ -16,3 +16,14 @@ export async function uploadFiles(files: File[], token: string) {
     }
   );
 }
+
+export async function uploadFile(file: File, token: string) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  return await axios.post<{ path: string }>(URLBuilder("/upload"), formData, {
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  });
+}

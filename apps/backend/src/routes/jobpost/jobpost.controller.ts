@@ -56,6 +56,11 @@ export class JobpostController {
       ],
       take: toTake,
       skip: toTake > 10 ? toTake - 10 : 0,
+      where: {
+        author: {
+          kycCompleted: true,
+        },
+      },
     });
     if (posts.length === 10)
       return {
@@ -183,6 +188,7 @@ export class JobpostController {
             avatarUrl: true,
             name: true,
             verified: true,
+            profileCompleted: true,
           },
         },
         budget: true,

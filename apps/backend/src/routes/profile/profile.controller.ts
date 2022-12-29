@@ -7,6 +7,7 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
+import { Client, Freelancer } from 'db';
 import { DecodedJWT, Token } from 'src/decorators/token/token.decorator';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { VerificationService } from 'src/services/verification/verification.service';
@@ -37,6 +38,7 @@ export class ProfileController {
           name: true,
           avatarUrl: true,
           username: true,
+          profileCompleted: true,
         },
       });
     } else {
@@ -49,6 +51,7 @@ export class ProfileController {
           name: true,
           avatarUrl: true,
           username: true,
+          profileCompleted: true,
         },
       });
     }
@@ -195,6 +198,135 @@ export class ProfileController {
     }
     return {
       updated: true,
+    };
+  }
+  @Get(':username/completed')
+  async checkIfProfileIsCompleted(@Token({ serialize: true }) { id }) {
+    const { userFound: isValidFreelancer } = await this.verify.verifySeller(id);
+    const { userFound: isValidClient } = await this.verify.verifyBuyer(id);
+    if (!isValidFreelancer && !isValidClient) {
+      throw new HttpException('Unauthorized', 401);
+    }
+    let profile: Partial<Freelancer | Client>;
+    if (isValidFreelancer) {
+      profile = await this.prisma.freelancer.findFirst({
+        where: {
+          id,
+        },
+        select: {
+          id: true,
+          name: true,
+          avatarUrl: true,
+          username: true,
+          profileCompleted: true,
+        },
+      });
+    } else {
+      profile = await this.prisma.client.findFirst({
+        where: {
+          id,
+        },
+        select: {
+          id: true,
+          name: true,
+          avatarUrl: true,
+          username: true,
+          profileCompleted: true,
+        },
+      });
+    }
+    if (profile.profileCompleted) {
+      return {
+        completed: true,
+      };
+    } else {
+      return {
+        completed: false,
+      };
+    }
+  }
+  @Post('complete')
+  async completeProfile(
+    @Token({ serialize: true }) { id },
+    @Body()
+    body: {
+      urls: string[];
+      mobileNumber: string;
+    },
+  ) {
+    if (!body.urls || !body.urls.length)
+      throw new HttpException(
+        'Please enter urls of uploaded documents.',
+        HttpStatus.BAD_REQUEST,
+      );
+    if (!body.mobileNumber)
+      throw new HttpException(
+        'Please enter your mobile number.',
+        HttpStatus.BAD_REQUEST,
+      );
+    const { userFound: isValidFreelancer } = await this.verify.verifySeller(id);
+    const { userFound: isValidClient } = await this.verify.verifyBuyer(id);
+    if (!isValidFreelancer && !isValidClient) {
+      throw new HttpException('Unauthorized', 401);
+    }
+    let profile: Partial<Freelancer | Client>;
+    if (isValidFreelancer) {
+      profile = await this.prisma.freelancer.findFirst({
+        where: {
+          id,
+        },
+        select: {
+          id: true,
+          name: true,
+          avatarUrl: true,
+          username: true,
+          profileCompleted: true,
+        },
+      });
+    } else {
+      profile = await this.prisma.client.findFirst({
+        where: {
+          id,
+        },
+        select: {
+          id: true,
+          name: true,
+          avatarUrl: true,
+          username: true,
+          profileCompleted: true,
+        },
+      });
+    }
+    if (profile.profileCompleted)
+      throw new HttpException(
+        'Your profile is already completed. You can use all services of our platform.',
+        HttpStatus.CONFLICT,
+      );
+    if (isValidClient) {
+      await this.prisma.client.update({
+        where: {
+          id: profile.id,
+        },
+        data: {
+          kycDocuments: body.urls,
+          phoneNumber: body.mobileNumber,
+          profileCompleted: true,
+        },
+      });
+    } else {
+      await this.prisma.freelancer.update({
+        where: {
+          id: profile.id,
+        },
+        data: {
+          kycDocuments: body.urls,
+          phoneNumber: body.mobileNumber,
+          profileCompleted: true,
+        },
+      });
+    }
+    return {
+      success: true,
     };
   }
 }

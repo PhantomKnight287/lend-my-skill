@@ -15,6 +15,7 @@ const MetaTags: FC<MetaTagsProps> = ({ description, title, ogImage }) => {
         <title>{title}</title>
         <meta name="title" content={title} />
         <meta name="description" content={description} />
+        <link rel="icon" href="/brand/icon-transparent.png" />
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />

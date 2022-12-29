@@ -18,7 +18,7 @@ const SellerRegisterSchema = z
       .atLeastOne('lowercase')
       .atLeastOne('special')
       .atLeastOne('uppercase')
-      .min(8),
+      .min(8, { message: 'Password must be at least 8 characters long' }),
     username: z
       .string({
         required_error: 'Username is required',
@@ -30,7 +30,7 @@ const SellerRegisterSchema = z
         required_error: 'Confirm Password is required',
         invalid_type_error: 'Confirm Password must be a string',
       })
-      .min(8),
+      .min(8, { message: 'Password must be at least 8 characters long' }),
     name: z.string({
       required_error: 'Name is required',
       invalid_type_error: 'Name must be a string',
@@ -67,7 +67,7 @@ const SellerLoginSchema = z.object({
       required_error: 'Password is required',
       invalid_type_error: 'Password must be a string',
     })
-    .min(8),
+    .min(8, { message: 'Password must be at least 8 characters long' }),
 });
 
 export class SellerLoginDto extends createZodDto(SellerLoginSchema) {}

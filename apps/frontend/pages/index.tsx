@@ -1,12 +1,43 @@
-import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "@next/font/google";
-import styles from "../styles/Home.module.css";
+import { Footer } from "@components/footer";
+import { Hero } from "@components/hero";
+import { MetaTags } from "@components/meta";
 import useHydrateUserContext from "@hooks/hydrate/user";
+import useIssueNewAuthToken from "@hooks/jwt";
+import type { NextPage } from "next";
 
-const inter = Inter({ subsets: ["latin"] });
+const Home: NextPage = () => {
+  const data = useHydrateUserContext();
+  useIssueNewAuthToken({
+    successAction: data,
+    method: "replace",
+    redirect: false,
+    to: "/dashboard",
+  });
+  return (
+    <div>
+      <MetaTags
+        description="An Open Source Freelance Platform For Everyone."
+        title="Lend My Skill"
+      />
+      <Hero />
 
-export default function Home() {
-  useHydrateUserContext();
-  return <></>;
-}
+      <Footer
+        links={[
+          {
+            label: "Terms and Conditions",
+            link: "/terms",
+          },
+          {
+            label: "Privacy Policy",
+            link: "/privacy",
+          },
+          {
+            label: "Contact Us",
+            link: "mailto:gurpal@lendmyskill.com?subject=Contact Us&body=Hi, ",
+          },
+        ]}
+      />
+    </div>
+  );
+};
+export default Home;

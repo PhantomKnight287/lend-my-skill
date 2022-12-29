@@ -89,6 +89,7 @@ export default function Register() {
           message: "Successfully Registered",
           color: "green",
         });
+        replace("/dashboard");
       })
       .catch((err) => {
         const error = err?.response?.data?.errors?.[0].message;
@@ -101,10 +102,11 @@ export default function Register() {
   }
 
   useEffect(() => {
-    if (isReady && id) {
-      replace("/");
+    if (!isReady) {
+      return;
     }
-  }, [isReady, id]);
+    if (id) replace("/dashboard");
+  }, [isReady]);
 
   if (!userType)
     return (
@@ -132,45 +134,47 @@ export default function Register() {
         </Text>
 
         <Paper radius="md" p="xl" withBorder>
-          <Group position="center">
-            <Paper
-              radius={"md"}
-              withBorder
-              p="xl"
-              className={clsx(
-                "hover:border-[1px] cursor-pointer text-lg hover:border-pink-400",
-                {
-                  [outfit.className]: true,
-                  "text-white": colorScheme === "dark",
-                  "border-[1px] border-pink-400": checked === "client",
-                }
-              )}
-              onClick={() => {
-                setChecked("client");
-              }}
-            >
-              <img src="/icons/customer-50.png" alt="client" />I am a Client, I
-              want to hire a freelancer
-            </Paper>
-            <Paper
-              radius={"md"}
-              withBorder
-              p="xl"
-              className={clsx(
-                "hover:border-[1px] cursor-pointer text-lg hover:border-pink-400",
-                {
-                  [outfit.className]: true,
-                  "text-white": colorScheme === "dark",
-                  "border-[1px] border-pink-400": checked === "freelancer",
-                }
-              )}
-              onClick={() => {
-                setChecked("freelancer");
-              }}
-            >
-              <img src="/icons/freelancer-50.png" alt="freelancer" />I am a
-              Freelancer, I want to work for clients
-            </Paper>
+          <Group position="center" className="flex flex-col gap-4 flex-wrap">
+            <div className="flex flex-row gap-4 items-center justify-center flex-wrap">
+              <Paper
+                radius={"md"}
+                withBorder
+                p="xl"
+                className={clsx(
+                  "hover:border-[1px] cursor-pointer text-lg hover:border-pink-400",
+                  {
+                    [outfit.className]: true,
+                    "text-white": colorScheme === "dark",
+                    "border-[1px] border-pink-400": checked === "client",
+                  }
+                )}
+                onClick={() => {
+                  setChecked("client");
+                }}
+              >
+                <img src="/icons/customer-50.png" alt="client" />I am a Client,
+                I want to hire a freelancer
+              </Paper>
+              <Paper
+                radius={"md"}
+                withBorder
+                p="xl"
+                className={clsx(
+                  "hover:border-[1px] cursor-pointer text-lg hover:border-pink-400",
+                  {
+                    [outfit.className]: true,
+                    "text-white": colorScheme === "dark",
+                    "border-[1px] border-pink-400": checked === "freelancer",
+                  }
+                )}
+                onClick={() => {
+                  setChecked("freelancer");
+                }}
+              >
+                <img src="/icons/freelancer-50.png" alt="freelancer" />I am a
+                Freelancer, I want to work for clients
+              </Paper>
+            </div>
             <Button
               variant="filled"
               className={clsx("bg-pink-400 hover:bg-pink-500")}

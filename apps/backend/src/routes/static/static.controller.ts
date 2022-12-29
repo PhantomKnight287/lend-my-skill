@@ -42,4 +42,18 @@ export class StaticController {
     });
     return categories;
   }
+  @Get('gigs')
+  async generateGigs() {
+    const gigs = await this.prisma.gig.findMany({
+      select: {
+        freelancer: {
+          select: {
+            username: true,
+          },
+        },
+        slug: true,
+      },
+    });
+    return gigs;
+  }
 }

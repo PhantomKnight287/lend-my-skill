@@ -11,6 +11,7 @@ interface UserContextType {
     username: string;
     avatarUrl?: string;
     userType?: "client" | "freelancer";
+    profileCompleted?: boolean;
   };
   setUser: (action: {
     type: keyof typeof UserActionType;
@@ -46,7 +47,8 @@ export const UserProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
     id: "",
     name: "",
     username: "",
-    userType: "seller",
+    userType: "client",
+    profileCompleted: false,
   });
   return (
     <UserContext.Provider value={{ user, setUser }}>

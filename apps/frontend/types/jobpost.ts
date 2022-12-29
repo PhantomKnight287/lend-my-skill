@@ -18,6 +18,7 @@ export interface Author {
   avatarUrl: string;
   name: string;
   verified: boolean;
+  profileCompleted: boolean;
 }
 
 export interface Category {
@@ -42,4 +43,24 @@ export interface Post {
 
 export interface Category {
   name: string;
+}
+
+export interface Posts {
+  posts: {
+    id: string;
+    createdAt: Date;
+    author: {
+      id: string;
+      name: string;
+      username: string;
+      country: string;
+      avatarUrl: string;
+    };
+    description: string;
+    budget: number;
+    title: string;
+    tags: string[];
+    slug: string;
+  }[];
+  next?: number;
 }

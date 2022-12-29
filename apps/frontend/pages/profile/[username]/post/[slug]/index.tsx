@@ -3,6 +3,7 @@ import Quotations from "@components/jobpost/quotations";
 import { MetaTags } from "@components/meta";
 import { outfit } from "@fonts";
 import useHydrateUserContext from "@hooks/hydrate/user";
+import { useUser } from "@hooks/user";
 import {
   Avatar,
   Badge,
@@ -31,6 +32,7 @@ const Slug: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
 ) => {
   useHydrateUserContext();
   const { query } = useRouter();
+  const { username } = useUser();
   return (
     <Container
       className={clsx("", {
@@ -45,6 +47,23 @@ const Slug: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
       />
       <div className="flex flex-col items-center justify-center">
         <h1 className="text-4xl font-bold">{props.title}</h1>
+        {props.budget ? (
+          <Tooltip label={`The Budget of this Job Post is $ ${props.budget}`}>
+            <Badge variant="light" className="mt-2">
+              {" "}
+              $ {props.budget}
+            </Badge>
+          </Tooltip>
+        ) : null}
+        {props.author.profileCompleted ? null : (
+          <div className="mt-2">
+            <span className="text-red-500">
+              {username === props.author.username
+                ? "Please complete your profile for this post to appear in search results.(only you can see this)"
+                : null}
+            </span>
+          </div>
+        )}
         {props.claimed ? (
           <div className="mt-2">
             <Tooltip label={`This Post is claimed by ${props.claimedBy.name}`}>
