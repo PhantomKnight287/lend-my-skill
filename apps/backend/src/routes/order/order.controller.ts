@@ -1,14 +1,26 @@
-import { Body, Controller, HttpException, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { Token } from 'src/decorators/token/token.decorator';
 import { razorpay } from 'src/modules/razorpay';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { CreateOrderDto } from 'src/validators/order.validator';
 import axios from 'axios';
 import { URLSearchParams } from 'url';
+import { DiscountCode } from 'db';
+import { VerificationService } from 'src/services/verification/verification.service';
 
 @Controller('order')
 export class OrderController {
-  constructor(protected prisma: PrismaService) {}
+  constructor(
+    protected prisma: PrismaService,
+    protected verification: VerificationService,
+  ) {}
   @Post('create')
   async createOrder(
     @Body() body: CreateOrderDto,
@@ -53,22 +65,26 @@ export class OrderController {
     if (!packageSelected) {
       throw new HttpException('Package not found', 404);
     }
-    const code = await this.prisma.discountCode.findFirst({
-      where: {
-        code: {
-          equals: discountCode,
-          mode: 'insensitive',
+    let code: DiscountCode = undefined;
+    if (discountCode) {
+      code = await this.prisma.discountCode.findFirst({
+        where: {
+          code: discountCode,
         },
-      },
-    });
-    if (!code) throw new HttpException('Invalid Coupon Code.', 404);
+      });
+    }
+    if (!code && body.discountCode)
+      throw new HttpException('Invalid Coupon Code.', 404);
 
-    if (code.expiryDate < new Date()) {
+    if (code && code.expiryDate < new Date()) {
       throw new HttpException('Coupon code expired.', 400);
     }
     let discount = 0;
     let discountPercentage = 0;
+    let discounted = false;
     if (code) {
+      console.log(code);
+      console.log('Code found');
       const order = await this.prisma.order.findFirst({
         where: {
           AND: [
@@ -99,8 +115,10 @@ export class OrderController {
           );
         }
         discount = code.discountAmount;
+        discounted = true;
       } else if (code.type === 'PERCENTAGE') {
         discountPercentage = code.discountPercentage;
+        discounted = true;
       }
     }
 
@@ -130,44 +148,6 @@ export class OrderController {
     }
     const { result } = amount.data;
 
-    // const order = await this.prisma.order.create({
-    //   data: {
-    //     deliveryDays: packageSelected.deliveryDays,
-    //     price: packageSelected.price,
-    //     client: {
-    //       connect: {
-    //         id: buyer.id,
-    //       },
-    //     },
-    //     freelancer: {
-    //       connect: {
-    //         id: seller.id,
-    //       },
-    //     },
-    //     gig: {
-    //       connect: {
-    //         id: packageSelected.gig.id,
-    //       },
-    //     },
-    //     deadline: new Date(
-    //       new Date().getTime() +
-    //         packageSelected.deliveryDays * 24 * 60 * 60 * 1000,
-    //     ),
-    //     package: {
-    //       connect: {
-    //         id: packageSelected.id,
-    //       },
-    //     },
-    //   },
-    //   select: {
-    //     id: true,
-    //   },
-    // });
-    // return order;
-    console.table({
-      amount: Number(result) * 100,
-      currency: 'INR',
-    });
     const data = await razorpay
       .createOrder({
         amount: Math.round(Number(Number(result).toFixed(3)) * 100),
@@ -177,6 +157,7 @@ export class OrderController {
           buyerId: buyer.id,
           packageId: packageSelected.id,
           gigId: packageSelected.gig.id,
+          discountCode: code?.code,
         },
         partialPayment: false,
       })
@@ -189,8 +170,80 @@ export class OrderController {
     }
     return {
       id: data.id,
-      amount: amountToPay.toString(),
-      discounted: Boolean(discountPercentage || discount),
+      amount: Math.round(Number(Number(result).toFixed(3)) * 100),
+      discounted: discounted,
     };
+  }
+  @Get('list')
+  async listOrders(@Token({ serialize: true }) { id }) {
+    const { userFound: isValidClient } = await this.verification.verifyBuyer(
+      id,
+    );
+    const { userFound: isValidFreelancer } =
+      await this.verification.verifySeller(id);
+    if (!isValidClient && !isValidFreelancer) {
+      throw new HttpException(
+        'No account found with associated token',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const orders = await this.prisma.order.findMany({
+      where: {
+        OR: [
+          {
+            freelancer: {
+              id,
+            },
+          },
+          {
+            client: {
+              id,
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+        package: {
+          select: {
+            id: true,
+            price: true,
+            description: true,
+            name: true,
+          },
+        },
+        DiscountCode: {
+          select: {
+            code: true,
+            type: true,
+            discountAmount: true,
+            discountPercentage: true,
+          },
+        },
+        freelancer: {
+          select: {
+            username: true,
+            id: true,
+            name: true,
+            verified: true,
+            avatarUrl: true,
+          },
+        },
+        client: {
+          select: {
+            username: true,
+            id: true,
+            name: true,
+            verified: true,
+            avatarUrl: true,
+          },
+        },
+        deadline: true,
+        price: true,
+        createdAt: true,
+        status:true,
+      },
+    });
+    return orders
   }
 }
