@@ -17,11 +17,16 @@
     "@mantine/dropzone": "^5.9.5",
     "@mantine/form": "^5.9.5",
     "@mantine/hooks": "^5.9.5",
+    "@mantine/modals": "^5.9.5",
     "@mantine/next": "^5.9.5",
     "@mantine/notifications": "^5.9.5",
     "@mantine/nprogress": "^5.9.5",
     "@mantine/tiptap": "^5.9.5",
+    "@mantine/utils": "^5.9.5",
+    "@mdx-js/loader": "^2.2.1",
+    "@mdx-js/react": "^2.2.1",
     "@next/font": "13.0.7",
+    "@next/mdx": "^13.1.1",
     "@tabler/icons": "^1.117.0",
     "@tanstack/react-query": "^4.20.4",
     "@tanstack/react-query-devtools": "^4.20.4",
@@ -52,12 +57,18 @@
     "prosemirror-schema-list": "^1.2.2",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
+    "react-phone-input-2": "^2.15.1",
+    "react-phone-number-input": "^3.2.13",
+    "react-spring": "^9.6.1",
+    "sanitize-html": "^2.8.1",
     "typescript": "4.9.4"
   },
   "devDependencies": {
+    "@types/sanitize-html": "^2.8.0",
     "autoprefixer": "^10.4.13",
     "cypress": "^12.2.0",
     "postcss": "^8.4.20",
+    "sass": "^1.57.1",
     "tailwindcss": "^3.2.4"
   }
 }
