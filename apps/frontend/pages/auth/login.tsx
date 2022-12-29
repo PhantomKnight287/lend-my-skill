@@ -78,7 +78,7 @@ export default function Login() {
         createCookie("token", d.tokens.auth, 1);
         createCookie("refreshToken", d.tokens.refresh, 7);
         showNotification({
-          message: "Successfully Registered",
+          message: `Welcome back @${upperFirst(d.user.username)}`,
           color: "green",
         });
         replace((query.to as string) || "/dashboard");
