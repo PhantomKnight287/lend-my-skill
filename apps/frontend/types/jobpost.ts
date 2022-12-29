@@ -55,6 +55,7 @@ export interface Posts {
       username: string;
       country: string;
       avatarUrl: string;
+      verified?: boolean;
     };
     description: string;
     budget: number;

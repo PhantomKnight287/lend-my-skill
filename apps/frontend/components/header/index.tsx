@@ -32,6 +32,7 @@ import {
 } from "@tabler/icons";
 import clsx from "clsx";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import HeaderMenu from "./menu";
 
 const useStyles = createStyles((theme) => ({
@@ -142,6 +143,7 @@ export function Header() {
   const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
   const { classes, theme } = useStyles();
   const { username } = useUser();
+  const { asPath } = useRouter();
 
   const links = mockdata.map((item) => (
     <UnstyledButton className={classes.subLink} key={item.title}>
@@ -169,10 +171,37 @@ export function Header() {
             <Avatar size={50} src={"/brand/icon-transparent.png"} />
           </Link>
 
+          <Group style={{ height: "100%" }} className={classes.hiddenMobile}>
+            <Link href="/search?type=gigs">
+              <Button
+                variant="default"
+                className={clsx("", {
+                  [outfit.className]: true,
+                })}
+              >
+                Hire a Talent
+              </Button>
+            </Link>
+            <Link href="/search?type=jobposts">
+              <Button
+                variant="default"
+                className={clsx("", {
+                  [outfit.className]: true,
+                })}
+              >
+                Find a Job
+              </Button>
+            </Link>
+          </Group>
           <Group className={classes.hiddenMobile}>
             {!username ? (
               <>
-                <Link href="/auth/login">
+                <Link
+                  href={{
+                    pathname: "/auth/login",
+                    query: { to: asPath },
+                  }}
+                >
                   <Button
                     variant="default"
                     data-testingid="header__login_button"
@@ -183,7 +212,12 @@ export function Header() {
                     Log in
                   </Button>
                 </Link>
-                <Link href="/auth/register">
+                <Link
+                  href={{
+                    pathname: "/auth/register",
+                    query: { to: asPath },
+                  }}
+                >
                   <Button
                     variant="outline"
                     className={clsx("", {
@@ -199,6 +233,7 @@ export function Header() {
               <HeaderMenu />
             )}
           </Group>
+
           {!username ? (
             <Burger
               opened={drawerOpened}
@@ -238,12 +273,22 @@ export function Header() {
           />
 
           <Group position="center" grow pb="xl" px="md">
-            <Link href="/auth/login">
+            <Link
+              href={{
+                pathname: "/auth/login",
+                query: { to: asPath },
+              }}
+            >
               <Button fullWidth variant="default">
                 Log in
               </Button>
             </Link>
-            <Link href="/auth/register">
+            <Link
+              href={{
+                pathname: "/auth/register",
+                query: { to: asPath },
+              }}
+            >
               <Button fullWidth variant="default">
                 Register
               </Button>

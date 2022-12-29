@@ -45,7 +45,7 @@ export function PostCard({
         <Image
           src={resolveImageUrl ? assetURLBuilder(image) : image}
           height={160}
-          alt="Norway"
+          alt="Banner Image"
         />
       </Card.Section>
 
@@ -64,7 +64,7 @@ export function PostCard({
       />
 
       <Link
-        href={`/profile/${author.username}/${type}/${slug}`}
+        href={`/profile/${author?.username}/${type}/${slug}`}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -72,7 +72,7 @@ export function PostCard({
           fullWidth
           mt="md"
           radius="md"
-          className={clsx("", {
+          className={clsx("transition-all duration-[110ms] hover:scale-105", {
             [outfit.className]: true,
             "bg-gray-900 hover:bg-black": colorScheme === "light",
             "bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] text-white":

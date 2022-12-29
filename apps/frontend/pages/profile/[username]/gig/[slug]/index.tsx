@@ -26,16 +26,21 @@ import {
   NextPage,
 } from "next";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Gig } from "~/types/gig";
-import { Carousel, Embla } from "@mantine/carousel";
+import { Carousel } from "@mantine/carousel";
 import useHydrateUserContext from "@hooks/hydrate/user";
 import { MetaTags } from "@components/meta";
-import { IconArrowLeft, IconArrowRight, IconCheck, IconX } from "@tabler/icons";
+import { IconCheck, IconX } from "@tabler/icons";
 import { sanitize } from "@components/tabs/profile/gigs";
 import { upperFirst } from "@mantine/hooks";
-import { openConfirmModal, openContextModal, openModal } from "@mantine/modals";
+import { openModal,closeAllModals } from "@mantine/modals";
 import { useForm } from "@mantine/form";
+import axios from "axios";
+import { readCookie } from "@helpers/cookie";
+import { useRouter } from "next/router";
+import { showNotification } from "@mantine/notifications";
+import { Razorpay } from "@module/razorpay";
 
 const Gig: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   props
@@ -48,9 +53,9 @@ const Gig: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   const { username } = useUser();
   useHydrateUserContext();
   const { colorScheme } = useMantineColorScheme();
-  const [couponCodeAvailable,
-    setCouponCodeAvailable
-  ] = useState<Boolean | undefined>(undefined)
+
+  const { push, asPath } = useRouter();
+  const ref = useRef<HTMLInputElement>(null);
   return (
     <Container
       className={clsx("mb-10", {
@@ -94,7 +99,22 @@ const Gig: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
           radius="xl"
         />
         <div className="flex flex-col ml-2">
-          <h2 className="text-base font-semibold">{props.freelancer.name}</h2>
+          <h2 className="text-base font-semibold">
+            {props.freelancer.name}
+            {props.freelancer.verified ? (
+              <Tooltip label="Verified Freelancer" withArrow>
+                <Badge
+                  color="green"
+                  variant="light"
+                  className="rounded-full ml-2"
+                >
+                  <div className="flex flex-row flex-nowrap items-center justify-center">
+                    <IconCheck color="green" size={15} />
+                  </div>
+                </Badge>
+              </Tooltip>
+            ) : null}
+          </h2>
           <Text
             color={"dimmed"}
             className={clsx({
@@ -109,19 +129,6 @@ const Gig: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
             >
               @{props.freelancer.username}
             </a>
-            {props.freelancer.verified ? (
-              <Tooltip label="Verified User">
-                <Chip
-                  color="green"
-                  variant="filled"
-                  radius="xl"
-                  size="sm"
-                  className="ml-2"
-                >
-                  Verified
-                </Chip>
-              </Tooltip>
-            ) : null}
           </Text>
         </div>
         <div className="flex flex-col items-center justify-center w-full">
@@ -268,9 +275,12 @@ const Gig: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                           <Text>
                             You will be charged ${p.price} for this package.
                           </Text>
-                          {
-                            couponCodeAvailable === undefined ? <div className="flex flex-col gap-2 mt-2">
-                              {/* <Button variant="default" color="black" fullWidth onClick={() => {
+                          <div className="flex flex-col gap-2 mt-2">
+                            <Button
+                              variant="default"
+                              color="black"
+                              fullWidth
+                              onClick={() => {
                                 openModal({
                                   title: "Enter Coupon Code",
                                   children: (
@@ -279,12 +289,127 @@ const Gig: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                                         [outfit.className]: true,
                                       })}
                                     >
-                                      <form onSubmit={formState.onSubmit(console.log)}>
+                                      <form
+                                        onSubmit={formState.onSubmit((d) => {
+                                          if (!username)
+                                            return push({
+                                              pathname: "/auth/login",
+                                              query: {
+                                                to: asPath,
+                                              },
+                                            });
+                                          axios
+                                            .post<{
+                                              id: string;
+                                              amount: string;
+                                              discounted: boolean;
+                                            }>(
+                                              URLBuilder("/order/create"),
+                                              {
+                                                packageId: p.id,
+                                                sellerUsername:
+                                                  props.freelancer.username,
+                                                discountCode:
+                                                  ref.current?.value,
+                                              },
+                                              {
+                                                headers: {
+                                                  authorization: `Bearer ${readCookie(
+                                                    "token"
+                                                  )}`,
+                                                },
+                                              }
+                                            )
+                                            .then((d) => d.data)
+                                            .then(
+                                              ({ amount, discounted, id }) => {
+                                                if (discounted)
+                                                  openModal({
+                                                    title:
+                                                      "Coupon Code Applied",
+                                                    children: (
+                                                      <div
+                                                        className={clsx("", {
+                                                          [outfit.className]:
+                                                            true,
+                                                        })}
+                                                      >
+                                                        <Text>
+                                                          Coupon code applied
+                                                          successfully.
+                                                        </Text>
+                                                        <Text>
+                                                          You will be charged
+                                                          &#x20B9;
+                                                          {Number(amount) /
+                                                            100}{" "}
+                                                          for this package.
+                                                        </Text>
+                                                        <Button
+                                                          variant="default"
+                                                          fullWidth
+                                                          className=" text-white bg-green-500 hover:bg-green-600"
+                                                          onClick={() => {
+                                                            if (!username)
+                                                              return push({
+                                                                pathname:
+                                                                  "/auth/login",
+                                                                query: {
+                                                                  to: asPath,
+                                                                },
+                                                              });
+                                                              const razorpay = new
+                                                              Razorpay({
+                                                                amount,
+                                                                currency: "INR",
+                                                                key: process.env
+                                                                  .NEXT_PUBLIC_RAZORPAY_KEY!,
+                                                                name: "Lend My Skill",
+                                                                order_id: id,
+                                                                handler(){
+                                                                  showNotification({
+                                                                    message:"Payment Successful",
+                                                                    color:"green"
+                                                                  })
+                                                                  closeAllModals()
+                                                                }
+                                                              })
+                                                              razorpay.on("payment.failed",(res:{
+                                                                error:any
+                                                              })=>{
+                                                                showNotification({
+                                                                  message:res?.error?.description || "Something went wrong",
+                                                                  color:"red"
+                                                                })
+                                                              })
+                                                              razorpay.open()
+                                                          }}
+                                                        >
+                                                          Proceed to Payment
+                                                        </Button>
+                                                      </div>
+                                                    ),
+                                                    centered: true,
+                                                  });
+                                              }
+                                            )
+                                            .catch((err) => {
+                                              showNotification({
+                                                message:
+                                                  err?.response?.data
+                                                    ?.message ||
+                                                  "Something went wrong",
+                                                color: "red",
+                                              });
+                                            });
+                                        })}
+                                      >
                                         <div className="flex flex-col gap-2 mt-2">
                                           <TextInput
                                             label="Discount Code"
                                             placeholder="Enter Discount Code"
-                                            {...formState.getInputProps("discountCode")}
+                                            ref={ref}
+                                            required
                                           />
                                           <Button
                                             variant="default"
@@ -309,51 +434,155 @@ const Gig: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                                     </div>
                                   ),
                                   centered: true,
-                                })
-                              }}>
-                                I have a coupon code
-                              </Button> */}
-                              <Button
-                                variant="default"
-                                fullWidth
-                                className="bg-green-500 hover:bg-green-600"
-                                onClick={()=>{
-                                  
-                                }}
-                              >
-
-                                Proceed to Payment
-                              </Button>
-                            </div> : couponCodeAvailable === true ? <div className="flex flex-col gap-2 mt-2">
-                              <form onSubmit={formState.onSubmit(console.log)}>
-                                <div className="flex flex-col gap-2 mt-2">
-                                  <TextInput
-                                    label="Discount Code"
-                                    placeholder="Enter Discount Code"
-                                    {...formState.getInputProps("discountCode")}
-                                  />
-                                  <Button
-                                    variant="default"
-                                    color="black"
-                                    fullWidth
-                                    type="submit"
-                                    className={clsx(
-                                      "rounded-md text-white transition-all duration-[110ms] hover:scale-105",
-                                      {
-                                        [outfit.className]: true,
-                                        "bg-gray-900 hover:bg-black ":
-                                          colorScheme === "light",
-                                        "bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] ":
-                                          colorScheme === "dark",
-                                      }
-                                    )}
-                                  >
-                                    Apply
-                                  </Button>
-                                </div>
-                              </form>
-                            </div>
-                              : null}
+                                });
+                              }}
+                            >
+                              I have a coupon code
+                            </Button>
+                            <Button
+                              variant="default"
+                              fullWidth
+                              className=" text-white bg-green-500 hover:bg-green-600"
+                              onClick={() => {
+                                if (!username)
+                                  return push({
+                                    pathname: "/auth/login",
+                                    query: {
+                                      to: asPath,
+                                    },
+                                  });
+                                axios
+                                  .post<{
+                                    id: string;
+                                    amount: string;
+                                    discounted: boolean;
+                                  }>(
+                                    URLBuilder("/order/create"),
+                                    {
+                                      packageId: p.id,
+                                      sellerUsername: props.freelancer.username,
+                                    },
+                                    {
+                                      headers: {
+                                        authorization: `Bearer ${readCookie(
+                                          "token"
+                                        )}`,
+                                      },
+                                    }
+                                  )
+                                  .then((d) => d.data)
+                                  .then(({ amount, discounted, id }) => {
+                                    if (discounted) {
+                                      openModal({
+                                        title: "Coupon Code Applied",
+                                        children: (
+                                          <div
+                                            className={clsx("", {
+                                              [outfit.className]: true,
+                                            })}
+                                          >
+                                            <Text>
+                                              Coupon code applied successfully.
+                                            </Text>
+                                            <Text>
+                                              You will be charged &#x20B9;
+                                              {Number(amount) / 100} for this
+                                              package.
+                                            </Text>
+                                            <Button
+                                              variant="default"
+                                              fullWidth
+                                              className=" text-white bg-green-500 hover:bg-green-600"
+                                              onClick={() => {
+                                                if (!username)
+                                                  return push({
+                                                    pathname: "/auth/login",
+                                                    query: {
+                                                      to: asPath,
+                                                    },
+                                                  });
+                                              }}
+                                            >
+                                              Proceed to Payment
+                                            </Button>
+                                          </div>
+                                        ),
+                                        centered: true,
+                                      });
+                                    } else {
+                                      openModal({
+                                        title: "Proceed to Payment",
+                                        children: (
+                                          <div
+                                            className={clsx("", {
+                                              [outfit.className]: true,
+                                            })}
+                                          >
+                                            <Text>
+                                              You will be charged &#x20B9;
+                                              {Number(amount) / 100} for this
+                                              package.
+                                            </Text>
+                                            <Button
+                                              variant="default"
+                                              fullWidth
+                                              className=" text-white bg-green-500 hover:bg-green-600"
+                                              onClick={() => {
+                                                if (!username)
+                                                  return push({
+                                                    pathname: "/auth/login",
+                                                    query: {
+                                                      to: asPath,
+                                                    },
+                                                  });
+                                                const razorpay = new
+                                                  Razorpay({
+                                                    amount,
+                                                    currency: "INR",
+                                                    key: process.env
+                                                      .NEXT_PUBLIC_RAZORPAY_KEY!,
+                                                    name: "Lend My Skill",
+                                                    order_id: id,
+                                                    handler(){
+                                                      showNotification({
+                                                        message:"Payment Successful",
+                                                        color:"green"
+                                                      })
+                                                      closeAllModals()
+                                                    }
+                                                  })
+                                                  razorpay.on("payment.failed",(res:{
+                                                    error:any
+                                                  })=>{
+                                                    showNotification({
+                                                      message:res?.error?.description || "Something went wrong",
+                                                      color:"red"
+                                                    })
+                                                  })
+                                                  razorpay.open()
+                                              }}
+                                            >
+                                              Initiate Payment
+                                            </Button>
+                                          </div>
+                                        ),
+                                        centered: true,
+                                      });
+                                    }
+                                  })
+                                  .catch((err) => {
+                                    showNotification({
+                                      message:
+                                        err?.response?.data?.message ||
+                                        "Something went wrong",
+                                      color: "red",
+                                    });
+                                  });
+                              }}
+                            >
+                              Proceed to Payment
+                            </Button>
+                          </div>
                         </div>
                       ),
                       centered: true,

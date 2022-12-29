@@ -57,6 +57,11 @@ export default function HeaderMenu() {
               Complete Profile
             </Menu.Item>
           )}
+          <Menu.Item
+            onClick={() => { push(`/profile/${username}/orders`) }}
+          >
+            Orders
+          </Menu.Item>
           <Menu.Divider />
           <Menu.Label>Danger</Menu.Label>
           <Menu.Item

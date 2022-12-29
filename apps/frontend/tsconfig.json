@@ -23,7 +23,8 @@
       "@utils/*": ["./utils/*"],
       "@helpers/*": ["./helpers/*"],
       "~/constants": ["./constants"],
-      "~/types/*": ["./types/*"]
+      "~/types/*": ["./types/*"],
+      "@module/*": ["./module/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
