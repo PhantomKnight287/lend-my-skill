@@ -142,7 +142,7 @@ export function Header() {
     useDisclosure(false);
   const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
   const { classes, theme } = useStyles();
-  const { username } = useUser();
+  const { username, userType } = useUser();
   const { asPath } = useRouter();
 
   const links = mockdata.map((item) => (
@@ -173,24 +173,28 @@ export function Header() {
 
           <Group style={{ height: "100%" }} className={classes.hiddenMobile}>
             <Link href="/search?type=gigs">
-              <Button
-                variant="default"
-                className={clsx("", {
-                  [outfit.className]: true,
-                })}
-              >
-                Hire a Talent
-              </Button>
+              {userType !== "freelancer" ? (
+                <Button
+                  variant="default"
+                  className={clsx("", {
+                    [outfit.className]: true,
+                  })}
+                >
+                  Hire a Talent
+                </Button>
+              ) : null}
             </Link>
             <Link href="/search?type=jobposts">
-              <Button
-                variant="default"
-                className={clsx("", {
-                  [outfit.className]: true,
-                })}
-              >
-                Find a Job
-              </Button>
+              {userType !== "client" ? (
+                <Button
+                  variant="default"
+                  className={clsx("", {
+                    [outfit.className]: true,
+                  })}
+                >
+                  Find a Job
+                </Button>
+              ) : null}
             </Link>
           </Group>
           <Group className={classes.hiddenMobile}>

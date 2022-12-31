@@ -91,12 +91,25 @@ const Dashboard = () => {
         description="An Open Source Freelance Platform For Everyone. "
         title="Lend My Skill"
       />
-      <div className={clsx("flex gap-3 flex-wrap", {
-        "flex-col": userType === "client",
-        "flex-col-reverse": userType === "freelancer"
-      })}>
+      <div
+        className={clsx("flex gap-3 flex-wrap w-full  ", {
+          "flex-col": userType === "client",
+          "flex-col-reverse": userType === "freelancer",
+        })}
+      >
         <div>
-          {gigs?.pages?.[0].gigs.length === 0 ? null : (
+          {gigs?.pages?.[0].gigs.length === 0 ? (
+            <>
+              <Title
+                className={clsx("", {
+                  [outfit.className]: true,
+                })}
+                align="center"
+              >
+                No Gigs Found
+              </Title>
+            </>
+          ) : (
             <Title
               className={clsx("", {
                 [outfit.className]: true,
@@ -143,7 +156,18 @@ const Dashboard = () => {
           </div>
         </div>
         <div>
-          {jobposts?.pages[0].posts.length === 0 ? null : (
+          {jobposts?.pages[0].posts.length === 0 ? (
+            <>
+              <Title
+                className={clsx("", {
+                  [outfit.className]: true,
+                })}
+                align="center"
+              >
+                No Job Posts Found
+              </Title>
+            </>
+          ) : (
             <Title
               className={clsx("", {
                 [outfit.className]: true,

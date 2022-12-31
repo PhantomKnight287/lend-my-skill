@@ -147,7 +147,7 @@ const GigsTab = ({ username }: Props) => {
       {data?.pages[0].gigs.length === 0 && (
         <div className="flex flex-col items-center justify-center w-[100%] container">
           <p>
-            <span className="font-bold">{username}</span> has not posted any job
+            <span className="font-bold">{username}</span> has not posted any gig
             <p className="opacity-0">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum,
               perspiciatis velit. Magni, error reprehenderit quidem provident

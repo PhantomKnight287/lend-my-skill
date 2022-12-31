@@ -26,7 +26,7 @@ export default function useIssueNewAuthToken(props?: RedirectProps) {
       })
       .then((d) => d.data)
       .then(({ token }) => {
-        createCookie("token", token, 1);
+        createCookie("refreshtoken", token, 1);
         if (props) {
           if (props.successAction) {
             props.successAction(token);
