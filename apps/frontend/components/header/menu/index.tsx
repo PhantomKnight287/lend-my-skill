@@ -52,7 +52,7 @@ export default function HeaderMenu() {
           {profileCompleted ? null : (
             <Menu.Item
               color="yellow"
-              onClick={() => push(`/settings?tab=complete-profile`)}
+              onClick={() => push(`/settings?activeTab=complete-profile`)}
             >
               Complete Profile
             </Menu.Item>

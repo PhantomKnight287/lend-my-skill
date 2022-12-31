@@ -12,7 +12,9 @@ const Home: NextPage = () => {
     method: "replace",
     redirect: false,
     to: "/dashboard",
+    
   });
+
   return (
     <div>
       <MetaTags

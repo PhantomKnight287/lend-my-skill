@@ -33,7 +33,7 @@ export default function App(props: AppProps) {
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
 
-  useHotkeys([["mod+J", () => toggleColorScheme()]]);
+  // useHotkeys([["mod+J", () => toggleColorScheme()]]);
 
   return (
     <>

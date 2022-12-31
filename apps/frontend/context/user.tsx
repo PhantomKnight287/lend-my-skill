@@ -47,7 +47,7 @@ export const UserProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
     id: "",
     name: "",
     username: "",
-    userType: "client",
+    userType: "",
     profileCompleted: false,
   });
   return (

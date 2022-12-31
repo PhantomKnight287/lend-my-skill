@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Post,
+  Query,
 } from '@nestjs/common';
 import { Token } from 'src/decorators/token/token.decorator';
 import { razorpay } from 'src/modules/razorpay';
@@ -175,7 +176,11 @@ export class OrderController {
     };
   }
   @Get('list')
-  async listOrders(@Token({ serialize: true }) { id }) {
+  async listOrders(
+    @Token({ serialize: true }) { id },
+    @Query('take') take: string,
+  ) {
+    const toTake = Number.isNaN(parseInt(take)) ? 10 : parseInt(take);
     const { userFound: isValidClient } = await this.verification.verifyBuyer(
       id,
     );
@@ -241,9 +246,23 @@ export class OrderController {
         deadline: true,
         price: true,
         createdAt: true,
-        status:true,
+        status: true,
       },
+      take: toTake,
+      skip: toTake > 10 ? toTake - 10 : undefined,
+      orderBy:[
+        {
+          createdAt: 'desc'
+          
+        }
+      ]
     });
-    return orders
+    if (orders.length === 10) {
+      return {
+        orders,
+        next: toTake + 10,
+      };
+    }
+    return { orders };
   }
 }
