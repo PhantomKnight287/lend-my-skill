@@ -14,6 +14,7 @@ importers:
 
   apps/backend:
     specifiers:
+      '@lend-my-skill/db': workspace:*
       '@nestjs/cli': ^9.0.0
       '@nestjs/common': ^9.0.0
       '@nestjs/core': ^9.0.0
@@ -34,7 +35,6 @@ importers:
       axios: ^1.2.1
       bcrypt: ^5.1.0
       cross-env: ^7.0.3
-      db: workspace:*
       dotenv: ^16.0.3
       eslint: ^8.0.1
       eslint-config-prettier: ^8.3.0
@@ -59,6 +59,7 @@ importers:
       tsconfig-paths: 4.1.0
       typescript: ^4.7.4
     dependencies:
+      '@lend-my-skill/db': link:../../packages/db
       '@nestjs/common': 9.2.1_mnr6j2del53muneqly5h4y27ai
       '@nestjs/core': 9.2.1_e6la6qvsclaae2becwjnmfvsuq
       '@nestjs/platform-express': 9.2.1_hjcqpoaebdr7gdo5hgc22hthbe
@@ -67,7 +68,6 @@ importers:
       '@types/multer': 1.4.7
       axios: 1.2.1
       bcrypt: 5.1.0
-      db: link:../../packages/db
       helmet: 6.0.1
       jsonwebtoken: 9.0.0
       morgan: 1.10.0
@@ -109,6 +109,7 @@ importers:
     specifiers:
       '@emotion/react': ^11.10.5
       '@emotion/server': ^11.10.0
+      '@lend-my-skill/db': workspace:*
       '@mantine/carousel': ^5.9.5
       '@mantine/core': ^5.9.5
       '@mantine/dates': ^5.9.5
@@ -143,7 +144,6 @@ importers:
       clsx: ^1.2.1
       cypress: ^12.2.0
       dayjs: ^1.11.7
-      db: workspace:*
       embla-carousel-react: ^7.0.5
       eslint: 8.30.0
       eslint-config-next: 13.0.0
@@ -169,6 +169,7 @@ importers:
     dependencies:
       '@emotion/react': 11.10.5_kzbn2opkn2327fwg5yzwzya5o4
       '@emotion/server': 11.10.0
+      '@lend-my-skill/db': link:../../packages/db
       '@mantine/carousel': 5.9.5_tt224433qisev6tpy33d7mk3wq
       '@mantine/core': 5.9.5_hzg3oku4uxnt5crkeceagoktyy
       '@mantine/dates': 5.9.5_q32zbbv6l2fjmvb2dpa2q3dhma
@@ -200,7 +201,6 @@ importers:
       axios: 1.2.1
       clsx: 1.2.1
       dayjs: 1.11.7
-      db: link:../../packages/db
       embla-carousel-react: 7.0.5_react@18.2.0
       eslint: 8.30.0
       eslint-config-next: 13.0.0_lzzuuodtsqwxnvqeq4g4likcqa

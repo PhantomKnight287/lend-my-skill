@@ -1,9 +1,9 @@
 {
-  "name": "frontend",
+  "name": "@lend-my-skill/frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3001",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -42,7 +42,7 @@
     "axios": "^1.2.1",
     "clsx": "^1.2.1",
     "dayjs": "^1.11.7",
-    "db": "workspace:*",
+    "@lend-my-skill/db": "workspace:*",
     "embla-carousel-react": "^7.0.5",
     "eslint": "8.30.0",
     "eslint-config-next": "13.0.0",
