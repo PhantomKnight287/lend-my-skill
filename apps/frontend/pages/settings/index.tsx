@@ -64,7 +64,6 @@ function Settings() {
       }).then((res) => res.json());
     },
     refetchInterval: false,
-    enabled: isReady,
     refetchOnMount: false,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
@@ -97,7 +96,15 @@ function Settings() {
   const completeProfileState = useForm({
     initialValues: {
       mobileNumber: "",
+      upiId: "",
     },
+    validate: {
+      upiId: (val) =>
+        /[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}/gm.test(val)
+          ? null
+          : "Invalid UPI ID",
+    },
+    validateInputOnBlur: true,
   });
 
   useEffect(() => {
@@ -332,9 +339,12 @@ function Settings() {
                     </Text>
                     <Text
                       align="left"
-                      className={clsx("text-base leading-[18px] text-center mt-3", {
-                        [outfit.className]: true,
-                      })}
+                      className={clsx(
+                        "text-base leading-[18px] text-center mt-3",
+                        {
+                          [outfit.className]: true,
+                        }
+                      )}
                     >
                       You can now use all features of the platform
                     </Text>
@@ -342,7 +352,7 @@ function Settings() {
                 </div>
               ) : (
                 <div>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col items-center justify-center">
                     <Text
                       align="center"
                       className={clsx("text-xl font-bold leading-[18px] mt-3", {
@@ -362,7 +372,7 @@ function Settings() {
                     <span className="text-sm mt-2 mb-8">
                       Please upload your kyc documents to complete your profile
                     </span>
-                    <div className="flex flex-row gap-3 flex-wrap">
+                    <div className="flex flex-row gap-3 flex-wrap items-center justify-center">
                       {kycDocuments.map((i, index) => (
                         <div
                           className="flex flex-col items-center justify-center gap-2"
@@ -373,6 +383,7 @@ function Settings() {
                               className="cursor-pointer rounded-md"
                               width={100}
                               height={100}
+                              alt={i.name}
                               src={URL.createObjectURL(i)}
                               onClick={() => {
                                 setKycDocuments((images) =>
@@ -403,7 +414,7 @@ function Settings() {
                         </div>
                       ))}
                     </div>
-                    <div className="flex flex-col mt-8 w-full">
+                    <div className="flex flex-col items-center justify-center mt-8 w-full">
                       <FileButton
                         onChange={(i) => {
                           i = i.filter((i) => i.type.includes("image"));
@@ -434,6 +445,7 @@ function Settings() {
                     </div>
                   </div>
                   <form
+                    className="flex flex-col items-center justify-center"
                     onSubmit={completeProfileState.onSubmit(async (d) => {
                       if (kycDocuments.length == 0) {
                         return showNotification({
@@ -459,6 +471,7 @@ function Settings() {
                           {
                             mobileNumber: d.mobileNumber,
                             urls,
+                            upiId: d.upiId,
                           },
                           {
                             headers: {
@@ -510,19 +523,28 @@ function Settings() {
                           required: true,
                         }}
                       />
-                      <Button
-                        type="submit"
-                        mt="md"
-                        color="black"
-                        className={clsx("max-w-fit", {
-                          [outfit.className]: true,
-                          "bg-gray-900 hover:bg-black": colorScheme === "light",
-                          "bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] text-white":
-                            colorScheme === "dark",
-                        })}
-                      >
-                        Submit
-                      </Button>
+                      <TextInput
+                        label="UPI ID"
+                        placeholder="abcd@upi"
+                        required
+                        {...completeProfileState.getInputProps("upiId")}
+                      />
+                      <div className="flex flex-col items-center justify-center">
+                        <Button
+                          type="submit"
+                          mt="md"
+                          color="black"
+                          className={clsx("max-w-fit", {
+                            [outfit.className]: true,
+                            "bg-gray-900 hover:bg-black":
+                              colorScheme === "light",
+                            "bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] text-white":
+                              colorScheme === "dark",
+                          })}
+                        >
+                          Submit
+                        </Button>
+                      </div>
                     </div>
                   </form>
                 </div>
