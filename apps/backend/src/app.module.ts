@@ -24,6 +24,7 @@ import { LoginController } from './routes/login/login.controller';
 import { OrderController } from './routes/order/order.controller';
 import { SearchController } from './routes/search/search.controller';
 import { WebhooksController } from './webhooks/webhooks.controller';
+import { UpiController } from './routes/upi/upi.controller';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { WebhooksController } from './webhooks/webhooks.controller';
     OrderController,
     SearchController,
     WebhooksController,
+    UpiController,
   ],
   providers: [
     AppService,
