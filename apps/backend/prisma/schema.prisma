@@ -1,0 +1,235 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Freelancer {
+  id                String  @id @unique @default(cuid())
+  name              String
+  username          String
+  email             String  @unique
+  password          String
+  country           String  @default("India")
+  githubId          String?
+  linkedinUsername  String?
+  twitterUsername   String?
+  facebookUsername  String?
+  instagramUsername String?
+
+  kycDocuments     String[]
+  kycCompleted     Boolean  @default(false)
+  phoneNumber      String?
+  profileCompleted Boolean  @default(false)
+
+  avatarUrl   String?
+  bio         String?
+  aboutMe     String?
+  paypalEmail String?
+  upiId       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  verified      Boolean @default(false)
+  emailVerified Boolean @default(false)
+
+  gigs            Gig[]
+  quotations      Quotation[]
+  claimedJobPosts JobPost[]
+  Order           Order[]
+}
+
+model Client {
+  id       String  @id @unique @default(cuid())
+  name     String
+  username String
+  email    String  @unique
+  password String
+  country  String  @default("India")
+  aboutMe  String?
+
+  githubId          String?
+  linkedinUsername  String?
+  twitterUsername   String?
+  facebookUsername  String?
+  instagramUsername String?
+
+  kycDocuments String[]
+  kycCompleted Boolean  @default(false)
+  phoneNumber  String?
+
+  profileCompleted Boolean @default(false)
+
+  avatarUrl   String?
+  bio         String?
+  paypalEmail String?
+  upiId       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  verified      Boolean   @default(false)
+  emailVerified Boolean   @default(false)
+  JobPost       JobPost[]
+  Order         Order[]
+}
+
+model Gig {
+  id           String      @id @unique @default(cuid())
+  title        String
+  description  String
+  slug         String      @unique
+  category     Category    @relation(fields: [categoryId], references: [id])
+  tags         String[]
+  images       String[]
+  bannerImage  String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  freelancer   Freelancer? @relation(fields: [freelancerId], references: [id])
+  freelancerId String?
+  categoryId   String
+  questions    Question[]
+  Package      Package[]
+  features     Features[]
+  Order        Order[]
+}
+
+model JobPost {
+  id          String    @id @unique @default(cuid())
+  title       String
+  description String
+  slug        String    @unique
+  category    Category  @relation(fields: [categoryId], references: [id])
+  tags        String[]
+  images      String[]
+  budget      Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deadline    DateTime?
+
+  quotation  Quotation[]
+  author     Client      @relation(fields: [clientId], references: [id])
+  clientId   String
+  categoryId String
+
+  claimed      Boolean     @default(false)
+  claimedBy    Freelancer? @relation(fields: [freelancerId], references: [id])
+  freelancerId String?
+}
+
+model Quotation {
+  id           String      @id @unique @default(cuid())
+  description  String
+  price        Int
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  freelancer   Freelancer? @relation(fields: [freelancerId], references: [id])
+  freelancerId String?
+  JobPost      JobPost?    @relation(fields: [jobPostId], references: [id])
+  jobPostId    String?
+}
+
+model Category {
+  id        String    @id @unique @default(cuid())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  slug      String    @unique @default(cuid())
+  Gig       Gig[]
+  JobPost   JobPost[]
+}
+
+model Package {
+  id           String  @id @unique @default(cuid())
+  name         String
+  price        Int
+  description  String?
+  deliveryDays Int
+
+  gig Gig @relation(fields: [gigId], references: [id])
+
+  features Features[]
+  gigId    String
+  Order    Order[]
+}
+
+model Features {
+  id         String    @id @unique @default(cuid())
+  name       String
+  packages   Package[]
+  includedIn String[]
+  Gig        Gig?      @relation(fields: [gigId], references: [id])
+  gigId      String?
+}
+
+model Question {
+  id          String     @id @default(cuid())
+  question    String
+  answerType  AnswerType @default(TEXT)
+  attachments String[]
+  isRequired  Boolean    @default(false)
+  gig         Gig        @relation(references: [id], fields: [gigId])
+  gigId       String
+  choices     Choices[]
+}
+
+model Choices {
+  id         String   @id @default(cuid())
+  choice     String
+  question   Question @relation(references: [id], fields: [questionId])
+  questionId String
+}
+
+enum AnswerType {
+  TEXT
+  MULTIPLE_CHOICE
+  ATTACHMENT
+}
+
+model Order {
+  id             String        @id @default(cuid())
+  paymentId      String        @unique
+  gig            Gig           @relation(fields: [gigId], references: [id])
+  gigId          String
+  amountPaid     Float?
+  freelancer     Freelancer    @relation(fields: [freelancerId], references: [id])
+  freelancerId   String
+  client         Client        @relation(fields: [clientId], references: [id])
+  clientId       String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  status         OrderStatus   @default(PENDING)
+  price          Int
+  deliveryDays   Int
+  attachments    String[]
+  deadline       DateTime?
+  package        Package?      @relation(fields: [packageId], references: [id])
+  packageId      String?
+  DiscountCode   DiscountCode? @relation(fields: [discountCodeId], references: [id])
+  discountCodeId String?
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+model DiscountCode {
+  id                 String           @id @default(cuid())
+  code               String           @unique
+  discountAmount     Int?
+  discountPercentage Int?
+  order              Order[]
+  expiryDate         DateTime
+  type               DiscountCodeType @default(PERCENTAGE)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+}
+
+enum DiscountCodeType {
+  PERCENTAGE
+  AMOUNT
+}
