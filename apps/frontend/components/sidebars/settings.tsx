@@ -139,6 +139,7 @@ export function SettingsSidebar({
                     .replace(" ", "-")}`
                 );
               }}
+              key={link.id}
             >
               <link.icon className={classes.linkIcon} stroke={1.5} />
               {link.title}

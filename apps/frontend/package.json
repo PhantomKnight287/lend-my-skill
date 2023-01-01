@@ -42,7 +42,6 @@
     "axios": "^1.2.1",
     "clsx": "^1.2.1",
     "dayjs": "^1.11.7",
-    "@lend-my-skill/db": "workspace:*",
     "embla-carousel-react": "^7.0.5",
     "eslint": "8.30.0",
     "eslint-config-next": "13.0.0",
@@ -66,7 +65,6 @@
   "devDependencies": {
     "@types/sanitize-html": "^2.8.0",
     "autoprefixer": "^10.4.13",
-    "cypress": "^12.2.0",
     "postcss": "^8.4.20",
     "sass": "^1.57.1",
     "tailwindcss": "^3.2.4"

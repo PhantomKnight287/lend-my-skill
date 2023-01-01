@@ -24,7 +24,8 @@
       "@helpers/*": ["./helpers/*"],
       "~/constants": ["./constants"],
       "~/types/*": ["./types/*"],
-      "@module/*": ["./module/*"]
+      "@module/*": ["./module/*"],
+      "db":["../backend/src/types/export.ts"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

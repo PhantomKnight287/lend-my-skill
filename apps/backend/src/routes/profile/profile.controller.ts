@@ -7,7 +7,7 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { Client, Freelancer } from 'db';
+import { Client, Freelancer } from '@prisma/client';
 import { DecodedJWT, Token } from 'src/decorators/token/token.decorator';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { VerificationService } from 'src/services/verification/verification.service';

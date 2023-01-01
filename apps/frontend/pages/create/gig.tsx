@@ -47,9 +47,15 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useUser } from "@hooks/user";
 import Editor from "@components/editor";
-import { AnswerType } from "db";
 import { DELIVERY_DAYS } from "~/constants";
 import { createGig } from "../../services/gigs.service";
+
+export const AnswerType= {
+  TEXT: 'TEXT',
+  MULTIPLE_CHOICE: 'MULTIPLE_CHOICE',
+  ATTACHMENT: 'ATTACHMENT'
+};
+
 
 function CreateGig() {
   const formState = useForm<{
@@ -65,7 +71,7 @@ function CreateGig() {
     }[];
     questions: {
       question: string;
-      type: AnswerType;
+      type: keyof typeof AnswerType;
       required: boolean;
     }[];
   }>({
@@ -85,7 +91,7 @@ function CreateGig() {
       questions: [
         {
           question: "",
-          type: AnswerType.TEXT,
+          type:"TEXT",
           required: false,
         },
       ],
@@ -684,7 +690,7 @@ function CreateGig() {
                   </Text>
                   <div className="flex flex-col gap-4 mt-8">
                     {formState.values.questions?.map((q, i) => (
-                      <div className="flex flex-row items-center justify-center gap-4">
+                      <div className="flex flex-row items-center justify-center gap-4" key={i} >
                         <T
                           placeholder="Question"
                           required
@@ -899,7 +905,7 @@ function CreateGig() {
                                 </Text>
                                 <p className="text-gray-500">
                                   Showcase images will be shown as slideshow on
-                                  your gig's page
+                                  your service&apos;s page
                                 </p>
                               </div>
                             </Paper>

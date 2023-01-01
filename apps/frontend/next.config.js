@@ -18,9 +18,6 @@ const nextConfig = withMDX({
     buildActivity: true,
     buildActivityPosition: "top-right",
   },
-  experimental: {
-    transpilePackages: ["@lend-my-skill/db"]
-  }
 });
 
 module.exports = nextConfig;

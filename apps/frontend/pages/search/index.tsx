@@ -173,14 +173,19 @@ const Search = () => {
             </form>
             {searchResultsLoading ? null : (
               <div className="flex flex-col gap-3 items-center justify-center flex-wrap">
-                {querySearchResults?.pages.map((page) => (
-                  <div className="flex flex-col gap-3 items-center justify-center mt-4 flex-wrap">
+                {querySearchResults?.pages.map((page, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col gap-3 items-center justify-center mt-4 flex-wrap"
+                  >
                     <SimpleGrid cols={3} spacing={"xl"} verticalSpacing="xl">
                       {page.data.map((item: any) => (
-                        <div className="flex flex-col gap-3 items-center justify-center flex-wrap">
+                        <div
+                          className="flex flex-col gap-3 items-center justify-center flex-wrap"
+                          key={item.id}
+                        >
                           {page.type === "gigs" ? (
                             <PostCard
-                              key={item.id}
                               title={item.title}
                               description={item.description}
                               price={item.price}
@@ -291,14 +296,19 @@ const Search = () => {
             </form>
             {querySearchResultsLoading ? null : (
               <div className="flex flex-col gap-3 items-center justify-center flex-wrap">
-                {querySearchResults?.pages.map((page) => (
-                  <div className="flex flex-col gap-3 items-center justify-center mt-4 flex-wrap">
+                {querySearchResults?.pages.map((page, index) => (
+                  <div
+                    className="flex flex-col gap-3 items-center justify-center mt-4 flex-wrap"
+                    key={index}
+                  >
                     <SimpleGrid cols={3} spacing={"xl"} verticalSpacing="xl">
                       {page.data.map((item: any) => (
-                        <div className="flex flex-col gap-3 items-center justify-center flex-wrap">
+                        <div
+                          className="flex flex-col gap-3 items-center justify-center flex-wrap"
+                          key={item.id}
+                        >
                           {page.type === "gigs" ? (
                             <PostCard
-                              key={item.id}
                               title={item.title}
                               description={item.description}
                               price={item.price}

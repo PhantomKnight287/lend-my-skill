@@ -4,6 +4,7 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Param,
   Post,
   Query,
 } from '@nestjs/common';
@@ -13,7 +14,7 @@ import { PrismaService } from 'src/services/prisma/prisma.service';
 import { CreateOrderDto } from 'src/validators/order.validator';
 import axios from 'axios';
 import { URLSearchParams } from 'url';
-import { DiscountCode } from 'db';
+import { DiscountCode } from '@prisma/client';
 import { VerificationService } from 'src/services/verification/verification.service';
 
 @Controller('order')
@@ -250,12 +251,11 @@ export class OrderController {
       },
       take: toTake,
       skip: toTake > 10 ? toTake - 10 : undefined,
-      orderBy:[
+      orderBy: [
         {
-          createdAt: 'desc'
-          
-        }
-      ]
+          createdAt: 'desc',
+        },
+      ],
     });
     if (orders.length === 10) {
       return {
@@ -264,5 +264,85 @@ export class OrderController {
       };
     }
     return { orders };
+  }
+  @Get('details/:id')
+  async getOrder(
+    @Param('id') orderId: string,
+    @Token({ serialize: true }) { id },
+  ) {
+    const { userFound: isValidClient } = await this.verification.verifyBuyer(
+      id,
+    );
+    const { userFound: isValidFreelancer } =
+      await this.verification.verifySeller(id);
+    if (!isValidClient && !isValidFreelancer) {
+      throw new HttpException(
+        'No account found with associated token',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const order = await this.prisma.order.findFirst({
+      where: {
+        id: orderId,
+        freelancer: isValidFreelancer ? { id } : undefined,
+        client: isValidClient ? { id } : undefined,
+      },
+      select: {
+        id: true,
+        package: {
+          select: {
+            id: true,
+            price: true,
+            description: true,
+            name: true,
+            deliveryDays: true,
+            gig: {
+              select: {
+                slug: true,
+                freelancer: {
+                  select: {
+                    username: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        DiscountCode: {
+          select: {
+            code: true,
+            type: true,
+            discountAmount: true,
+            discountPercentage: true,
+          },
+        },
+        freelancer: {
+          select: {
+            username: true,
+            id: true,
+            name: true,
+            verified: true,
+            avatarUrl: true,
+          },
+        },
+        client: {
+          select: {
+            username: true,
+            id: true,
+            name: true,
+            verified: true,
+            avatarUrl: true,
+          },
+        },
+        deadline: true,
+        price: true,
+        createdAt: true,
+        status: true,
+        amountPaid: true,
+      },
+    });
+    if (!order)
+      throw new HttpException('Order not found', HttpStatus.NOT_FOUND);
+    return { ...order, user: isValidClient ? 'client' : 'freelancer' };
   }
 }
