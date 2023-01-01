@@ -21,14 +21,16 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "dev": "cross-env NODE_ENV=development nest start --watch --preserveWatchOutput",
     "postinstall": "prisma generate",
-    "studio":"prisma studio",
-    "migrate":"prisma migrate"
+    "studio": "prisma studio",
+    "migrate": "prisma migrate"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/platform-socket.io": "^9.2.1",
     "@nestjs/throttler": "^3.1.0",
+    "@nestjs/websockets": "^9.2.1",
     "@prisma/client": "^4.8.0",
     "@supabase/supabase-js": "^2.2.2",
     "@types/multer": "^1.4.7",
