@@ -1,0 +1,38 @@
+services:
+  frontend:
+    container_name: lend-my-skill-frontend
+    build:
+      context: apps/frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - backend
+    networks:
+      - lend-my-skill
+    ports:
+      - 3000:3000
+
+  backend:
+    container_name: lend-my-skill-backend
+    build:
+      context: apps/backend
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    networks:
+      - lend-my-skill
+    ports:
+      - 5000:5000
+
+  postgres:
+    container_name: lend-my-skill-postgres
+    image: postgres
+    ports:
+      - 5432:5432
+    networks:
+      - lend-my-skill
+    volumes:
+      - /usr/postgres:/var/lib/postgresql/data:rw
+
+networks:
+  lend-my-skill:
+
