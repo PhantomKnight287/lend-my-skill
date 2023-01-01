@@ -377,6 +377,9 @@ const Gig: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                                                                     }
                                                                   );
                                                                   closeAllModals();
+                                                                  push({
+                                                                    pathname: `/profile/${username}/orders`,
+                                                                  });
                                                                 },
                                                               });
                                                             razorpay.on(
