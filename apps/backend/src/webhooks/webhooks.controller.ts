@@ -63,6 +63,7 @@ export class WebhooksController {
             }
           : undefined,
         amountPaid: body.payload.payment.entity.amount / 100,
+        paymentId: body.payload.payment.entity.id,
       },
       select: {
         id: true,
