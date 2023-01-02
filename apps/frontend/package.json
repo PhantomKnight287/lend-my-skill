@@ -60,6 +60,7 @@
     "react-phone-number-input": "^3.2.13",
     "react-spring": "^9.6.1",
     "sanitize-html": "^2.8.1",
+    "socket.io-client": "^4.5.4",
     "typescript": "4.9.4"
   },
   "devDependencies": {
