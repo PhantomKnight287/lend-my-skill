@@ -10,4 +10,3 @@ This repo is a monorepo consisting of:
 - `apps/frontend` &rarr; A Web Application made using Nextjs.
 - `apps/backend` &rarr; Backend Made using Nestjs.
 - `apps/mobile` &rarr; A Mobile app made using Flutter.
-test commit
