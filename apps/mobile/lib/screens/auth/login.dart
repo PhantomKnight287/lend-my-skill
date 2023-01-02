@@ -34,18 +34,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Center(
-                    child: Text(
-                      "Welcome to",
-                      style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.w700),
-                    ),
+                  Text(
+                    "Welcome Back!",
+                    style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.w700),
                   ),
-                  Center(
-                    child: GradientText(
-                      'Lend My Skill',
-                      style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.w700),
-                      gradient: const LinearGradient(colors: [Color(0xff3b82f6), Color(0xff2dd4bf)], begin: Alignment.topLeft, tileMode: TileMode.clamp),
+                  // Center(
+                  //   child: GradientText(
+                  //     'Lend My Skill',
+                  //     style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.w700),
+                  //     gradient: const LinearGradient(colors: [Color(0xff3b82f6), Color(0xff2dd4bf)], begin: Alignment.topLeft, tileMode: TileMode.clamp),
+                  //   ),
+                  // ),
+                  GradientText(
+                    "Its great to see you again!",
+                    gradient: const LinearGradient(
+                      colors: [Color(0xff3b82f6), Color(0xff2dd4bf)],
                     ),
+                    style: GoogleFonts.outfit(fontSize: 20),
                   ),
                   const SizedBox(
                     height: 20,
@@ -64,7 +69,33 @@ class _LoginScreenState extends State<LoginScreen> {
                     autoFocus: false,
                     keyboardType: TextInputType.visiblePassword,
                     controller: passwordController,
-                  )
+                  ),
+                  const SizedBox(height: 20),
+                  TextButton(
+                    onPressed: () {},
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                      padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(8)),
+                      enableFeedback: true,
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
+                    child: Text(
+                      "Login",
+                      style: GoogleFonts.outfit(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
                 ],
               ),
             ),
