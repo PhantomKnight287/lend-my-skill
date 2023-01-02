@@ -23,7 +23,10 @@ import { AccountsController } from './routes/accounts/accounts.controller';
 import { LoginController } from './routes/login/login.controller';
 import { OrderController } from './routes/order/order.controller';
 import { SearchController } from './routes/search/search.controller';
-import { WebhooksController } from './webhooks/webhooks.controller';
+import { WebhooksController } from './routes/webhooks/webhooks.controller';
+import { UpiController } from './routes/upi/upi.controller';
+import { MessageGateway } from './gateways/message/message.gateway';
+import { MessagesController } from './routes/messages/messages.controller';
 
 @Module({
   imports: [
@@ -50,6 +53,8 @@ import { WebhooksController } from './webhooks/webhooks.controller';
     OrderController,
     SearchController,
     WebhooksController,
+    UpiController,
+    MessagesController,
   ],
   providers: [
     AppService,
@@ -65,6 +70,7 @@ import { WebhooksController } from './webhooks/webhooks.controller';
     PrismaService,
     GigsService,
     VerificationService,
+    MessageGateway,
   ],
 })
 export class AppModule {}

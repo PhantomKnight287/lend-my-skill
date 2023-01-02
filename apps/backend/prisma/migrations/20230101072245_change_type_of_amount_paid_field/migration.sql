@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Order" ALTER COLUMN "amountPaid" SET DATA TYPE DOUBLE PRECISION;

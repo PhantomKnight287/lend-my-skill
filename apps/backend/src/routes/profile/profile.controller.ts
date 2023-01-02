@@ -7,7 +7,7 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { Client, Freelancer } from 'db';
+import { Client, Freelancer } from '@prisma/client';
 import { DecodedJWT, Token } from 'src/decorators/token/token.decorator';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { VerificationService } from 'src/services/verification/verification.service';
@@ -252,6 +252,7 @@ export class ProfileController {
     body: {
       urls: string[];
       mobileNumber: string;
+      upiId: string;
     },
   ) {
     if (!body.urls || !body.urls.length)
@@ -264,6 +265,12 @@ export class ProfileController {
         'Please enter your mobile number.',
         HttpStatus.BAD_REQUEST,
       );
+    if (!body.upiId)
+      throw new HttpException(
+        'Please enter your UPI ID.',
+        HttpStatus.BAD_REQUEST,
+      );
+
     const { userFound: isValidFreelancer } = await this.verify.verifySeller(id);
     const { userFound: isValidClient } = await this.verify.verifyBuyer(id);
     if (!isValidFreelancer && !isValidClient) {
@@ -311,6 +318,7 @@ export class ProfileController {
           kycDocuments: body.urls,
           phoneNumber: body.mobileNumber,
           profileCompleted: true,
+          upiId: body.upiId,
         },
       });
     } else {
@@ -322,6 +330,7 @@ export class ProfileController {
           kycDocuments: body.urls,
           phoneNumber: body.mobileNumber,
           profileCompleted: true,
+          upiId: body.upiId,
         },
       });
     }

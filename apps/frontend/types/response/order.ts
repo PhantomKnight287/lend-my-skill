@@ -15,6 +15,8 @@ export interface Order {
   price: number;
   createdAt: string;
   status: keyof typeof OrderStatus;
+  amountPaid?: number;
+  user: "client" | "freelancer";
 }
 
 export interface Package {
@@ -22,6 +24,12 @@ export interface Package {
   price: number;
   description: string;
   name: string;
+  gig: {
+    slug: string;
+    freelancer: {
+      username: string;
+    };
+  };
 }
 
 export interface Freelancer {

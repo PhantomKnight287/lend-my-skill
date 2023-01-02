@@ -64,7 +64,7 @@ export class SearchController {
         take: toTake,
         skip: toTake > 10 ? toTake - 10 : undefined,
       });
-      if (data.length === toTake) {
+      if (data.length === 10) {
         return {
           data,
           next: toTake + 10,
@@ -115,7 +115,7 @@ export class SearchController {
         take: toTake,
         skip: toTake > 10 ? toTake - 10 : undefined,
       });
-      if (data.length === toTake) {
+      if (data.length === 10) {
         return {
           data,
           next: toTake + 10,
@@ -174,7 +174,7 @@ export class SearchController {
         take: toTake,
         skip: toTake > 10 ? toTake - 10 : undefined,
       });
-      if (data.length === toTake) {
+      if (data.length === 10) {
         return {
           data,
           next: toTake + 10,
@@ -211,7 +211,7 @@ export class SearchController {
         take: toTake,
         skip: toTake > 10 ? toTake - 10 : undefined,
       });
-      if (data.length === toTake) {
+      if (data.length === 10) {
         return {
           data,
           next: toTake + 10,

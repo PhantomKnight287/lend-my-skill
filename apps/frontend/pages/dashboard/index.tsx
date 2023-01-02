@@ -138,12 +138,12 @@ const Dashboard = () => {
                         ? gigsRef
                         : undefined
                     }
+                    key={gig.id}
                   >
                     <PostCard
                       description={gig.description}
                       image={gig.bannerImage}
                       title={gig.title}
-                      key={gig.id}
                       author={gig.freelancer}
                       slug={gig.slug}
                       type="gig"
@@ -196,6 +196,7 @@ const Dashboard = () => {
                         ? jobpostsRef
                         : undefined
                     }
+                    key={post.id}
                   >
                     <PostCard
                       description={post.description}
@@ -203,7 +204,6 @@ const Dashboard = () => {
                         "https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
                       }
                       title={post.title}
-                      key={post.id}
                       author={post.author}
                       slug={post.slug}
                       type="post"

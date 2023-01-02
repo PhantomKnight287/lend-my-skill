@@ -34,7 +34,7 @@ import { MetaTags } from "@components/meta";
 import { IconCheck, IconX } from "@tabler/icons";
 import { sanitize } from "@components/tabs/profile/gigs";
 import { upperFirst } from "@mantine/hooks";
-import { openModal,closeAllModals } from "@mantine/modals";
+import { openModal, closeAllModals } from "@mantine/modals";
 import { useForm } from "@mantine/form";
 import axios from "axios";
 import { readCookie } from "@helpers/cookie";
@@ -191,6 +191,7 @@ const Gig: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
         className={clsx("font-bold text-2xl text-center mb-4", {
           [outfit.className]: true,
         })}
+        id="packages-offered"
       >
         Packages Offered
       </Text>
@@ -358,31 +359,47 @@ const Gig: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                                                                   to: asPath,
                                                                 },
                                                               });
-                                                              const razorpay = new
-                                                              Razorpay({
+                                                            const razorpay =
+                                                              new Razorpay({
                                                                 amount,
                                                                 currency: "INR",
                                                                 key: process.env
                                                                   .NEXT_PUBLIC_RAZORPAY_KEY!,
                                                                 name: "Lend My Skill",
                                                                 order_id: id,
-                                                                handler(){
-                                                                  showNotification({
-                                                                    message:"Payment Successful",
-                                                                    color:"green"
-                                                                  })
-                                                                  closeAllModals()
-                                                                }
-                                                              })
-                                                              razorpay.on("payment.failed",(res:{
-                                                                error:any
-                                                              })=>{
-                                                                showNotification({
-                                                                  message:res?.error?.description || "Something went wrong",
-                                                                  color:"red"
-                                                                })
-                                                              })
-                                                              razorpay.open()
+                                                                handler() {
+                                                                  showNotification(
+                                                                    {
+                                                                      message:
+                                                                        "Payment Successful",
+                                                                      color:
+                                                                        "green",
+                                                                    }
+                                                                  );
+                                                                  closeAllModals();
+                                                                  push({
+                                                                    pathname: `/profile/${username}/orders`,
+                                                                  });
+                                                                },
+                                                              });
+                                                            razorpay.on(
+                                                              "payment.failed",
+                                                              (res: {
+                                                                error: any;
+                                                              }) => {
+                                                                showNotification(
+                                                                  {
+                                                                    message:
+                                                                      res?.error
+                                                                        ?.description ||
+                                                                      "Something went wrong",
+                                                                    color:
+                                                                      "red",
+                                                                  }
+                                                                );
+                                                              }
+                                                            );
+                                                            razorpay.open();
                                                           }}
                                                         >
                                                           Proceed to Payment
@@ -535,31 +552,35 @@ const Gig: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                                                       to: asPath,
                                                     },
                                                   });
-                                                const razorpay = new
-                                                  Razorpay({
-                                                    amount,
-                                                    currency: "INR",
-                                                    key: process.env
-                                                      .NEXT_PUBLIC_RAZORPAY_KEY!,
-                                                    name: "Lend My Skill",
-                                                    order_id: id,
-                                                    handler(){
-                                                      showNotification({
-                                                        message:"Payment Successful",
-                                                        color:"green"
-                                                      })
-                                                      closeAllModals()
-                                                    }
-                                                  })
-                                                  razorpay.on("payment.failed",(res:{
-                                                    error:any
-                                                  })=>{
+                                                const razorpay = new Razorpay({
+                                                  amount,
+                                                  currency: "INR",
+                                                  key: process.env
+                                                    .NEXT_PUBLIC_RAZORPAY_KEY!,
+                                                  name: "Lend My Skill",
+                                                  order_id: id,
+                                                  handler() {
                                                     showNotification({
-                                                      message:res?.error?.description || "Something went wrong",
-                                                      color:"red"
-                                                    })
-                                                  })
-                                                  razorpay.open()
+                                                      message:
+                                                        "Payment Successful",
+                                                      color: "green",
+                                                    });
+                                                    closeAllModals();
+                                                  },
+                                                });
+                                                razorpay.on(
+                                                  "payment.failed",
+                                                  (res: { error: any }) => {
+                                                    showNotification({
+                                                      message:
+                                                        res?.error
+                                                          ?.description ||
+                                                        "Something went wrong",
+                                                      color: "red",
+                                                    });
+                                                  }
+                                                );
+                                                razorpay.open();
                                               }}
                                             >
                                               Initiate Payment

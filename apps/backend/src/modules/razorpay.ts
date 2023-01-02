@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { RAZORPAY_KEY, RAZORPAY_SECRET } from 'src/constants';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -26,6 +27,11 @@ export interface OrderCreate {
    */
   partialPayment?: boolean;
 }
+export interface VerifyUPIIDResponse {
+  vpa: string;
+  success: boolean;
+  customer_name?: string;
+}
 
 interface OrderCreateResponse {
   id: string;
@@ -43,7 +49,16 @@ interface OrderCreateResponse {
 }
 
 export class Razorpay {
-  reference;
+  reference: {
+    orders: {
+      create: (arg0: {
+        amount: number;
+        currency: string;
+        receipt: string;
+        notes: object;
+      }) => OrderCreateResponse | PromiseLike<OrderCreateResponse>;
+    };
+  };
   constructor(
     /**
      * Your KEY ID
@@ -67,13 +82,38 @@ export class Razorpay {
       notes: props.notes || {},
     });
   }
+  // this needs a razorpayx account to work
+  async verifyUPIID(upiId: string): Promise<VerifyUPIIDResponse> {
+    const data = await axios
+      .post<VerifyUPIIDResponse>(
+        `https://api.razorpay.com/v1/payments/validate/vpa`,
+        {
+          vpa: upiId,
+        },
+        {
+          auth: {
+            username: RAZORPAY_KEY,
+            password: RAZORPAY_SECRET,
+          },
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .catch((err) => {
+        console.log(err?.response?.data);
+        return null;
+      });
+    if (data === null) return { vpa: upiId, success: false };
+    return data.data;
+  }
 }
 
 export class API {
-  hostURL;
-  ua;
-  headers;
-  auth;
+  hostURL: any;
+  ua: any;
+  headers: Headers;
+  auth: Record<any, any>;
   constructor(props: {
     /**
      * URL of the Host

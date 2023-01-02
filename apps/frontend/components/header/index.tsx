@@ -145,33 +145,19 @@ export function Header() {
   const { username, userType } = useUser();
   const { asPath } = useRouter();
 
-  const links = mockdata.map((item) => (
-    <UnstyledButton className={classes.subLink} key={item.title}>
-      <Group noWrap align="flex-start">
-        <ThemeIcon size={34} variant="default" radius="md">
-          <item.icon size={22} color={theme.fn.primaryColor()} />
-        </ThemeIcon>
-        <div>
-          <Text size="sm" weight={500}>
-            {item.title}
-          </Text>
-          <Text size="xs" color="dimmed">
-            {item.description}
-          </Text>
-        </div>
-      </Group>
-    </UnstyledButton>
-  ));
-
   return (
     <Box>
       <H height={60} px="md">
-        <Group sx={{ height: "100%", justifyContent: "space-around" }}>
-          <Link href="/">
+        <Group sx={{ height: "100%", justifyContent: "space-evenly" }}>
+          <Link href={username ? "/dashboard" : "/"}>
             <Avatar size={50} src={"/brand/icon-transparent.png"} />
           </Link>
 
-          <Group style={{ height: "100%" }} className={classes.hiddenMobile}>
+          <Group
+            style={{ height: "100%" }}
+            // align="center"
+            className={classes.hiddenMobile}
+          >
             <Link href="/search?type=gigs">
               {userType !== "freelancer" ? (
                 <Button
@@ -197,7 +183,12 @@ export function Header() {
               ) : null}
             </Link>
           </Group>
-          <Group className={classes.hiddenMobile}>
+          <Group
+            className={clsx("", {
+              [classes.hiddenMobile]: true,
+            })}
+            // align="center"
+          >
             {!username ? (
               <>
                 <Link
