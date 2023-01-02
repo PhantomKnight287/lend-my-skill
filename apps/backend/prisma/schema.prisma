@@ -40,6 +40,8 @@ model Freelancer {
   quotations      Quotation[]
   claimedJobPosts JobPost[]
   Order           Order[]
+  chat            Chat[]
+  Message         Message[]
 }
 
 model Client {
@@ -73,7 +75,9 @@ model Client {
   verified      Boolean   @default(false)
   emailVerified Boolean   @default(false)
   JobPost       JobPost[]
-  Order         Order[]
+  order         Order[]
+  Chat          Chat[]
+  Message       Message[]
 }
 
 model Gig {
@@ -209,6 +213,7 @@ model Order {
   packageId      String?
   DiscountCode   DiscountCode? @relation(fields: [discountCodeId], references: [id])
   discountCodeId String?
+  Chat           Chat?
 }
 
 enum OrderStatus {
@@ -232,4 +237,29 @@ model DiscountCode {
 enum DiscountCodeType {
   PERCENTAGE
   AMOUNT
+}
+
+model Chat {
+  id               String     @id @unique @default(cuid())
+  order            Order      @relation(fields: [orderId], references: [id])
+  orderId          String     @unique
+  freelancer       Freelancer @relation(fields: [freelancerId], references: [id])
+  freelancerId     String
+  client           Client     @relation(fields: [clientId], references: [id])
+  clientId         String
+  questionAnswered Boolean    @default(false)
+  messages         Message[]
+}
+
+model Message {
+  id           String      @id @unique @default(cuid())
+  chat         Chat?       @relation(fields: [chatId], references: [id])
+  chatId       String?
+  content      String?
+  attachements String[]    @default([])
+  freelancer   Freelancer? @relation(fields: [freelancerId], references: [id])
+  freelancerId String?
+  client       Client?     @relation(fields: [clientId], references: [id])
+  clientId     String?
+  createdAt    DateTime    @default(now())
 }
