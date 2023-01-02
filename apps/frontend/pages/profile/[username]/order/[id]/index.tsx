@@ -18,7 +18,7 @@ import { Order } from "~/types/response/order";
 
 const OrderPage = () => {
   const [order, setOrder] = useState<Order>();
-  const { id, userType } = useUser();
+  const { id } = useUser();
   const { isReady, replace, asPath, query } = useRouter();
   const fetchUserDetails = useHydrateUserContext();
   useIssueNewAuthToken({
@@ -44,6 +44,7 @@ const OrderPage = () => {
     const token = readCookie("token");
     if (!isReady) return;
     const controller = new AbortController();
+    if (!query.id) return;
     axios
       .get(URLBuilder(`/order/details/${query.id}`), {
         headers: {
@@ -54,6 +55,7 @@ const OrderPage = () => {
       .then((d) => d.data)
       .then(setOrder)
       .catch((err) => {
+        if (err.code === "ERR_CANCELED") return;
         showNotification({
           message: err?.response?.data?.message || "Something went wrong",
           color: "red",
@@ -209,6 +211,22 @@ const OrderPage = () => {
                 </Button>
               </Link>
             ) : null}
+            <Link href={`${asPath}/chat`}>
+              <Button
+                variant="outline"
+                color="blue"
+                className="mt-4"
+                onClick={() => {
+                  showNotification({
+                    message: "Redirecting to Chat",
+                    color: "blue",
+                    title: "Redirecting",
+                  });
+                }}
+              >
+                Open Chat
+              </Button>
+            </Link>
           </Group>
         </>
       ) : (
