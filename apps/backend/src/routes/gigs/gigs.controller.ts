@@ -249,7 +249,7 @@ export class GigsController {
       take: toTake,
       skip: toTake > 10 ? toTake - 10 : undefined,
     });
-    if (gigs.length === toTake) {
+    if (gigs.length === 10) {
       return {
         next: toTake + 10,
         gigs,
