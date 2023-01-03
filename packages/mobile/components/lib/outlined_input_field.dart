@@ -13,6 +13,8 @@ class InputField extends StatelessWidget {
   final Widget? suffix;
   final TextEditingController? controller;
   final Widget? prefix;
+  final InputDecoration? inputDecoration;
+  final TextAlign? textAlign;
   const InputField(
       {this.labelText,
       this.onChanged,
@@ -25,6 +27,8 @@ class InputField extends StatelessWidget {
       this.suffix,
       this.controller,
       this.prefix,
+      this.inputDecoration,
+      this.textAlign,
       Key? key})
       : super(key: key);
 
@@ -37,16 +41,16 @@ class InputField extends StatelessWidget {
       keyboardType: keyboardType,
       textInputAction: textInputAction,
       obscureText: obscureText,
-      decoration: InputDecoration(
-          labelText: labelText,
-          labelStyle: GoogleFonts.spaceGrotesk(),
-          errorText: errorText,
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+      textAlign: textAlign ?? TextAlign.start,
+      decoration: inputDecoration ??
+          InputDecoration(
+            labelText: labelText,
+            labelStyle: GoogleFonts.spaceGrotesk(),
+            errorText: errorText,
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            suffix: suffix,
+            prefix: prefix,
           ),
-          suffix: suffix,
-          prefix: prefix),
       controller: controller,
     );
   }

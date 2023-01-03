@@ -1,3 +1,5 @@
+library components;
+
 import 'package:flutter/material.dart';
 
 class GradientText extends StatelessWidget {
