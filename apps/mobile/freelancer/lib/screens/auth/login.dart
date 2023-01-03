@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import "package:mobile/components/gradient.dart";
-import 'package:mobile/components/input.dart';
+import "package:components/gradient_text.dart";
+import 'package:components/outlined_input_field.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

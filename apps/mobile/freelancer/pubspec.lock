@@ -36,6 +36,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.16.0"
+  components:
+    dependency: "direct main"
+    description:
+      path: "../../../packages/mobile/components"
+      relative: true
+    source: path
+    version: "0.0.1"
   controllers:
     dependency: "direct main"
     description:
