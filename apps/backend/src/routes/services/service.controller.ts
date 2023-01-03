@@ -10,17 +10,17 @@ import {
 } from '@nestjs/common';
 import { nanoid } from 'nanoid';
 import { Token } from 'src/decorators/token/token.decorator';
-import { GigsService } from 'src/services/gigs/gigs.service';
+import { ServiceService } from 'src/services/service/services.service';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { VerificationService } from 'src/services/verification/verification.service';
 import { titleToSlug } from 'src/utils/slug';
-import { CreateGigDto } from 'src/validators/gigs.validator';
+import { CreateServiceDto } from 'src/validators/services.validator';
 
 @Controller('services')
-export class GigsController {
+export class ServiceController {
   constructor(
     protected prisma: PrismaService,
-    protected gigs: GigsService,
+    protected gigs: ServiceService,
     protected verify: VerificationService,
   ) {}
 
@@ -76,7 +76,7 @@ export class GigsController {
   }
   @Post('create')
   async createService(
-    @Body() body: CreateGigDto,
+    @Body() body: CreateServiceDto,
     @Token({ serialize: true }) { id },
   ) {
     const {
