@@ -8,7 +8,7 @@ import { AuthController as SellerAuthController } from './routes/auth/freelancer
 import { AuthService } from './services/auth/auth.service';
 import { PrismaService } from './services/prisma/prisma.service';
 import { GigsController } from './routes/gigs/gigs.controller';
-import { GigsService } from './services/gigs/gigs.service';
+import { ServiceService } from './services/gigs/gigs.service';
 import { VerificationService } from './services/verification/verification.service';
 import { AuthController as BuyerAuthController } from './routes/auth/client/auth.controller';
 import { JobpostController } from './routes/jobpost/jobpost.controller';
@@ -68,7 +68,7 @@ import { MessagesController } from './routes/messages/messages.controller';
     },
     AuthService,
     PrismaService,
-    GigsService,
+    ServiceService,
     VerificationService,
     MessageGateway,
   ],

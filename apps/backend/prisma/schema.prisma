@@ -36,7 +36,7 @@ model Freelancer {
   verified      Boolean @default(false)
   emailVerified Boolean @default(false)
 
-  gigs            Gig[]
+  services        Service[]
   quotations      Quotation[]
   claimedJobPosts JobPost[]
   Order           Order[]
@@ -80,7 +80,7 @@ model Client {
   Message       Message[]
 }
 
-model Gig {
+model Service {
   id           String      @id @unique @default(cuid())
   title        String
   description  String
@@ -141,7 +141,7 @@ model Category {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   slug      String    @unique @default(cuid())
-  Gig       Gig[]
+  service   Service[]
   JobPost   JobPost[]
 }
 
@@ -152,11 +152,11 @@ model Package {
   description  String?
   deliveryDays Int
 
-  gig Gig @relation(fields: [gigId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
 
-  features Features[]
-  gigId    String
-  Order    Order[]
+  features  Features[]
+  serviceId String
+  Order     Order[]
 }
 
 model Features {
@@ -164,8 +164,8 @@ model Features {
   name       String
   packages   Package[]
   includedIn String[]
-  Gig        Gig?      @relation(fields: [gigId], references: [id])
-  gigId      String?
+  service    Service?  @relation(fields: [serviceId], references: [id])
+  serviceId  String?
 }
 
 model Question {
@@ -174,8 +174,8 @@ model Question {
   answerType  AnswerType @default(TEXT)
   attachments String[]
   isRequired  Boolean    @default(false)
-  gig         Gig        @relation(references: [id], fields: [gigId])
-  gigId       String
+  service     Service    @relation(references: [id], fields: [serviceId])
+  serviceId   String
   choices     Choices[]
 }
 
@@ -195,8 +195,8 @@ enum AnswerType {
 model Order {
   id             String        @id @default(cuid())
   paymentId      String        @unique
-  gig            Gig           @relation(fields: [gigId], references: [id])
-  gigId          String
+  service        Service       @relation(fields: [serviceId], references: [id])
+  serviceId      String
   amountPaid     Float?
   freelancer     Freelancer    @relation(fields: [freelancerId], references: [id])
   freelancerId   String

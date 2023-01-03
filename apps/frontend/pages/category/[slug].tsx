@@ -72,7 +72,7 @@ const ContentRelatedToCategory: NextPage<
     <Container>
       <MetaTags
         title={`${upperFirst(props.name)} | Category | Lend My Skill`}
-        description={`Find ${props.name} related jobs and gigs on Lend My Skill. `}
+        description={`Find ${props.name} related jobs and services on Lend My Skill. `}
       />
       <h1
         className={clsx("text-4xl text-center font-bold mb-8", {
@@ -87,10 +87,10 @@ const ContentRelatedToCategory: NextPage<
           color="green"
           className="cursor-pointer"
           onClick={() => {
-            push(`/category/${query.slug}?tab=gigs`);
+            push(`/category/${query.slug}?tab=services`);
           }}
         >
-          {props.gigs} {props.gigs > 1 ? "Gigs" : "Gig"}
+          {props.services} {props.services > 1 ? "Services" : "Service"}
         </Badge>
         <Badge
           variant="light"
@@ -220,7 +220,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<{
   id: string;
   name: string;
-  gigs: number;
+  services: number;
   jobs: number;
 }> = async ({ params }) => {
   const data = await fetch(URLBuilder(`/categories/${params!.slug}`));

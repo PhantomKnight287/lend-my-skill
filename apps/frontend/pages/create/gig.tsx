@@ -48,7 +48,7 @@ import { useRouter } from "next/router";
 import { useUser } from "@hooks/user";
 import Editor from "@components/editor";
 import { DELIVERY_DAYS } from "~/constants";
-import { createGig } from "../../services/gigs.service";
+import { createService } from "../../services/services.service";
 
 export const AnswerType= {
   TEXT: 'TEXT',
@@ -57,7 +57,7 @@ export const AnswerType= {
 };
 
 
-function CreateGig() {
+function CreateService() {
   const formState = useForm<{
     title: string;
     description: string;
@@ -206,7 +206,7 @@ function CreateGig() {
       }
       imagePaths = uploads.data.paths;
     }
-    createGig(
+    createService(
       {
         bannerImage: bannerImagePath,
         category: values.category,
@@ -225,7 +225,7 @@ function CreateGig() {
     )
       .then((d) => d.data)
       .then((d) => {
-        push(`/profile/${username}/gig/${d.slug}`);
+        push(`/profile/${username}/service/${d.slug}`);
       })
       .catch((err) => {
         console.log(err.response);
@@ -237,8 +237,8 @@ function CreateGig() {
   return (
     <>
       <MetaTags
-        title="Create Gig | Lend My Skill"
-        description="Create a gig to get hired and earn money."
+        title="Create Service | Lend My Skill"
+        description="Create a service to get hired and earn money."
       />
       <div className={clsx("flex flex-col p-20")}>
         <LoadingOverlay visible={loadingVisible} />
@@ -251,14 +251,14 @@ function CreateGig() {
                   [outfit.className]: true,
                 })}
               >
-                Let&apos;s Create A Gig!
+                Let&apos;s Create A Service!
               </Title>
               <Text
                 className={clsx("text-lg font-bold ", {
                   [outfit.className]: true,
                 })}
               >
-                We&apos;ll try to find buyers for your gig.
+                We&apos;ll try to find buyers for your service.
               </Text>
             </div>
           ) : null}
@@ -416,7 +416,7 @@ function CreateGig() {
                         [outfit.className]: true,
                       })}
                     >
-                      List the features of your Gig.
+                      List the features of your Service.
                     </Text>
                     <div className="mt-5 w-full">
                       {features.map((feature, id) => (
@@ -780,7 +780,7 @@ function CreateGig() {
                       "text-black": theme === "light",
                     })}
                   >
-                    Add some images to your gig to make it more appealing and
+                    Add some images to your service to make it more appealing and
                     stand out.
                   </Text>
                   <div className="flex flex-row gap-5 flex-wrap">
@@ -951,4 +951,4 @@ function CreateGig() {
   );
 }
 
-export default CreateGig;
+export default CreateService;

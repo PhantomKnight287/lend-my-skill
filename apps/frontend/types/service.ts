@@ -1,4 +1,4 @@
-export interface Gig {
+export interface Service {
   bannerImage: string;
   category: Category;
   createdAt: string;
@@ -37,8 +37,8 @@ export interface Package {
   price: number;
 }
 
-export interface AllGigsResponse {
-  gigs: {
+export interface AllServicesResponse {
+  services: {
     id: string;
     createdAt: Date;
     description: string;

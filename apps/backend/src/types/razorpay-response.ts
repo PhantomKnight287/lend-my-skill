@@ -52,7 +52,7 @@ export interface Notes {
   sellerId: string;
   buyerId: string;
   packageId: string;
-  gigId: string;
+  serviceId: string;
   discountCode: string;
 }
 

@@ -5,7 +5,7 @@ import React, { useEffect, useRef } from "react";
 import { MetaTags } from "@components/meta";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { URLBuilder } from "@utils/url";
-import { AllGigsResponse } from "~/types/gig";
+import { AllServicesResponse } from "~/types/service";
 import { useUser } from "@hooks/user";
 import { useIntersection } from "@mantine/hooks";
 import { Loader, Title } from "@mantine/core";
@@ -15,16 +15,16 @@ import { PostCard } from "@components/card/post";
 const Dashboard = () => {
   useHydrateUserContext("replace", true, "/auth/login", true);
   const {
-    data: gigs,
-    fetchNextPage: fetchMoreGigs,
-    hasNextPage: hasMoreGigs,
-    isFetchingNextPage: isFetchingMoreGigs,
-    error: gigsError,
-    status: gigsFetchingStatus,
-  } = useInfiniteQuery<AllGigsResponse>({
-    queryKey: ["gigs"],
+    data: services,
+    fetchNextPage: fetchMoreServices,
+    hasNextPage: hasMoreServices,
+    isFetchingNextPage: isFetchingMoreServices,
+    error: servicesError,
+    status: servicesFetchingStatus,
+  } = useInfiniteQuery<AllServicesResponse>({
+    queryKey: ["services"],
     queryFn: async ({ pageParam = 10 }) => {
-      const data = await fetch(URLBuilder(`/gigs?take=${pageParam}`));
+      const data = await fetch(URLBuilder(`/services?take=${pageParam}`));
       if (!data.ok)
         throw new Error(
           (await data.json())["message"] || "Something went wrong"
@@ -56,11 +56,11 @@ const Dashboard = () => {
 
   const { userType } = useUser();
 
-  const gigsContainer = useRef<HTMLDivElement>(null);
+  const servicesContainer = useRef<HTMLDivElement>(null);
   const jobpostsContainer = useRef<HTMLDivElement>(null);
 
-  const { ref: gigsRef, entry: gigsEntry } = useIntersection({
-    root: gigsContainer.current,
+  const { ref: servicesRef, entry: servicesEntry } = useIntersection({
+    root: servicesContainer.current,
     threshold: 0.5,
   });
 
@@ -70,10 +70,10 @@ const Dashboard = () => {
   });
 
   useEffect(() => {
-    if (gigsEntry?.isIntersecting && hasMoreGigs) {
-      fetchMoreGigs();
+    if (servicesEntry?.isIntersecting && hasMoreServices) {
+      fetchMoreServices();
     }
-  }, [gigsEntry?.isIntersecting]);
+  }, [servicesEntry?.isIntersecting]);
 
   useEffect(() => {
     if (jobpostsEntry?.isIntersecting && hasMoreJobposts) {
@@ -98,7 +98,7 @@ const Dashboard = () => {
         })}
       >
         <div>
-          {gigs?.pages?.[0].gigs.length === 0 ? (
+          {services?.pages?.[0].services.length === 0 ? (
             <>
               <Title
                 className={clsx("", {
@@ -106,7 +106,7 @@ const Dashboard = () => {
                 })}
                 align="center"
               >
-                No Gigs Found
+                No Services Found
               </Title>
             </>
           ) : (
@@ -116,37 +116,37 @@ const Dashboard = () => {
               })}
               align="left"
             >
-              Gigs
+              Services
             </Title>
           )}
           <div
             className="flex flex-row gap-3 flex-nowrap overflow-x-scroll"
-            ref={gigsContainer}
+            ref={servicesContainer}
           >
-            {gigsFetchingStatus === "loading" ? (
+            {servicesFetchingStatus === "loading" ? (
               <div className="flex flex-col items-center justify-center">
                 <Loader color="green" />
               </div>
-            ) : gigsFetchingStatus === "error" ? (
-              <div>{(gigsError as Error)?.message}</div>
+            ) : servicesFetchingStatus === "error" ? (
+              <div>{(servicesError as Error)?.message}</div>
             ) : (
-              gigs?.pages.map((page) =>
-                page.gigs.map((gig) => (
+              services?.pages.map((page) =>
+                page.services.map((service) => (
                   <div
                     ref={
-                      page.gigs[page.gigs.length - 1]?.id === gig.id
-                        ? gigsRef
+                      page.services[page.services.length - 1]?.id === service.id
+                        ? servicesRef
                         : undefined
                     }
-                    key={gig.id}
+                    key={service.id}
                   >
                     <PostCard
-                      description={gig.description}
-                      image={gig.bannerImage}
-                      title={gig.title}
-                      author={gig.freelancer}
-                      slug={gig.slug}
-                      type="gig"
+                      description={service.description}
+                      image={service.bannerImage}
+                      title={service.title}
+                      author={service.freelancer}
+                      slug={service.slug}
+                      type="service"
                       resolveImageUrl
                     />
                   </div>
@@ -179,14 +179,14 @@ const Dashboard = () => {
           )}
           <div
             className="flex flex-row gap-3 flex-nowrap overflow-x-scroll"
-            ref={gigsContainer}
+            ref={servicesContainer}
           >
-            {gigsFetchingStatus === "loading" ? (
+            {servicesFetchingStatus === "loading" ? (
               <div className="flex flex-col items-center justify-center">
                 <Loader color="green" />
               </div>
-            ) : gigsFetchingStatus === "error" ? (
-              <div>{(gigsError as Error)?.message}</div>
+            ) : servicesFetchingStatus === "error" ? (
+              <div>{(servicesError as Error)?.message}</div>
             ) : (
               jobposts?.pages.map((page) =>
                 page.posts.map((post) => (

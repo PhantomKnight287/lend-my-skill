@@ -58,7 +58,7 @@ const Search = () => {
   } = useInfiniteQuery<{
     data: any;
     next?: number;
-    type: "gigs" | "jobposts";
+    type: "services" | "jobposts";
   }>({
     queryKey: ["search", query.search, query.type],
     queryFn: async ({ pageParam = 10 }) => {
@@ -84,7 +84,7 @@ const Search = () => {
   } = useInfiniteQuery<{
     data: any;
     next?: number;
-    type: "gigs" | "jobposts";
+    type: "services" | "jobposts";
   }>({
     queryKey: ["search", query.search, query.type],
     queryFn: async ({ pageParam = 10 }) => {
@@ -146,7 +146,7 @@ const Search = () => {
                 <Select
                   data={[
                     {
-                      value: "gigs",
+                      value: "services",
                       label: "Talents",
                     },
                     {
@@ -158,7 +158,7 @@ const Search = () => {
                   required
                   label="Type"
                   placeholder="Select type"
-                  defaultValue={(query.type as string) || "gigs"}
+                  defaultValue={(query.type as string) || "services"}
                 />
                 <Button
                   type="submit"
@@ -184,7 +184,7 @@ const Search = () => {
                           className="flex flex-col gap-3 items-center justify-center flex-wrap"
                           key={item.id}
                         >
-                          {page.type === "gigs" ? (
+                          {page.type === "services" ? (
                             <PostCard
                               title={item.title}
                               description={item.description}
@@ -193,7 +193,7 @@ const Search = () => {
                               author={item.freelancer || item.author}
                               resolveImageUrl
                               slug={item.slug}
-                              type="gig"
+                              type="service"
                             />
                           ) : (
                             <PostCard
@@ -269,7 +269,7 @@ const Search = () => {
                 <Select
                   data={[
                     {
-                      value: "gigs",
+                      value: "services",
                       label: "Talents",
                     },
                     {
@@ -281,7 +281,7 @@ const Search = () => {
                   {...formState.getInputProps("type")}
                   label="Type"
                   placeholder="Select type"
-                  defaultValue={(query.type as string) || "gigs"}
+                  defaultValue={(query.type as string) || "services"}
                 />
                 <Button
                   type="submit"
@@ -307,7 +307,7 @@ const Search = () => {
                           className="flex flex-col gap-3 items-center justify-center flex-wrap"
                           key={item.id}
                         >
-                          {page.type === "gigs" ? (
+                          {page.type === "services" ? (
                             <PostCard
                               title={item.title}
                               description={item.description}
@@ -316,7 +316,7 @@ const Search = () => {
                               author={item.freelancer || item.author}
                               resolveImageUrl
                               slug={item.slug}
-                              type="gig"
+                              type="service"
                             />
                           ) : (
                             <PostCard

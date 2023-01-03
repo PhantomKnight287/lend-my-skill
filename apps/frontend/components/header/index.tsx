@@ -158,7 +158,7 @@ export function Header() {
             // align="center"
             className={classes.hiddenMobile}
           >
-            <Link href="/search?type=gigs">
+            <Link href="/search?type=services">
               {userType !== "freelancer" ? (
                 <Button
                   variant="default"

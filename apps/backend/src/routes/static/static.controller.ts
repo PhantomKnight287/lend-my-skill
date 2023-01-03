@@ -42,9 +42,9 @@ export class StaticController {
     });
     return categories;
   }
-  @Get('gigs')
-  async generateGigs() {
-    const gigs = await this.prisma.gig.findMany({
+  @Get('services')
+  async generateServices() {
+    const services = await this.prisma.service.findMany({
       select: {
         freelancer: {
           select: {
@@ -54,6 +54,6 @@ export class StaticController {
         slug: true,
       },
     });
-    return gigs;
+    return services;
   }
 }

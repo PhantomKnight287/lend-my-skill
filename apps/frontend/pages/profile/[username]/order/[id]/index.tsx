@@ -154,7 +154,7 @@ const OrderPage = () => {
                 <td>Package Selected</td>
                 <td>
                   <Link
-                    href={`/profile/${order.package.gig.freelancer.username}/gig/${order.package.gig.slug}#packages-offered`}
+                    href={`/profile/${order.package.service.freelancer.username}/service/${order.package.service.slug}#packages-offered`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-500 hover:text-blue-700 hover:underline"
@@ -176,7 +176,7 @@ const OrderPage = () => {
           </Table>
           <Group position={"center"}>
             <Link
-              href={`/profile/${order.package.gig.freelancer.username}/gig/${order.package.gig.slug}#packages-offered`}
+              href={`/profile/${order.package.service.freelancer.username}/service/${order.package.service.slug}#packages-offered`}
             >
               <Button
                 variant="outline"
@@ -184,17 +184,17 @@ const OrderPage = () => {
                 className="mt-4"
                 onClick={() => {
                   showNotification({
-                    message: "Redirecting to Gig Page",
+                    message: "Redirecting to Service Page",
                     color: "blue",
                     title: "Redirecting",
                   });
                 }}
               >
-                View Gig
+                View Service
               </Button>
             </Link>
             {order.user === "client" ? (
-              <Link href={`/profile/${order.package.gig.freelancer.username}`}>
+              <Link href={`/profile/${order.package.service.freelancer.username}`}>
                 <Button
                   variant="outline"
                   color="blue"

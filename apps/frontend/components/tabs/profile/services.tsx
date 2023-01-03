@@ -33,7 +33,7 @@ export const sanitize = (dirty: string, options: IOptions | undefined) => ({
 interface Props {
   username: string;
 }
-const GigsTab = ({ username }: Props) => {
+const ServicesTab = ({ username }: Props) => {
   const {
     data,
     error,
@@ -44,7 +44,7 @@ const GigsTab = ({ username }: Props) => {
     isFetchingNextPage,
     isFetching,
   } = useInfiniteQuery<{
-    gigs: {
+    services: {
       id: string;
       freelancer: {
         username: string;
@@ -59,10 +59,10 @@ const GigsTab = ({ username }: Props) => {
     }[];
     next?: number;
   }>({
-    queryKey: ["gigs", username],
+    queryKey: ["services", username],
     queryFn: async ({ pageParam = 10 }) => {
       const res = await fetch(
-        URLBuilder(`/gigs/${username}?take=${pageParam}`)
+        URLBuilder(`/services/${username}?take=${pageParam}`)
       );
       return await res.json();
     },
@@ -74,8 +74,8 @@ const GigsTab = ({ username }: Props) => {
       <LoadingOverlay visible={isLoading} overlayBlur={2} />
       {data?.pages.map((page, index) => (
         <Fragment key={index}>
-          {page.gigs?.map((gig) => (
-            <div key={gig.id} className="flex flex-col">
+          {page.services?.map((service) => (
+            <div key={service.id} className="flex flex-col">
               <Paper
                 withBorder
                 radius="md"
@@ -83,28 +83,29 @@ const GigsTab = ({ username }: Props) => {
                 my="sm"
                 className={clsx("cursor-pointer")}
                 component={Link}
-                href={`/profile/${username}/gig/${gig.slug}`}
+                href={`/profile/${username}/service/${service.slug}`}
               >
                 <div className="flex flex-row ">
                   <div className="flex flex-row items-center">
                     <img
                       src={
-                        gig.freelancer.avatarUrl
-                          ? assetURLBuilder(gig.freelancer.avatarUrl)
-                          : profileImageRouteGenerator(gig.freelancer.username)
+                        service.freelancer.avatarUrl
+                          ? assetURLBuilder(service.freelancer.avatarUrl)
+                          : profileImageRouteGenerator(service.freelancer.username)
                       }
                       className="w-10 h-10 rounded-full"
+                      alt="avatar"
                     />
                     <div className="flex flex-col ml-2">
-                      <span className="font-bold">{gig.title}</span>
+                      <span className="font-bold">{service.title}</span>
                       <span className="text-gray-500 text-sm">
-                        @{gig.freelancer.username}
+                        @{service.freelancer.username}
                       </span>
                     </div>
                   </div>
                   <div className="flex flex-row items-center ml-auto">
                     <span className={clsx("text-gray-500 text-sm ml-4")}>
-                      {dayjs(gig.createdAt).fromNow()}
+                      {dayjs(service.createdAt).fromNow()}
                     </span>
                   </div>
                 </div>
@@ -112,7 +113,7 @@ const GigsTab = ({ username }: Props) => {
                   <TypographyStylesProvider style={{ lineClamp: 2 }}>
                     <div
                       dangerouslySetInnerHTML={sanitize(
-                        gig.description,
+                        service.description,
                         undefined
                       )}
                     />
@@ -144,10 +145,10 @@ const GigsTab = ({ username }: Props) => {
         ) : null}
       </div>
       <div>{isFetching && !isFetchingNextPage ? "Fetching..." : null}</div>
-      {data?.pages[0].gigs.length === 0 && (
+      {data?.pages[0].services.length === 0 && (
         <div className="flex flex-col items-center justify-center w-[100%] container">
           <p>
-            <span className="font-bold">{username}</span> has not posted any gig
+            <span className="font-bold">{username}</span> has not posted any service
             <p className="opacity-0">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum,
               perspiciatis velit. Magni, error reprehenderit quidem provident
@@ -160,4 +161,4 @@ const GigsTab = ({ username }: Props) => {
   );
 };
 
-export default GigsTab;
+export default ServicesTab;

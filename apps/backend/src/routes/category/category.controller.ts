@@ -73,7 +73,7 @@ export class CategoryController {
       select: {
         id: true,
         name: true,
-        Gig: {
+        service: {
           select: {
             id: true,
           },
@@ -85,13 +85,13 @@ export class CategoryController {
         },
       },
     });
-    const gigs = category.Gig.length;
-    delete category.Gig;
+    const services = category.service.length;
+    delete category.service;
     const jobs = category.JobPost.length;
     delete category.JobPost;
     if (!category)
       throw new HttpException('No category found', HttpStatus.NOT_FOUND);
-    return { ...category, gigs, jobs };
+    return { ...category, services, jobs };
   }
   @Get(':id/job-posts')
   async getJobPostsRelatedToCategory(

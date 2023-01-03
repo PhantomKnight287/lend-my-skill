@@ -16,7 +16,7 @@ import { VerificationService } from 'src/services/verification/verification.serv
 import { titleToSlug } from 'src/utils/slug';
 import { CreateGigDto } from 'src/validators/gigs.validator';
 
-@Controller('gigs')
+@Controller('services')
 export class GigsController {
   constructor(
     protected prisma: PrismaService,
@@ -28,7 +28,7 @@ export class GigsController {
   async getGigs(@Query('take') take: string) {
     const toOutput = Number.isNaN(Number(take)) ? 10 : Number(take);
 
-    const data = await this.prisma.gig.findMany({
+    const data = await this.prisma.service.findMany({
       take: toOutput,
       orderBy: [
         {
@@ -66,16 +66,16 @@ export class GigsController {
     });
     if (toOutput > 10) {
       return {
-        gigs: data,
+        services: data,
         next: toOutput + 10,
       };
     }
     return {
-      gigs: data,
+      services: data,
     };
   }
   @Post('create')
-  async createGig(
+  async createService(
     @Body() body: CreateGigDto,
     @Token({ serialize: true }) { id },
   ) {
@@ -101,7 +101,7 @@ export class GigsController {
     if (!isCategoryValid)
       throw new HttpException('Invalid category.', HttpStatus.BAD_REQUEST);
 
-    const gig = await this.prisma.gig.create({
+    const service = await this.prisma.service.create({
       data: {
         bannerImage,
         description,
@@ -145,14 +145,14 @@ export class GigsController {
         slug: true,
       },
     });
-    return gig;
+    return service;
   }
   @Get(':username/:slug')
-  async getGigBySlug(
+  async getServiceBySlug(
     @Param('username') username: string,
     @Param('slug') slug: string,
   ) {
-    const gig = await this.prisma.gig.findFirst({
+    const service = await this.prisma.service.findFirst({
       where: {
         freelancer: {
           username: {
@@ -203,16 +203,16 @@ export class GigsController {
         tags: true,
       },
     });
-    if (!gig) throw new HttpException('No Gig Found.', HttpStatus.NOT_FOUND);
-    return gig;
+    if (!service) throw new HttpException('No Service Found.', HttpStatus.NOT_FOUND);
+    return service;
   }
   @Get(':username')
-  async getGigsByUsername(
+  async getServicesByUsername(
     @Param('username') username: string,
     @Query('take') take: string,
   ) {
     const toTake = Number.isNaN(parseInt(take)) ? 10 : parseInt(take);
-    const gigs = await this.prisma.gig.findMany({
+    const services = await this.prisma.service.findMany({
       where: {
         freelancer: {
           username: {
@@ -249,12 +249,12 @@ export class GigsController {
       take: toTake,
       skip: toTake > 10 ? toTake - 10 : undefined,
     });
-    if (gigs.length === 10) {
+    if (services.length === 10) {
       return {
         next: toTake + 10,
-        gigs,
+        services,
       };
     }
-    return { gigs };
+    return { services };
   }
 }
