@@ -1,0 +1,30 @@
+
+name: Run Lint
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint:
+    name: Run Linter
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get Code
+        uses: actions/checkout@v2
+      
+      - name: Setting Up Nodejs
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      
+      - name: Setup Pnpm
+        run: corepack enable
+
+      - name: Install Dependencies
+        run:  pnpm i 
+      
+      - name: Run Lint
+        run: pnpm lint
