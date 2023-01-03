@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/apps\\mobile\\client/melos_client.iml" filepath="$PROJECT_DIR$/apps\\mobile\\client/melos_client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/packages\\mobile\\controllers/melos_controllers.iml" filepath="$PROJECT_DIR$/packages\\mobile\\controllers/melos_controllers.iml" />
       <module fileurl="file://$PROJECT_DIR$/apps\\mobile\\freelancer/melos_mobile.iml" filepath="$PROJECT_DIR$/apps\\mobile\\freelancer/melos_mobile.iml" />
       <module fileurl="file://$PROJECT_DIR$/melos_lend_my_skill.iml" filepath="$PROJECT_DIR$/melos_lend_my_skill.iml" />
     </modules>

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobile/controllers/user.dart';
+import 'package:controllers/user.dart';
 import 'package:mobile/screens/auth/login.dart';
 
 void main() {
