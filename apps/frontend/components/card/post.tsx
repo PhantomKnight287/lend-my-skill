@@ -1,4 +1,4 @@
-import { sanitize } from "@components/tabs/profile/gigs";
+import { sanitize } from "@components/tabs/profile/services";
 import { outfit } from "@fonts";
 import {
   Card,
@@ -22,7 +22,7 @@ interface Props {
   buttonTitle?: string;
   author: Posts["posts"][0]["author"];
   slug: string;
-  type: "gig" | "post";
+  type: "service" | "post";
   resolveImageUrl: boolean;
   badgeLabel?: string;
 }

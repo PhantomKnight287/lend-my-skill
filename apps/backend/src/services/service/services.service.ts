@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { titleToSlug } from 'src/utils/slug';
 import { PrismaService } from '../prisma/prisma.service';
 
-interface CreateGigInput {
+interface CreateServiceInput {
   title: string;
   description: string;
   category: string;
@@ -14,6 +13,6 @@ interface CreateGigInput {
 }
 
 @Injectable()
-export class GigsService {
+export class ServiceService {
   constructor(protected prisma: PrismaService) {}
 }

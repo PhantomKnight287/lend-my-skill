@@ -19,7 +19,7 @@ interface Props {
   questions: { question: NamedCurve; required: boolean; type: AnswerType }[];
 }
 
-export async function createGig(props: Props, token: string) {
+export async function createService(props: Props, token: string) {
   return axios.post(URLBuilder("/gigs/create"), props, {
     headers: {
       authorization: `Bearer ${token}`,

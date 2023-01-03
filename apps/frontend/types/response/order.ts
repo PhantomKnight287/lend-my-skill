@@ -24,7 +24,7 @@ export interface Package {
   price: number;
   description: string;
   name: string;
-  gig: {
+  service: {
     slug: string;
     freelancer: {
       username: string;

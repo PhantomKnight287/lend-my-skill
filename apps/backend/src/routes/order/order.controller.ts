@@ -61,7 +61,7 @@ export class OrderController {
         id: packageId,
       },
       include: {
-        gig: true,
+        service: true,
       },
     });
     if (!packageSelected) {
@@ -158,7 +158,7 @@ export class OrderController {
           sellerId: seller.id,
           buyerId: buyer.id,
           packageId: packageSelected.id,
-          gigId: packageSelected.gig.id,
+          serviceId: packageSelected.service.id,
           discountCode: code?.code,
         },
         partialPayment: false,
@@ -296,7 +296,7 @@ export class OrderController {
             description: true,
             name: true,
             deliveryDays: true,
-            gig: {
+            service: {
               select: {
                 slug: true,
                 freelancer: {

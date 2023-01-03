@@ -1,7 +1,7 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'nestjs-zod/z';
 
-const CreateGigSchema = z.object({
+const CreateServiceSchema = z.object({
   title: z
     .string({
       required_error: 'Title is required',
@@ -71,4 +71,4 @@ const CreateGigSchema = z.object({
   ),
 });
 
-export class CreateGigDto extends createZodDto(CreateGigSchema) {}
+export class CreateServiceDto extends createZodDto(CreateServiceSchema) {}

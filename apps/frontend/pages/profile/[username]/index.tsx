@@ -1,6 +1,6 @@
 import { MetaTags } from "@components/meta";
 import LinkedAccounts from "@components/profiles";
-import GigsTab from "@components/tabs/profile/gigs";
+import ServicesTab from "@components/tabs/profile/services";
 import JobPosts from "@components/tabs/profile/job-posts";
 import { outfit } from "@fonts";
 import { readCookie } from "@helpers/cookie";
@@ -192,7 +192,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
             defaultValue={
               props.type === "client"
                 ? (query.tab as string) || "job-posts"
-                : (query.tab as string) || "gigs"
+                : (query.tab as string) || "services"
             }
             onTabChange={(d) => {
               if (d) {
@@ -204,7 +204,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
               {props.type === "client" ? (
                 <Tabs.Tab value="job-posts">Job Posts</Tabs.Tab>
               ) : props.type === "freelancer" ? (
-                <Tabs.Tab value="gigs">Gigs</Tabs.Tab>
+                <Tabs.Tab value="services">Services</Tabs.Tab>
               ) : null}
             </Tabs.List>
             {props.type === "client" ? (
@@ -212,8 +212,8 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                 <JobPosts username={props.username} />
               </Tabs.Panel>
             ) : (
-              <Tabs.Panel value="gigs">
-                <GigsTab username={props.username} />
+              <Tabs.Panel value="services">
+                <ServicesTab username={props.username} />
               </Tabs.Panel>
             )}
           </Tabs>

@@ -14,15 +14,15 @@ export class SearchController {
 
   @Get()
   async search(
-    @Query() query: { type: 'jobposts' | 'gigs'; query: string; take: string },
+    @Query() query: { type: 'jobposts' | 'services'; query: string; take: string },
   ) {
     const toTake = Number.isNaN(Number(query.take)) ? 10 : Number(query.take);
-    if (query.type !== 'jobposts' && query.type !== 'gigs')
+    if (query.type !== 'jobposts' && query.type !== 'services')
       throw new HttpException('Invalid type', 400);
     let data;
     const type = query.type;
-    if (query.type === 'gigs') {
-      data = await this.prisma.gig.findMany({
+    if (query.type === 'services') {
+      data = await this.prisma.service.findMany({
         where: {
           OR: [
             {
@@ -125,14 +125,13 @@ export class SearchController {
       return { data, type };
     }
   }
-  //   create a route where categoryId will be provided and it will return all the gigs or jobposts related to that category based on the type
   @Get(':id/:type')
   async getRelatedToCategory(
     @Param('id') id: string,
-    @Param('type') type: 'gigs' | 'jobposts',
+    @Param('type') type: 'services' | 'jobposts',
     @Query('take') take: string,
   ) {
-    if (type !== 'gigs' && type !== 'jobposts')
+    if (type !== 'services' && type !== 'jobposts')
       throw new HttpException('Invalid type', HttpStatus.BAD_REQUEST);
     const toTake = Number.isNaN(parseInt(take)) ? 10 : parseInt(take);
     const category = await this.prisma.category.findFirst({
@@ -144,8 +143,8 @@ export class SearchController {
 
     if (!category)
       throw new HttpException('No Category found', HttpStatus.NOT_FOUND);
-    if (type === 'gigs') {
-      data = await this.prisma.gig.findMany({
+    if (type === 'services') {
+      data = await this.prisma.service.findMany({
         where: {
           category: {
             id: category.id,

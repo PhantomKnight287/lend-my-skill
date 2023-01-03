@@ -27,12 +27,12 @@ import {
 } from "next";
 import Link from "next/link";
 import React, { useRef, useState } from "react";
-import { Gig } from "~/types/gig";
+import { Service } from "~/types/service";
 import { Carousel } from "@mantine/carousel";
 import useHydrateUserContext from "@hooks/hydrate/user";
 import { MetaTags } from "@components/meta";
 import { IconCheck, IconX } from "@tabler/icons";
-import { sanitize } from "@components/tabs/profile/gigs";
+import { sanitize } from "@components/tabs/profile/services";
 import { upperFirst } from "@mantine/hooks";
 import { openModal, closeAllModals } from "@mantine/modals";
 import { useForm } from "@mantine/form";
@@ -42,7 +42,7 @@ import { useRouter } from "next/router";
 import { showNotification } from "@mantine/notifications";
 import { Razorpay } from "@module/razorpay";
 
-const Gig: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
+const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   props
 ) => {
   const formState = useForm({
@@ -141,7 +141,7 @@ const Gig: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
           <div className="flex flex-row gap-2 items-center justify-center flex-wrap my-4">
             {props.tags.map((t, index) => (
               <Badge variant="light" key={index} color="green">
-                <a href={`/search?tag=${t}&tab=gigs`}>#{t}</a>
+                <a href={`/search?tag=${t}&tab=services`}>#{t}</a>
               </Badge>
             ))}
           </div>
@@ -631,10 +631,10 @@ const Gig: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   );
 };
 
-export default Gig;
+export default Service;
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const data = await (await fetch(URLBuilder("/static/gigs"))).json();
+  const data = await (await fetch(URLBuilder("/static/services"))).json();
   console.log(data);
   return {
     fallback: "blocking",
@@ -647,18 +647,18 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps<Gig> = async ({ params }) => {
+export const getStaticProps: GetStaticProps<Service> = async ({ params }) => {
   const username = params!.username;
   const slug = params!.slug;
 
-  const data = await fetch(URLBuilder(`/gigs/${username}/${slug}`));
+  const data = await fetch(URLBuilder(`/services/${username}/${slug}`));
   if (!data.ok) {
     return {
       notFound: true,
     };
   }
-  const gig = await data.json();
+  const service = await data.json();
   return {
-    props: gig,
+    props: service,
   };
 };

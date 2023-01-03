@@ -16,7 +16,7 @@ export class WebhooksController {
     @Body() body: RazorpayResponse,
     @Headers('X-Razorpay-Signature') razorpaySignature: string,
   ) {
-    const { buyerId, discountCode, gigId, packageId, sellerId } =
+    const { buyerId, discountCode, serviceId, packageId, sellerId } =
       body.payload.payment.entity.notes;
     const data = validateWebhookSignature(
       JSON.stringify(body),
@@ -41,9 +41,9 @@ export class WebhooksController {
             id: sellerId,
           },
         },
-        gig: {
+        service: {
           connect: {
-            id: gigId,
+            id: serviceId,
           },
         },
         deadline: new Date(

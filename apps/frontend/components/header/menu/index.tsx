@@ -43,8 +43,8 @@ export default function HeaderMenu() {
           ) : (
             <>
               {userType === "freelancer" ? (
-                <Menu.Item color="green" onClick={() => push(`/create/gig`)}>
-                  Post a Gig
+                <Menu.Item color="green" onClick={() => push(`/create/service`)}>
+                  Post a Service
                 </Menu.Item>
               ) : null}
             </>
