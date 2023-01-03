@@ -4,7 +4,14 @@ import 'package:controllers/user.dart';
 import 'package:mobile/screens/auth/login.dart';
 
 void main() {
-  runApp(MaterialApp(title: 'Lend My Skill', theme: ThemeData(primaryColor: Colors.blueAccent), home: const RouteHandler()));
+  runApp(
+    MaterialApp(
+      title: 'Lend My Skill',
+      theme: ThemeData(primaryColor: Colors.blueAccent),
+      home: const RouteHandler(),
+      debugShowCheckedModeBanner: false,
+    ),
+  );
 }
 
 class RouteHandler extends StatefulWidget {
