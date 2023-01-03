@@ -18,6 +18,7 @@ class _RouteHandlerState extends State<RouteHandler> {
   UserController c = Get.put(UserController());
   @override
   Widget build(BuildContext context) {
+    // ignore: unrelated_type_equality_checks
     if (c.id == "") return const LoginScreen();
     return Container();
   }

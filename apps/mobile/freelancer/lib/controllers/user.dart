@@ -16,10 +16,10 @@ class UserController extends GetxController {
   }
 
   void logout() {
-    this.id.value = "";
-    this.name.value = "";
-    this.username.value = "";
-    this.userType.value = "";
-    this.profileCompleted.value = false;
+    id.value = "";
+    name.value = "";
+    username.value = "";
+    userType.value = "";
+    profileCompleted.value = false;
   }
 }
