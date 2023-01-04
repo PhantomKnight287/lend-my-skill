@@ -89,10 +89,7 @@ export function Hero() {
       <div className={styles.featuresContainer}>
         <h2 className={styles.feature}>Features</h2>
         <div
-          className={styles.featureContainer}
-          style={{
-            minWidth: isSmallScreen === false ? "614px" : "unset",
-          }}
+          className={clsx(styles.featureContainer,"w-full m-0")}
         >
           <h2 className={styles.featureTitle}>Open Source</h2>
           <p className={styles.featureDescription}>
