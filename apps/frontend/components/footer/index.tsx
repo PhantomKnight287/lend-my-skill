@@ -28,6 +28,11 @@ const useStyles = createStyles((theme) => ({
       marginTop: theme.spacing.md,
     },
   },
+  link:{
+    ":hover":{
+      textDecoration: "underline",
+    }
+  }
 }));
 
 interface FooterSimpleProps {
@@ -41,6 +46,7 @@ export function Footer({ links }: FooterSimpleProps) {
       color="dimmed"
       key={link.label}
       href={link.link}
+      className={classes.link}
       target={link.link.startsWith("mailto:") ? "_self" : "_blank"}
       rel={link.link.startsWith("mailto:") ? undefined : "noopener noreferrer"}
     >
