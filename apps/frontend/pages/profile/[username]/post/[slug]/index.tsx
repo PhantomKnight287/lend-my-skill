@@ -86,7 +86,7 @@ const Slug: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
             <h2 className="text-base font-semibold">
               {props.author.name}
               {props.author.verified ? (
-                <Tooltip label="Verified Buyer" withArrow>
+                <Tooltip label="Verified User" withArrow>
                   <Badge
                     color="green"
                     variant="light"
