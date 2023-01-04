@@ -41,6 +41,8 @@ import { readCookie } from "@helpers/cookie";
 import { useRouter } from "next/router";
 import { showNotification } from "@mantine/notifications";
 import { Razorpay } from "@module/razorpay";
+import Script from "next/script";
+import useIssueNewAuthToken from "@hooks/jwt";
 
 const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   props
@@ -52,6 +54,7 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   });
   const { username } = useUser();
   useHydrateUserContext();
+  useIssueNewAuthToken()
   const { colorScheme } = useMantineColorScheme();
 
   const { push, asPath } = useRouter();
@@ -102,7 +105,7 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
           <h2 className="text-base font-semibold">
             {props.freelancer.name}
             {props.freelancer.verified ? (
-              <Tooltip label="Verified Freelancer" withArrow>
+              <Tooltip label="Verified User" withArrow>
                 <Badge
                   color="green"
                   variant="light"
@@ -566,6 +569,9 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                                                       color: "green",
                                                     });
                                                     closeAllModals();
+                                                    push(
+                                                      `/profile/${username}/orders`
+                                                    );
                                                   },
                                                 });
                                                 razorpay.on(
@@ -627,6 +633,10 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
           </tr>
         </tbody>
       </Table>
+      <Script
+        src={"https://checkout.razorpay.com/v1/checkout.js"}
+        strategy="lazyOnload"
+      />
     </Container>
   );
 };
