@@ -12,7 +12,7 @@ interface RedirectProps {
 }
 
 export default function useIssueNewAuthToken(props?: RedirectProps) {
-  const { isReady, push, replace } = useRouter();
+  const { isReady, push, replace, asPath } = useRouter();
   useEffect(() => {
     const token = readCookie("refreshToken");
     if (!isReady || !token) return;
@@ -34,13 +34,24 @@ export default function useIssueNewAuthToken(props?: RedirectProps) {
         }
       })
       .catch((err) => {
+        if (err.code === "ERR_CANCELED") return;
         if (props) {
           const { method, redirect, to } = props;
           if (method === "push" && redirect) {
-            push(to);
+            push({
+              pathname: to,
+              query: {
+                to: asPath,
+              },
+            });
           }
           if (method === "replace" && redirect) {
-            replace(to);
+            replace({
+              pathname: to,
+              query: {
+                to: asPath,
+              },
+            });
           }
         }
       });
