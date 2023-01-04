@@ -161,7 +161,7 @@ export class ProfileController {
         ? await this.prisma.client.findFirst({
             where: { id },
           })
-        : await this.prisma.client.findFirst({
+        : await this.prisma.freelancer.findFirst({
             where: { id },
           });
     if (!user)
