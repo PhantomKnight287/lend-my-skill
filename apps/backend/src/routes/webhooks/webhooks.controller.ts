@@ -64,6 +64,20 @@ export class WebhooksController {
           : undefined,
         amountPaid: body.payload.payment.entity.amount / 100,
         paymentId: body.payload.payment.entity.id,
+        Chat: {
+          create: {
+            client: {
+              connect: {
+                id: buyerId,
+              },
+            },
+            freelancer: {
+              connect: {
+                id: sellerId,
+              },
+            },
+          },
+        },
       },
       select: {
         id: true,
