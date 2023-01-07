@@ -28,6 +28,7 @@ import { UpiController } from './routes/upi/upi.controller';
 import { MessageGateway } from './gateways/message/message.gateway';
 import { MessagesController } from './routes/messages/messages.controller';
 import { ChatController } from './routes/chat/chat.controller';
+import { QuestionsController } from './routes/questions/questions.controller';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { ChatController } from './routes/chat/chat.controller';
     UpiController,
     MessagesController,
     ChatController,
+    QuestionsController,
   ],
   providers: [
     AppService,
