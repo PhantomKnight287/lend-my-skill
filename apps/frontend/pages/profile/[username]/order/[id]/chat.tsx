@@ -1,3 +1,10 @@
+import dynamic from "next/dynamic";
+
+const ChatContainer = dynamic(() => import("@components/chat/container"), {
+  ssr: false,
+  loading: () => <div>Loading...</div>,
+});
+
 import { MetaTags } from "@components/meta";
 import { ChatSidebar } from "@components/sidebars/chat";
 import { outfit } from "@fonts";
@@ -5,10 +12,14 @@ import { readCookie } from "@helpers/cookie";
 import useHydrateUserContext from "@hooks/hydrate/user";
 import useIssueNewAuthToken from "@hooks/jwt";
 import { useUser } from "@hooks/user";
-import { Grid, LoadingOverlay } from "@mantine/core";
+import { LoadingOverlay } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { fetchChatDetails } from "@services/chats.service";
+import {
+  fetchChatDetails,
+  isChatQuestionsAnswered,
+} from "@services/chats.service";
 import clsx from "clsx";
+import { AnswerType, OrderStatus } from "db";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -32,13 +43,21 @@ export type ChatDetails = {
     verified: boolean;
   };
   id: string;
-  status: string;
+  status: OrderStatus;
+};
+
+export type ChatQuestions = {
+  id: string;
+  isRequired: boolean;
+  question: string;
+  answerType: AnswerType;
 };
 
 const Chat = () => {
-  const [chatDetails, setChatDetails] = useState<ChatDetails>(
-    {} as ChatDetails
-  );
+  const [chatConfig, setchatConfig] = useState<ChatDetails>({} as ChatDetails);
+  const [questionsAnswered, setQuestionsAnswered] = useState<
+    Boolean | undefined
+  >(undefined);
   const refetchProfile = useHydrateUserContext();
   useIssueNewAuthToken({
     method: "replace",
@@ -62,7 +81,7 @@ const Chat = () => {
     fetchChatDetails(
       query.id as string,
       token,
-      setChatDetails,
+      setchatConfig,
       (error) => {
         if (error.code === "ERR_CANCELED") return;
         showNotification({
@@ -78,6 +97,47 @@ const Chat = () => {
   }, [isReady, query.id, asPath]);
   const { userType } = useUser();
 
+  useEffect(() => {
+    if (!chatConfig.id) return;
+    const controller = new AbortController();
+    if (!readCookie("token"))
+      return void replace({
+        pathname: "/auth/login",
+        query: {
+          to: asPath,
+        },
+      });
+    if (userType === "client") {
+      isChatQuestionsAnswered(
+        chatConfig.Chat.id,
+        readCookie("token")!,
+        setQuestionsAnswered,
+        (err) => {
+          return showNotification({
+            title: "Error",
+            message:
+              (err?.response?.data as any)?.message || "Something went wrong",
+            color: "red",
+          });
+        },
+        controller.signal
+      );
+    }
+    return () => controller.abort();
+  }, [chatConfig.id, userType, chatConfig?.Chat?.id, asPath]);
+
+  useEffect(() => {
+    if (questionsAnswered === undefined) return;
+    if (questionsAnswered === false)
+      return void replace({
+        pathname: asPath.replace("chat", "questions"),
+        query: {
+          to: asPath,
+          chatId: chatConfig.Chat.id,
+        },
+      });
+  }, [questionsAnswered]);
+
   return (
     <div
       className={clsx("p-8", {
@@ -88,31 +148,37 @@ const Chat = () => {
         title="Chat"
         description="Chat to complete this project successfully."
       />
-      <LoadingOverlay visible={!chatDetails.id} overlayBlur={1} />
-      {chatDetails.id ? (
+      <LoadingOverlay visible={!chatConfig.id} overlayBlur={1} />
+      {chatConfig.id ? (
         <div className="flex flex-col">
           <h1 className="text-2xl font-bold">
             Chat With{" "}
             <Link
-              href={`/profile/${
-                userType === "client"
-                  ? chatDetails.freelancer.username
-                  : chatDetails.client.username
-              }`}
+              href={`/profile/${userType === "client"
+                  ? chatConfig.freelancer.username
+                  : chatConfig.client.username
+                }`}
               className="text-blue-500 hover:underline"
               target="_blank"
               rel="noopener noreferrer"
             >
               {userType === "client"
-                ? chatDetails.freelancer.name
-                : chatDetails.client.name}
+                ? chatConfig.freelancer.name
+                : chatConfig.client.name}
             </Link>
           </h1>
-          <div className="flex flex-row mt-10">
-            <div className="flex-[0.15] border-[1px] rounded-md min-h-screen p-2">
+          <div className="flex flex-row mt-5">
+            <div className="flex-[0.15] border-[1px] rounded-md p-2">
               <ChatSidebar
-                client={chatDetails.client}
-                freelancer={chatDetails.freelancer}
+                client={chatConfig.client}
+                freelancer={chatConfig.freelancer}
+              />
+            </div>
+            <div className="flex-1 border-[1px] rounded-md p-2 ml-1">
+              <ChatContainer
+                orderId={query.id as string}
+                chatId={chatConfig.Chat.id}
+                completed={chatConfig.status === "COMPLETED"}
               />
             </div>
           </div>
