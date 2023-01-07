@@ -25,7 +25,12 @@ export class UploadController {
       storage: diskStorage({
         destination: './public/uploads',
         filename: (_, file, cb) =>
-          cb(null, `${Date.now()}-${randomUUID()}-${file.originalname}`),
+          cb(
+            null,
+            `${Date.now()}-${randomUUID()}-${file.originalname
+              .replace('x', '')
+              .replace('X', '')}`,
+          ),
       }),
     }),
   )
@@ -44,18 +49,22 @@ export class UploadController {
     const fileContent = readFileSync(`${process.cwd()}/${file.path}`);
     const { data, error } = await supabase.storage
       .from('images')
-      .upload(`assets/${id}-${randomUUID()}-${file.filename}`, fileContent, {
-        contentType: file.mimetype,
-      });
+      .upload(
+        `assets/${id}-${randomUUID()}-${file.filename
+          .replace('x', '')
+          .replace('X', '')}`,
+        fileContent,
+        {
+          contentType: file.mimetype,
+        },
+      );
     unlink(
       `${process.cwd()}/${file.path}`,
       (err) => err && console.log(`${err.message}`),
     );
-    console.log(error);
     if (error) {
       throw new BadRequestException(undefined, error.message);
     }
-    console.log(data);
     return {
       path: data.path,
     };
@@ -66,7 +75,12 @@ export class UploadController {
       storage: diskStorage({
         destination: './public/uploads',
         filename: (_, file, cb) =>
-          cb(null, `${Date.now()}-${randomUUID()}-${file.originalname}`),
+          cb(
+            null,
+            `${Date.now()}-${randomUUID()}-${file.originalname
+              .replace('x', '')
+              .replace('X', '')}`,
+          ),
       }),
     }),
   )
@@ -89,9 +103,15 @@ export class UploadController {
 
       const { data, error } = await supabase.storage
         .from('images')
-        .upload(`assets/${id}-${randomUUID()}-${file.filename}`, fileContent, {
-          contentType: file.mimetype,
-        });
+        .upload(
+          `assets/${id}-${randomUUID()}-${file.filename
+            .replace('x', '')
+            .replace('X', '')}`,
+          fileContent,
+          {
+            contentType: file.mimetype,
+          },
+        );
       unlink(
         `${process.cwd()}/${file.path}`,
         (err) => err && console.log(`${err.message}`),
