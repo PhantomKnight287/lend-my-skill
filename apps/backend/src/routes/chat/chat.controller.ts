@@ -53,4 +53,64 @@ export class ChatController {
     if (!order) throw new HttpException('No Order Found', 404);
     return order;
   }
+
+  @Get(':chatId/info')
+  async getChatInfo(
+    @Token({ serialize: true }) { id },
+    @Param('chatId') chatId: string,
+  ) {
+    const { userFound: isValidBuyer } = await this.verify.verifyBuyer(id);
+    const { userFound: isValidSeller } = await this.verify.verifySeller(id);
+    if (!isValidBuyer && !isValidSeller)
+      throw new HttpException('Unauthorized', 401);
+
+    const chat = await this.prisma.chat.findFirst({
+      where: {
+        id: chatId,
+      },
+      select: {
+        questionAnswered: true,
+      },
+    });
+    if (!chat) throw new HttpException('No Chat Found', 404);
+    return chat;
+  }
+  @Get(':chatId/questions')
+  async getChatQuestions(
+    @Token({ serialize: true }) { id },
+    @Param('chatId') chatId: string,
+  ) {
+    const { userFound: isValidBuyer } = await this.verify.verifyBuyer(id);
+    const { userFound: isValidSeller } = await this.verify.verifySeller(id);
+    if (!isValidBuyer && !isValidSeller)
+      throw new HttpException('Unauthorized', 401);
+    const _q = await this.prisma.chat.findFirst({
+      where: {
+        id: chatId,
+      },
+      select: {
+        order: {
+          select: {
+            package: {
+              select: {
+                service: {
+                  select: {
+                    questions: {
+                      select: {
+                        id: true,
+                        isRequired: true,
+                        question: true,
+                        answerType: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    return _q.order.package.service.questions;
+  }
 }
