@@ -20,12 +20,12 @@ import { CreateServiceDto } from 'src/validators/services.validator';
 export class ServiceController {
   constructor(
     protected prisma: PrismaService,
-    protected gigs: ServiceService,
+    protected services: ServiceService,
     protected verify: VerificationService,
   ) {}
 
   @Get()
-  async getGigs(@Query('take') take: string) {
+  async getServices(@Query('take') take: string) {
     const toOutput = Number.isNaN(Number(take)) ? 10 : Number(take);
 
     const data = await this.prisma.service.findMany({

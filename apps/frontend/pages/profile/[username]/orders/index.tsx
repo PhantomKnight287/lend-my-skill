@@ -187,7 +187,7 @@ const Orders = () => {
                                             : order.client.verified
                                         ) ? (
                                           <Tooltip
-                                            label="Verified Freelancer"
+                                            label="Verified User"
                                             withArrow
                                           >
                                             <Badge

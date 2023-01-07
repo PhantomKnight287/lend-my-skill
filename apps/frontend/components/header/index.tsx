@@ -104,130 +104,100 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const mockdata = [
-  {
-    icon: IconCode,
-    title: "Open source",
-    description: "This Pokémon’s cry is very loud and distracting",
-  },
-  {
-    icon: IconCoin,
-    title: "Free for everyone",
-    description: "The fluid of Smeargle’s tail secretions changes",
-  },
-  {
-    icon: IconBook,
-    title: "Documentation",
-    description: "Yanma is capable of seeing 360 degrees without",
-  },
-  {
-    icon: IconFingerprint,
-    title: "Security",
-    description: "The shell’s rounded shape and the grooves on its.",
-  },
-  {
-    icon: IconChartPie3,
-    title: "Analytics",
-    description: "This Pokémon uses its flying ability to quickly chase",
-  },
-  {
-    icon: IconNotification,
-    title: "Notifications",
-    description: "Combusken battles with the intensely hot flames it spews",
-  },
-];
-
 export function Header() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
-  const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
   const { classes, theme } = useStyles();
   const { username, userType } = useUser();
   const { asPath } = useRouter();
 
   return (
     <Box>
-      <H height={60} px="md">
-        <Group sx={{ height: "100%", justifyContent: "space-evenly" }}>
-          <Link href={username ? "/dashboard" : "/"}>
-            <Avatar size={50} src={"/brand/icon-transparent.png"} />
-          </Link>
+      <H
+        height={60}
+        px="md"
+        className="flex flex-row items-center justify-around"
+      >
+        <Link
+          href={username ? "/dashboard" : "/"}
+          className={clsx({
+            "min-w-[183px]": !username,
+          })}
+        >
+          <Avatar size={50} src={"/brand/lms-logo.png"} />
+        </Link>
 
-          <Group
-            style={{ height: "100%" }}
-            // align="center"
-            className={classes.hiddenMobile}
-          >
+        <Group
+          style={{ height: "100%" }}
+          className={clsx(classes.hiddenMobile)}
+        >
+          {userType !== "freelancer" ? (
             <Link href="/search?type=services">
-              {userType !== "freelancer" ? (
-                <Button
-                  variant="default"
-                  className={clsx("", {
-                    [outfit.className]: true,
-                  })}
-                >
-                  Hire a Talent
-                </Button>
-              ) : null}
+              <Button
+                variant="default"
+                className={clsx("", {
+                  [outfit.className]: true,
+                })}
+              >
+                Hire a Talent
+              </Button>
             </Link>
+          ) : null}
+          {userType !== "client" ? (
             <Link href="/search?type=jobposts">
-              {userType !== "client" ? (
+              <Button
+                variant="default"
+                className={clsx("", {
+                  [outfit.className]: true,
+                })}
+              >
+                Find a Job
+              </Button>
+            </Link>
+          ) : null}
+        </Group>
+        <Group
+          className={clsx("", {
+            [classes.hiddenMobile]: true,
+          })}
+          // align="center"
+        >
+          {!username ? (
+            <>
+              <Link
+                href={{
+                  pathname: "/auth/login",
+                  query: { to: asPath },
+                }}
+              >
                 <Button
                   variant="default"
                   className={clsx("", {
                     [outfit.className]: true,
                   })}
                 >
-                  Find a Job
+                  Log in
                 </Button>
-              ) : null}
-            </Link>
-          </Group>
-          <Group
-            className={clsx("", {
-              [classes.hiddenMobile]: true,
-            })}
-            // align="center"
-          >
-            {!username ? (
-              <>
-                <Link
-                  href={{
-                    pathname: "/auth/login",
-                    query: { to: asPath },
-                  }}
+              </Link>
+              <Link
+                href={{
+                  pathname: "/auth/register",
+                  query: { to: asPath },
+                }}
+              >
+                <Button
+                  variant="outline"
+                  className={clsx("", {
+                    [outfit.className]: true,
+                  })}
                 >
-                  <Button
-                    variant="default"
-                    data-testingid="header__login_button"
-                    className={clsx("", {
-                      [outfit.className]: true,
-                    })}
-                  >
-                    Log in
-                  </Button>
-                </Link>
-                <Link
-                  href={{
-                    pathname: "/auth/register",
-                    query: { to: asPath },
-                  }}
-                >
-                  <Button
-                    variant="outline"
-                    className={clsx("", {
-                      [outfit.className]: true,
-                    })}
-                    data-testingid="header__register_button"
-                  >
-                    Register
-                  </Button>
-                </Link>
-              </>
-            ) : (
-              <HeaderMenu />
-            )}
-          </Group>
+                  Register
+                </Button>
+              </Link>
+            </>
+          ) : (
+            <HeaderMenu />
+          )}
 
           {!username ? (
             <Burger

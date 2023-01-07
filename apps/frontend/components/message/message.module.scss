@@ -1,0 +1,76 @@
+.messageContainerWrapper {
+  display: flex;
+  flex-direction: column;
+  @apply my-3;
+  &.sender {
+    align-items: flex-end;
+    .container {
+      flex-direction: row-reverse;
+    }
+    .content {
+      @apply ml-0 mr-3;
+    }
+    .userInfoAndTimestamp {
+      @apply ml-0 mr-3;
+    }
+  }
+  &.system {
+    align-items: center;
+    .avatar {
+      display: none;
+    }
+    .username {
+      display: none;
+    }
+    .userAvatar {
+      display: none;
+    }
+    .timestamp {
+      display: none;
+    }
+  }
+}
+.container {
+  max-width: fit-content;
+  max-height: fit-content;
+  display: flex;
+  flex-direction: row;
+}
+.userAvatar {
+  width: 50px;
+  height: 50px;
+}
+
+.avatar {
+  img {
+    border-radius: 50%;
+  }
+}
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.userInfoAndTimestamp {
+  max-width: fit-content;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  @apply ml-3;
+}
+
+.username {
+  text-transform: capitalize;
+}
+.timestamp {
+  @apply text-gray-500 ml-4;
+}
+
+.content {
+  word-wrap: break-word;
+  @apply rounded-sm ml-3;
+}
+.messageWrapper{
+  @apply flex flex-col;
+}

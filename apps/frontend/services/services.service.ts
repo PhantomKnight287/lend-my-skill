@@ -20,7 +20,7 @@ interface Props {
 }
 
 export async function createService(props: Props, token: string) {
-  return axios.post(URLBuilder("/gigs/create"), props, {
+  return axios.post(URLBuilder("/services/create"), props, {
     headers: {
       authorization: `Bearer ${token}`,
     },

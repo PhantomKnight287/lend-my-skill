@@ -98,10 +98,7 @@ export default function App(props: AppProps) {
           </UserProvider>
         </SessionProvider>
       </QueryClientProvider>
-      <Script
-        src={"https://checkout.razorpay.com/v1/checkout.js"}
-        strategy="lazyOnload"
-      />
+      
     </>
   );
 }

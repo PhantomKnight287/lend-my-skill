@@ -25,7 +25,8 @@
       "~/constants": ["./constants"],
       "~/types/*": ["./types/*"],
       "@module/*": ["./module/*"],
-      "db":["../backend/src/types/export.ts"]
+      "db":["../backend/src/types/export.ts"],
+      "@services/*":["./services/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

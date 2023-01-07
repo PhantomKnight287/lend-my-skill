@@ -12,7 +12,6 @@ const Home: NextPage = () => {
     method: "replace",
     redirect: false,
     to: "/dashboard",
-    
   });
 
   return (
@@ -32,6 +31,10 @@ const Home: NextPage = () => {
           {
             label: "Privacy Policy",
             link: "/privacy",
+          },
+          {
+            label: "About Us",
+            link: "/about",
           },
           {
             label: "Contact Us",

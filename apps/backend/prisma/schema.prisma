@@ -193,27 +193,29 @@ enum AnswerType {
 }
 
 model Order {
-  id             String        @id @default(cuid())
-  paymentId      String        @unique
-  service        Service       @relation(fields: [serviceId], references: [id])
-  serviceId      String
-  amountPaid     Float?
-  freelancer     Freelancer    @relation(fields: [freelancerId], references: [id])
-  freelancerId   String
-  client         Client        @relation(fields: [clientId], references: [id])
-  clientId       String
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  status         OrderStatus   @default(PENDING)
-  price          Int
-  deliveryDays   Int
-  attachments    String[]
-  deadline       DateTime?
-  package        Package?      @relation(fields: [packageId], references: [id])
-  packageId      String?
-  DiscountCode   DiscountCode? @relation(fields: [discountCodeId], references: [id])
-  discountCodeId String?
-  Chat           Chat?
+  id                       String        @id @default(cuid())
+  paymentId                String        @unique
+  service                  Service       @relation(fields: [serviceId], references: [id])
+  serviceId                String
+  amountPaid               Float?
+  freelancer               Freelancer    @relation(fields: [freelancerId], references: [id])
+  freelancerId             String
+  client                   Client        @relation(fields: [clientId], references: [id])
+  clientId                 String
+  createdAt                DateTime      @default(now())
+  updatedAt                DateTime      @updatedAt
+  status                   OrderStatus   @default(PENDING)
+  price                    Int
+  deliveryDays             Int
+  attachments              String[]
+  deadline                 DateTime?
+  package                  Package?      @relation(fields: [packageId], references: [id])
+  packageId                String?
+  DiscountCode             DiscountCode? @relation(fields: [discountCodeId], references: [id])
+  discountCodeId           String?
+  Chat                     Chat?
+  markedAsDoneByFreelancer Boolean       @default(false)
+  markedAsDoneByClient     Boolean       @default(false)
 }
 
 enum OrderStatus {
@@ -256,10 +258,17 @@ model Message {
   chat         Chat?       @relation(fields: [chatId], references: [id])
   chatId       String?
   content      String?
-  attachements String[]    @default([])
+  attachments  String[]    @default([])
   freelancer   Freelancer? @relation(fields: [freelancerId], references: [id])
   freelancerId String?
   client       Client?     @relation(fields: [clientId], references: [id])
   clientId     String?
   createdAt    DateTime    @default(now())
+  type         MessageType @default(BASIC)
+  bySystem     Boolean     @default(false)
+}
+
+enum MessageType {
+  BASIC
+  CONFIRM_AND_CANCEL_PROMPT
 }

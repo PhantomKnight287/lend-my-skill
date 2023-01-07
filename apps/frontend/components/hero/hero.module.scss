@@ -40,7 +40,7 @@
 }
 
 .featuresContainer {
-  width: 100%;
+  width: fit-content;
   text-align: center;
   margin-bottom: 2rem;
   margin-top: 2rem;
@@ -75,6 +75,11 @@
     margin-top: auto;
     margin-bottom: auto;
   }
+  &:first-of-type{
+    margin: 0;
+    width: 100%;
+  }
+  
 }
 .featureDescription {
   color: #6c6c6c;

@@ -106,7 +106,7 @@ export default function Register() {
       return;
     }
     if (id) replace("/dashboard");
-  }, [isReady]);
+  }, [isReady,id]);
 
   if (!userType)
     return (

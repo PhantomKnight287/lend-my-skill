@@ -27,6 +27,8 @@ import { WebhooksController } from './routes/webhooks/webhooks.controller';
 import { UpiController } from './routes/upi/upi.controller';
 import { MessageGateway } from './gateways/message/message.gateway';
 import { MessagesController } from './routes/messages/messages.controller';
+import { ChatController } from './routes/chat/chat.controller';
+import { QuestionsController } from './routes/questions/questions.controller';
 
 @Module({
   imports: [
@@ -55,6 +57,8 @@ import { MessagesController } from './routes/messages/messages.controller';
     WebhooksController,
     UpiController,
     MessagesController,
+    ChatController,
+    QuestionsController,
   ],
   providers: [
     AppService,

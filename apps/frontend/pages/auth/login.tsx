@@ -99,7 +99,7 @@ export default function Login() {
     if (id) {
       replace((query.to as string) || "/dashboard");
     }
-  }, [isReady]);
+  }, [isReady,id]);
 
   return (
     <>
