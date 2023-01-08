@@ -2,10 +2,12 @@
 
 import 'package:components/gradient_text.dart';
 import 'package:components/outlined_input_field.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:mobile/constants/main.dart';
+import 'package:mobile/screens/auth/login.dart';
 import 'package:services/services.dart' as s;
 
 class RegisterScreen extends StatefulWidget {
@@ -90,15 +92,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
     }
 
-    try {
-      final res = await s.register(Uri.parse("$API_URL/freelancer/auth/register"),
-          {"email": emailController.text, "password": passwordController.text, "confirmPassword": confirmPasswordController.text, "username": usernameController.text, "name": nameController.text});
-      if (res['error'] == true) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(res['message'])));
-      }
-    } catch (error) {
-      print(error);
+    final res = await s.register(Uri.parse("$API_URL/freelancer/auth/register"),
+        {"email": emailController.text, "password": passwordController.text, "confirmPassword": confirmPasswordController.text, "username": usernameController.text, "name": nameController.text});
+    if (res['error'] == true) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(res['message'])));
+      return;
     }
+    Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => LoginScreen()));
   }
 
   @override
