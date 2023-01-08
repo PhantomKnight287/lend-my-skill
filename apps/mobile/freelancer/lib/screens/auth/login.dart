@@ -1,13 +1,17 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:controllers/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import "package:components/gradient_text.dart";
 import 'package:components/outlined_input_field.dart';
 import 'package:mobile/constants/main.dart';
 import 'package:mobile/screens/auth/register.dart';
+import 'package:mobile/screens/home/main.dart';
 import 'package:services/services.dart' as s;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,6 +26,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String emailError = "";
   String passwordError = "";
+
+  UserController c = Get.find();
 
   @override
   void dispose() {
@@ -66,7 +72,8 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       return;
     }
-    if (res['type'] != 'freelancer') {
+
+    if (res['user']['type'] != 'freelancer') {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("This account doesn't belong a freelancer."),
@@ -74,6 +81,35 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       return;
     }
+    final prefs = await SharedPreferences.getInstance();
+    c.setUserData(res['user']['id'], res['user']['name'], res['user']['username'], res['user']['type'], false, avatarUrl: res['user']['avatarUrl']);
+    await prefs.setString("token", res['tokens']['auth']);
+    Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const HomeScreen()));
+  }
+
+  void hydateState() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("token");
+    if (token != null) {
+      final res = await s.hydrateController(Uri.parse("$API_URL/profile"), token);
+      if (res['error'] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(res['message']!),
+          ),
+        );
+        return;
+      }
+      c.setUserData(res['id'], res['name'], res['username'], res['type'], false, avatarUrl: res['avatarUrl']);
+      Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const HomeScreen()));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    c = Get.find();
+    hydateState();
   }
 
   @override
