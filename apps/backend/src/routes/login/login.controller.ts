@@ -70,9 +70,6 @@ export class LoginController {
         userType: isValidClient ? 'client' : 'freelancer',
       },
       SIGN_SECRET,
-      {
-        expiresIn: '1d',
-      },
     );
     const refreshToken = sign(
       {
