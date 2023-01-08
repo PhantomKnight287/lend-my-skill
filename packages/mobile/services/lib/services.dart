@@ -24,3 +24,12 @@ dynamic login(Uri url, Object body) async {
   }
   return res;
 }
+
+dynamic hydrateController(Uri url, String token) async {
+  Response req = await get(url, headers: {"authorization": "Bearer $token"});
+  final res = jsonDecode(req.body);
+  if (req.statusCode != 200 && req.statusCode != 201) {
+    return {"error": true, "message": res['message']};
+  }
+  return res;
+}
