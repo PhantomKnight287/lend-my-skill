@@ -42,6 +42,10 @@ dependencies:
     path: ../../../packages/mobile/controllers
   components:
     path: ../../../packages/mobile/components
+  country_picker: ^2.0.19
+  services:
+    path: ../../../packages/mobile/services
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:

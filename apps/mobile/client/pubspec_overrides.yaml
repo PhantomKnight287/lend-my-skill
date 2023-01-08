@@ -1,0 +1,4 @@
+# melos_managed_dependency_overrides: controllers
+dependency_overrides:
+  controllers:
+    path: ..\\..\\..\\packages\\mobile\\controllers

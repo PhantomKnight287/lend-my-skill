@@ -1,8 +1,17 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:controllers/user.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import "package:components/gradient_text.dart";
 import 'package:components/outlined_input_field.dart';
+import 'package:mobile/constants/main.dart';
 import 'package:mobile/screens/auth/register.dart';
+import 'package:mobile/screens/home/main.dart';
+import 'package:services/services.dart' as s;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -18,11 +27,89 @@ class _LoginScreenState extends State<LoginScreen> {
   String emailError = "";
   String passwordError = "";
 
+  UserController c = Get.find();
+
   @override
   void dispose() {
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
+  }
+
+  void login() async {
+    setState(() {
+      emailError = "";
+      passwordError = "";
+    });
+    if (emailController.text.isEmpty) {
+      return setState(() {
+        emailError = "Please enter an email address";
+      });
+    }
+    final bool emailValid = RegExp(r"^\S+@\S+$").hasMatch(emailController.text);
+    if (emailValid == false) {
+      return setState(() {
+        emailError = "Please enter a valid email address";
+      });
+    }
+    if (passwordController.text == "") {
+      return setState(() {
+        passwordError = "Please enter a password";
+      });
+    }
+    if (passwordController.text.length < 8) {
+      return setState(() {
+        passwordError = "Password must include 8 characters";
+      });
+    }
+    final res = await s.login(Uri.parse("$API_URL/login"), {"email": emailController.text, "password": passwordController.text});
+    print(res);
+    if (res['error'] == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(res['message']!),
+        ),
+      );
+      return;
+    }
+
+    if (res['user']['type'] != 'freelancer') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("This account doesn't belong a freelancer."),
+        ),
+      );
+      return;
+    }
+    final prefs = await SharedPreferences.getInstance();
+    c.setUserData(res['user']['id'], res['user']['name'], res['user']['username'], res['user']['type'], false, avatarUrl: res['user']['avatarUrl']);
+    await prefs.setString("token", res['tokens']['auth']);
+    Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const HomeScreen()));
+  }
+
+  void hydateState() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("token");
+    if (token != null) {
+      final res = await s.hydrateController(Uri.parse("$API_URL/profile"), token);
+      if (res['error'] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(res['message']!),
+          ),
+        );
+        return;
+      }
+      c.setUserData(res['id'], res['name'], res['username'], res['type'], false, avatarUrl: res['avatarUrl']);
+      Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const HomeScreen()));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    c = Get.find();
+    hydateState();
   }
 
   @override
@@ -37,24 +124,15 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Navigator.canPop(context)
-                    ? Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.arrow_back),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      )
-                    : Container(),
                 const SizedBox(
                   height: 50,
                 ),
-                const Image(
-                  image: AssetImage("assets/brand/lms-logo.png"),
-                  height: 200,
+                const Center(
+                  child: Image(
+                    image: AssetImage("assets/brand/lms-logo-cropped.png"),
+                    height: 200,
+                    width: 200,
+                  ),
                 ),
                 Text(
                   "Welcome Back!",
@@ -122,7 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 20),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: login,
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
                     padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(8)),
@@ -157,7 +235,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
+                          CupertinoPageRoute(
                             builder: (context) => const RegisterScreen(),
                           ),
                         );
