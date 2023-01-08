@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_string_escapes
+// ignore_for_file: unnecessary_string_escapes, use_build_context_synchronously
 
 import 'package:components/gradient_text.dart';
 import 'package:components/outlined_input_field.dart';
@@ -98,7 +98,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(res['message'])));
       return;
     }
-    Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => LoginScreen()));
+    Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const LoginScreen()));
   }
 
   @override

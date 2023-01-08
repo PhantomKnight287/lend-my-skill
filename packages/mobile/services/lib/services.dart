@@ -17,8 +17,6 @@ dynamic login(Uri url, Object body) async {
   Response req = await post(url, body: body);
 
   final res = jsonDecode(req.body);
-  print(req.statusCode);
-  print(res);
   if (req.statusCode != 200 && req.statusCode != 201) {
     return {"error": true, "message": res['message']};
   }
