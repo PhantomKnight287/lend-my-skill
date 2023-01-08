@@ -63,7 +63,6 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     }
     final res = await s.login(Uri.parse("$API_URL/login"), {"email": emailController.text, "password": passwordController.text});
-    print(res);
     if (res['error'] == true) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
