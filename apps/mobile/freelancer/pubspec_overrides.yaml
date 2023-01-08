@@ -1,0 +1,6 @@
+# melos_managed_dependency_overrides: components,controllers
+dependency_overrides:
+  components:
+    path: ..\\..\\..\\packages\\mobile\\components
+  controllers:
+    path: ..\\..\\..\\packages\\mobile\\controllers

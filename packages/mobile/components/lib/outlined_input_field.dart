@@ -15,6 +15,7 @@ class InputField extends StatelessWidget {
   final Widget? prefix;
   final InputDecoration? inputDecoration;
   final TextAlign? textAlign;
+  final bool? enabled;
   const InputField(
       {this.labelText,
       this.onChanged,
@@ -29,6 +30,7 @@ class InputField extends StatelessWidget {
       this.prefix,
       this.inputDecoration,
       this.textAlign,
+      this.enabled,
       Key? key})
       : super(key: key);
 
@@ -42,6 +44,7 @@ class InputField extends StatelessWidget {
       textInputAction: textInputAction,
       obscureText: obscureText,
       textAlign: textAlign ?? TextAlign.start,
+      enabled: enabled,
       decoration: inputDecoration ??
           InputDecoration(
             labelText: labelText,
