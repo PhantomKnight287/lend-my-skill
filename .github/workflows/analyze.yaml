@@ -1,5 +1,5 @@
 
-name: Run Lint
+name: Run Analyze
 
 on:
   push:
@@ -9,8 +9,8 @@ on:
 
 jobs:
   lint:
-    name: Run Linter
-    runs-on: ubuntu-latest
+    name: Run Analyze
+    runs-on: windows-latest
 
     steps:
       - name: Get Code
