@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:controllers/user.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/screens/auth/login.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MaterialApp(
       title: 'Lend My Skill',
-      theme: ThemeData(primaryColor: Colors.blueAccent),
+      theme: ThemeData(primaryColor: Colors.blueAccent, fontFamily: GoogleFonts.outfit().fontFamily),
       home: const RouteHandler(),
       debugShowCheckedModeBanner: false,
     ),
