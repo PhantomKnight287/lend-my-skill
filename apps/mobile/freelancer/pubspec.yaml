@@ -46,6 +46,8 @@ dependencies:
   services:
     path: ../../../packages/mobile/services
   shared_preferences: ^2.0.15
+  models:
+    path: ../../../packages/mobile/models
 
 dev_dependencies:
   flutter_test:
