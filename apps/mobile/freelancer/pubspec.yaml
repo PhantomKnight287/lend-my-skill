@@ -46,6 +46,10 @@ dependencies:
   services:
     path: ../../../packages/mobile/services
   shared_preferences: ^2.0.15
+  models:
+    path: ../../../packages/mobile/models
+  flutter_dotenv: ^5.0.2
+  adaptive_theme: ^3.1.1
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +78,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
       - assets/brand/
+      - .env
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
