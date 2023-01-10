@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:controllers/user.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/screens/auth/login.dart';
+import "package:adaptive_theme/adaptive_theme.dart";
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(
-    MaterialApp(
-      title: 'Lend My Skill',
-      theme: ThemeData(primaryColor: Colors.blueAccent, fontFamily: GoogleFonts.outfit().fontFamily),
-      home: const RouteHandler(),
-      debugShowCheckedModeBanner: false,
-    ),
-  );
+  await dotenv.load(fileName: ".env");
+  runApp(const RouteHandler());
 }
 
 class RouteHandler extends StatefulWidget {
@@ -28,7 +23,20 @@ class _RouteHandlerState extends State<RouteHandler> {
   @override
   Widget build(BuildContext context) {
     // ignore: unrelated_type_equality_checks
-    if (c.id == "") return const LoginScreen();
-    return Container();
+    return AdaptiveTheme(
+      light: ThemeData(
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue).copyWith(secondary: Colors.amber),
+      ),
+      dark: ThemeData(
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue).copyWith(secondary: Colors.amber),
+      ),
+      initial: AdaptiveThemeMode.light,
+      builder: (theme, darkTheme) => MaterialApp(
+        title: 'Adaptive Theme Demo',
+        theme: theme,
+        darkTheme: darkTheme,
+        home: c.id.value == "" ? const LoginScreen() : Container(),
+      ),
+    );
   }
 }
