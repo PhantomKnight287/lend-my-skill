@@ -23,16 +23,6 @@ services:
     ports:
       - 5000:5000
 
-  postgres:
-    container_name: lend-my-skill-postgres
-    image: postgres
-    ports:
-      - 5432:5432
-    networks:
-      - lend-my-skill
-    volumes:
-      - /usr/postgres:/var/lib/postgresql/data:rw
-
 networks:
   lend-my-skill:
 
