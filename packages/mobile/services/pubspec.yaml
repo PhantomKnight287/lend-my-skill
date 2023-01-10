@@ -1,7 +1,8 @@
 name: services
 description: A new Flutter package project.
 version: 0.0.1
-homepage:
+homepage: https://github.com
+publish_to: none
 
 environment:
   sdk: '>=2.18.5 <3.0.0'
@@ -11,6 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^0.13.5
+  models:
+    path: ../models
 
 dev_dependencies:
   flutter_test:
