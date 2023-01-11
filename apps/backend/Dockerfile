@@ -1,6 +1,6 @@
-FROM node:16.18.0-alpine
+FROM node:16.18.0-bullseye
 RUN corepack enable
-RUN apk add g++ make py3-pip libressl-dev
+RUN apt get build-essential
 WORKDIR /app
 COPY . .
 EXPOSE 5000
