@@ -8,7 +8,10 @@ dynamic register(Uri url, Object body) async {
   Response req = await post(url, body: body);
   final res = jsonDecode(req.body);
   if (req.statusCode != 200 && req.statusCode != 201) {
-    return {"error": true, "message": res['errors']?[0]?['message'] ?? res['message']};
+    return {
+      "error": true,
+      "message": res['errors']?[0]?['message'] ?? res['message']
+    };
   }
   return res;
 }
