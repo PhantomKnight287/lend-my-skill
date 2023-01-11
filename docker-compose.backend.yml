@@ -6,8 +6,6 @@ services:
     build:
       context: apps/backend
       dockerfile: Dockerfile
-    depends_on:
-      - postgres
     networks:
       - lend-my-skill
     ports:
