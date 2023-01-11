@@ -1,0 +1,18 @@
+services:
+  frontend:
+    container_name: lend-my-skill-frontend
+    build:
+      context: apps/frontend
+      dockerfile: Dockerfile
+    env_file:
+      - apps/frontend/.env
+    depends_on:
+      - backend
+    networks:
+      - lend-my-skill
+    ports:
+      - 3000:3000
+
+
+networks:
+  lend-my-skill:
