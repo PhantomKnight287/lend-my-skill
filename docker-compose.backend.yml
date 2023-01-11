@@ -1,0 +1,19 @@
+services:
+  backend:
+    container_name: lend-my-skill-backend
+    env_file:
+      - apps/backend/.env
+    build:
+      context: apps/backend
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    networks:
+      - lend-my-skill
+    ports:
+      - 5000:5000
+    
+  
+
+networks:
+  lend-my-skill:
