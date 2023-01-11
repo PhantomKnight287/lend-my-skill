@@ -15,14 +15,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: null,
       body: currentIndex == 0
-          ? Center(
+          ? const Center(
               child: Text("Home"),
             )
           : currentIndex == 1
-              ? Center(
+              ? const Center(
                   child: Text("Search"),
                 )
-              : SettingsScreen(),
+              : const SettingsScreen(),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(

@@ -10,7 +10,9 @@ class UserController extends GetxController {
   var profileCompleted = false.obs;
   String? avatarUrl;
 
-  void setUserData(String id, String name, String username, String userType, bool profileCompleted, {String? avatarUrl}) {
+  void setUserData(String id, String name, String username, String userType,
+      bool profileCompleted,
+      {String? avatarUrl}) {
     this.id.value = id;
     this.name.value = name;
     this.username.value = username;

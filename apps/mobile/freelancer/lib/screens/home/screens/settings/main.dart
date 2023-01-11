@@ -2,13 +2,11 @@
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:controllers/user.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/screens/home/screens/settings/screens/profile.dart';
-import 'package:models/models.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});

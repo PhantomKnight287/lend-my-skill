@@ -92,13 +92,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
     }
 
-    final res = await s.register(Uri.parse("$API_URL/freelancer/auth/register"),
-        {"email": emailController.text, "password": passwordController.text, "confirmPassword": confirmPasswordController.text, "username": usernameController.text, "name": nameController.text});
+    final res =
+        await s.register(Uri.parse("$API_URL/freelancer/auth/register"), {
+      "email": emailController.text,
+      "password": passwordController.text,
+      "confirmPassword": confirmPasswordController.text,
+      "username": usernameController.text,
+      "name": nameController.text
+    });
     if (res['error'] == true) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(res['message'])));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(res['message'])));
       return;
     }
-    Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const LoginScreen()));
+    Navigator.pushReplacement(
+        context, CupertinoPageRoute(builder: (context) => const LoginScreen()));
   }
 
   @override
@@ -142,7 +150,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     gradient: const LinearGradient(
                       colors: [Color(0xff3b82f6), Color(0xff2dd4bf)],
                     ),
-                    style: GoogleFonts.outfit(fontSize: 30, fontWeight: FontWeight.w700),
+                    style: GoogleFonts.outfit(
+                        fontSize: 30, fontWeight: FontWeight.w700),
                   ),
                 ),
                 const SizedBox(
@@ -152,7 +161,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   fit: FlexFit.loose,
                   child: Theme(
                     data: ThemeData(
-                      colorScheme: Theme.of(context).colorScheme.copyWith(primary: const Color(0xff3b82f6)),
+                      colorScheme: Theme.of(context)
+                          .colorScheme
+                          .copyWith(primary: const Color(0xff3b82f6)),
                     ),
                     child: Stepper(
                       steps: [
@@ -176,21 +187,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   fillColor: Colors.grey.shade200,
                                   filled: true,
                                   focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                   enabledBorder: UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                   hintStyle: GoogleFonts.outfit(),
                                   errorText: emailError,
                                   errorBorder: UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                   focusedErrorBorder: UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                 ),
@@ -209,21 +224,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   fillColor: Colors.grey.shade200,
                                   filled: true,
                                   focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                   enabledBorder: UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                   hintStyle: GoogleFonts.outfit(),
                                   errorText: usernameError,
                                   errorBorder: UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                   focusedErrorBorder: UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                 ),
@@ -243,20 +262,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   filled: true,
                                   errorText: passwordError,
                                   focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                   enabledBorder: UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                   hintStyle: GoogleFonts.outfit(),
                                   errorBorder: UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                   focusedErrorBorder: UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                 ),
@@ -278,20 +301,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   fillColor: Colors.grey.shade200,
                                   filled: true,
                                   focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                   enabledBorder: UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                   hintStyle: GoogleFonts.outfit(),
                                   errorBorder: UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                   focusedErrorBorder: UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                 ),
@@ -323,20 +350,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   fillColor: Colors.grey.shade200,
                                   filled: true,
                                   focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                   enabledBorder: UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                   hintStyle: GoogleFonts.outfit(),
                                   errorBorder: UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                   focusedErrorBorder: UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                 ),
@@ -349,8 +380,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       countryListTheme: CountryListThemeData(
                                         flagSize: 25,
                                         backgroundColor: Colors.white,
-                                        textStyle: const TextStyle(fontSize: 16, color: Colors.blueGrey),
-                                        bottomSheetHeight: 500, // Optional. Country list modal height
+                                        textStyle: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.blueGrey),
+                                        bottomSheetHeight:
+                                            500, // Optional. Country list modal height
                                         //Optional. Sets the border radius for the bottomsheet.
                                         borderRadius: const BorderRadius.only(
                                           topLeft: Radius.circular(20.0),
@@ -363,13 +397,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           prefixIcon: const Icon(Icons.search),
                                           border: OutlineInputBorder(
                                             borderSide: BorderSide(
-                                              color: const Color(0xFF8C98A8).withOpacity(0.2),
+                                              color: const Color(0xFF8C98A8)
+                                                  .withOpacity(0.2),
                                             ),
                                           ),
                                         ),
                                       ),
                                       onSelect: (Country c) {
-                                        countryController.text = c.displayNameNoCountryCode;
+                                        countryController.text =
+                                            c.displayNameNoCountryCode;
                                       },
                                     );
                                   },
@@ -380,7 +416,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     controller: countryController,
                                     inputDecoration: InputDecoration(
                                       errorText: countryError,
-                                      labelStyle: GoogleFonts.outfit(fontSize: 18),
+                                      labelStyle:
+                                          GoogleFonts.outfit(fontSize: 18),
                                       hintText: "Country",
                                       prefixIcon: const Icon(
                                         Icons.flag,
@@ -391,25 +428,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       fillColor: Colors.grey.shade200,
                                       filled: true,
                                       focusedBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.white),
-                                        borderRadius: BorderRadius.circular(25.7),
+                                        borderSide: const BorderSide(
+                                            color: Colors.white),
+                                        borderRadius:
+                                            BorderRadius.circular(25.7),
                                       ),
                                       enabledBorder: UnderlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.white),
-                                        borderRadius: BorderRadius.circular(25.7),
+                                        borderSide: const BorderSide(
+                                            color: Colors.white),
+                                        borderRadius:
+                                            BorderRadius.circular(25.7),
                                       ),
                                       disabledBorder: UnderlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.white),
-                                        borderRadius: BorderRadius.circular(25.7),
+                                        borderSide: const BorderSide(
+                                            color: Colors.white),
+                                        borderRadius:
+                                            BorderRadius.circular(25.7),
                                       ),
                                       hintStyle: GoogleFonts.outfit(),
                                       errorBorder: UnderlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.white),
-                                        borderRadius: BorderRadius.circular(25.7),
+                                        borderSide: const BorderSide(
+                                            color: Colors.white),
+                                        borderRadius:
+                                            BorderRadius.circular(25.7),
                                       ),
                                       focusedErrorBorder: UnderlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.white),
-                                        borderRadius: BorderRadius.circular(25.7),
+                                        borderSide: const BorderSide(
+                                            color: Colors.white),
+                                        borderRadius:
+                                            BorderRadius.circular(25.7),
                                       ),
                                     ),
                                   )),
@@ -439,7 +486,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           }
                         });
                       },
-                      onStepTapped: (value) => setState(() => _currentStep = value),
+                      onStepTapped: (value) =>
+                          setState(() => _currentStep = value),
                       controlsBuilder: (context, details) {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -456,7 +504,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ElevatedButton(
                                       onPressed: details.onStepCancel,
                                       style: ButtonStyle(
-                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
                                           const RoundedRectangleBorder(
                                             borderRadius: BorderRadius.all(
                                               Radius.circular(25.7),
@@ -464,14 +513,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           ),
                                         ),
                                       ),
-                                      child: Text("Back", style: GoogleFonts.outfit())),
+                                      child: Text("Back",
+                                          style: GoogleFonts.outfit())),
                                 const SizedBox(
                                   width: 25,
                                 ),
                                 ElevatedButton(
-                                  onPressed: _currentStep == 0 ? details.onStepContinue : register,
+                                  onPressed: _currentStep == 0
+                                      ? details.onStepContinue
+                                      : register,
                                   style: ButtonStyle(
-                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
                                       const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(25.7),
@@ -479,7 +532,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ),
                                     ),
                                   ),
-                                  child: Text(_currentStep == 1 ? "Create" : "Continue", style: GoogleFonts.outfit()),
+                                  child: Text(
+                                      _currentStep == 1 ? "Create" : "Continue",
+                                      style: GoogleFonts.outfit()),
                                 ),
                               ],
                             )

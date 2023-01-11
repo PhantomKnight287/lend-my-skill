@@ -62,7 +62,8 @@ class _LoginScreenState extends State<LoginScreen> {
         passwordError = "Password must include 8 characters";
       });
     }
-    final res = await s.login(Uri.parse("$API_URL/login"), {"email": emailController.text, "password": passwordController.text});
+    final res = await s.login(Uri.parse("$API_URL/login"),
+        {"email": emailController.text, "password": passwordController.text});
     if (res['error'] == true) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -81,16 +82,20 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
     final prefs = await SharedPreferences.getInstance();
-    c.setUserData(res['user']['id'], res['user']['name'], res['user']['username'], res['user']['type'], false, avatarUrl: res['user']['avatarUrl']);
+    c.setUserData(res['user']['id'], res['user']['name'],
+        res['user']['username'], res['user']['type'], false,
+        avatarUrl: res['user']['avatarUrl']);
     await prefs.setString("token", res['tokens']['auth']);
-    Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const HomeScreen()));
+    Navigator.pushReplacement(
+        context, CupertinoPageRoute(builder: (context) => const HomeScreen()));
   }
 
   void hydateState() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("token");
     if (token != null) {
-      final res = await s.hydrateController(Uri.parse("$API_URL/profile"), token);
+      final res =
+          await s.hydrateController(Uri.parse("$API_URL/profile"), token);
       if (res['error'] == true) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -99,8 +104,10 @@ class _LoginScreenState extends State<LoginScreen> {
         );
         return;
       }
-      c.setUserData(res['id'], res['name'], res['username'], res['type'], false, avatarUrl: res['avatarUrl']);
-      Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const HomeScreen()));
+      c.setUserData(res['id'], res['name'], res['username'], res['type'], false,
+          avatarUrl: res['avatarUrl']);
+      Navigator.pushReplacement(context,
+          CupertinoPageRoute(builder: (context) => const HomeScreen()));
     }
   }
 
@@ -135,7 +142,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Text(
                   "Welcome Back!",
-                  style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.w700),
+                  style: GoogleFonts.outfit(
+                      fontSize: 28, fontWeight: FontWeight.w700),
                 ),
                 GradientText(
                   "Its great to see you again!",
@@ -201,10 +209,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextButton(
                   onPressed: login,
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                    padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(8)),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.black),
+                    padding: MaterialStateProperty.all<EdgeInsets>(
+                        const EdgeInsets.all(8)),
                     enableFeedback: true,
-                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(
@@ -240,11 +251,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                       },
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                        padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(8)),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        padding: MaterialStateProperty.all<EdgeInsets>(
+                            const EdgeInsets.all(8)),
                         enableFeedback: true,
-                        foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.black),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
                           const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(8),
