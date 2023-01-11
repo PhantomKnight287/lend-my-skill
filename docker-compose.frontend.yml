@@ -6,8 +6,6 @@ services:
       dockerfile: Dockerfile
     env_file:
       - apps/frontend/.env
-    depends_on:
-      - backend
     networks:
       - lend-my-skill
     ports:
