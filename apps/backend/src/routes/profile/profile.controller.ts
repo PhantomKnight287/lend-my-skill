@@ -8,6 +8,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { Client, Freelancer } from '@prisma/client';
+import axios from 'axios';
 import { DecodedJWT, Token } from 'src/decorators/token/token.decorator';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { VerificationService } from 'src/services/verification/verification.service';
@@ -196,6 +197,12 @@ export class ProfileController {
         },
       });
     }
+    axios
+      .post(`${process.env.SITE_URL}/api/webhook/revalidate`, {
+        route: `/profile/${user.username}`,
+        secret: process.env.SECRET,
+      })
+      .catch((err) => console.log(err));
     return {
       updated: true,
     };
