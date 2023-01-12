@@ -4,13 +4,15 @@ services:
     build:
       context: apps/frontend
       dockerfile: Dockerfile
+      tags:
+        - "lms-frontend:latest"
     env_file:
-      - apps/frontend/.env
+      - apps/frontend/.env.production
     networks:
       - lend-my-skill
     ports:
       - 3000:3000
-
+    
 
 networks:
   lend-my-skill:
