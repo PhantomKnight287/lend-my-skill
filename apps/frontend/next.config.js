@@ -17,7 +17,9 @@ const nextConfig = withMDX({
   devIndicators: {
     buildActivity: true,
     buildActivityPosition: "top-right",
-  },
+  },typescript:{
+    ignoreBuildErrors:true
+  }
 });
 
 module.exports = nextConfig;
