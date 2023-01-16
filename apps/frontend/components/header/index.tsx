@@ -156,6 +156,12 @@ export function Header() {
             </Link>
           ) : null}
         </Group>
+        <Group className={clsx("md:hidden",{
+          "hidden":!username,
+          
+        })} >
+          <HeaderMenu/>
+        </Group>
         <Group
           className={clsx("", {
             [classes.hiddenMobile]: true,
