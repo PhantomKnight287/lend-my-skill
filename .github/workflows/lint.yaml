@@ -54,7 +54,7 @@ jobs:
           echo NEXT_PUBLIC_API_URL="${{secrets.NEXT_PUBLIC_API_URL}} > apps/frontend/.env.production"
           echo SECRET="${{secrets.SECRET}} > apps/frontend/.env.production"
       - name: Build Docker image
-        run: docker compose -f ./.docker-compose.frontend.yml build
+        run: docker compose -f ./docker-compose.frontend.yml build
       - name: Publish Docker image
         run: docker push phantomknight/lms-frontend
 
