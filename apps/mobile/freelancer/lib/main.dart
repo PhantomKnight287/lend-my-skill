@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:controllers/user.dart';
 import 'package:mobile/screens/auth/login.dart';
 import "package:adaptive_theme/adaptive_theme.dart";
+import 'package:mobile/screens/home/main.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,19 +26,18 @@ class _RouteHandlerState extends State<RouteHandler> {
     // ignore: unrelated_type_equality_checks
     return AdaptiveTheme(
       light: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)
-            .copyWith(secondary: Colors.amber),
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue).copyWith(secondary: Colors.amber),
       ),
       dark: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)
-            .copyWith(secondary: Colors.amber),
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue).copyWith(secondary: Colors.amber),
       ),
       initial: AdaptiveThemeMode.light,
-      builder: (theme, darkTheme) => MaterialApp(
+      builder: (theme, darkTheme) => GetMaterialApp(
         title: 'Adaptive Theme Demo',
         theme: theme,
         darkTheme: darkTheme,
-        home: c.id.value == "" ? const LoginScreen() : Container(),
+        home: c.id.value == "" ? const LoginScreen() : const HomeScreen(),
+        debugShowCheckedModeBanner: false,
       ),
     );
   }
