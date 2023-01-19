@@ -376,4 +376,94 @@ export class MessageGateway implements OnGatewayConnection {
         .emit('message', message);
     }
   }
+  @SubscribeMessage('reject')
+  async rejectProposal(client: Socket) {
+    const token = client.handshake.auth.token;
+    if (!token) {
+      client.emit('error', 'Authorization header is missing');
+      return client.disconnect(true);
+    }
+    let data: DecodedJWT;
+    try {
+      data = decodeJWT(token, {
+        data: {
+          serialize: true,
+        },
+      }) as DecodedJWT;
+    } catch {
+      client.emit('error', 'Invalid or Expired Authentication Token');
+      return client.disconnect(true);
+    }
+    const orderStatus = await this.prisma.order.findFirst({
+      where: {
+        id: client.handshake.query.orderId as string,
+      },
+      select: {
+        status: true,
+        markedAsDoneByFreelancer: true,
+        markedAsDoneByClient: true,
+      },
+    });
+    if (!orderStatus) {
+      return client.emit('error', 'Invalid order');
+    }
+    if (orderStatus.status === 'COMPLETED') {
+      return client.emit('error', 'Order is already completed');
+    }
+    const userInfo =
+      data.userType === 'client'
+        ? await this.prisma.client.findFirst({
+            where: {
+              id: data.id,
+            },
+          })
+        : await this.prisma.freelancer.findFirst({
+            where: {
+              id: data.id,
+            },
+          });
+    if (!userInfo) {
+      return client.emit('error', 'Invalid user');
+    }
+
+    const message = await this.prisma.message.create({
+      data: {
+        bySystem: true,
+        chat: {
+          connect: {
+            id: client.handshake.query.chatId as string,
+          },
+        },
+        type: 'BASIC',
+        content: `${userInfo.name} has rejected your proposal to mark this order as completed.`,
+      },
+      select: {
+        id: true,
+        attachments: true,
+        content: true,
+        client: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            avatarUrl: true,
+          },
+        },
+        freelancer: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            avatarUrl: true,
+          },
+        },
+        createdAt: true,
+        type: true,
+      },
+    });
+    client.emit('message', message);
+    client
+      .to(client.handshake.query.orderId as string)
+      .emit('message', message);
+  }
 }
