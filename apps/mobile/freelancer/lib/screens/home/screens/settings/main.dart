@@ -2,6 +2,7 @@
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:controllers/user.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
@@ -94,8 +95,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ProfileScreen(username: c.username.value),
+                            Navigator.of(context).push(CupertinoPageRoute(
+                              builder: (context) => ProfileScreen(username: c.username.value, fetchEditable: true),
                             ));
                           },
                           child: Container(

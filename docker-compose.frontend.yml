@@ -5,7 +5,7 @@ services:
       context: apps/frontend
       dockerfile: Dockerfile
       tags:
-        - "lms-frontend:latest"
+        - "phantomknight/lms-frontend:latest"
     env_file:
       - apps/frontend/.env.production
     networks:

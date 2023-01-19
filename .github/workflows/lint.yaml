@@ -27,7 +27,6 @@ jobs:
 
       - name: Run Lint
         run: cd apps/frontend && pnpm lint
-
   backend_linter:
     name: Run linter for Backend
     runs-on: ubuntu-latest
