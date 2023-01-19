@@ -40,6 +40,7 @@ export class ProfileController {
           avatarUrl: true,
           username: true,
           profileCompleted: true,
+          rating: true,
         },
       });
     } else {
@@ -90,6 +91,12 @@ export class ProfileController {
           verified: true,
           profileCompleted: true,
           aboutMe: true,
+          rating: true,
+          reviews: {
+            select: {
+              id: true,
+            },
+          },
         },
       });
     } else {
@@ -117,6 +124,7 @@ export class ProfileController {
     return {
       ...profile,
       type: isValidFreelancer ? 'freelancer' : 'client',
+      reviews: profile.reviews?.length,
     };
   }
   @Get(':username/authenticated')

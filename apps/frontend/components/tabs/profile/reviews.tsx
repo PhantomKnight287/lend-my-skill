@@ -2,24 +2,22 @@ import {
   Button,
   LoadingOverlay,
   Paper,
+  Rating,
   useMantineColorScheme,
 } from "@mantine/core";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { profileImageRouteGenerator } from "@utils/profile";
 import { assetURLBuilder, URLBuilder } from "@utils/url";
 import { Fragment } from "react";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 import clsx from "clsx";
 import Link from "next/link";
 import { outfit } from "@fonts";
-
-dayjs.extend(relativeTime);
+import { r } from "@helpers/date";
 
 interface Props {
   username: string;
 }
-const JobPosts = ({ username }: Props) => {
+const Reviews = ({ username }: Props) => {
   const {
     data,
     error,
@@ -30,28 +28,24 @@ const JobPosts = ({ username }: Props) => {
     isFetchingNextPage,
     isFetching,
   } = useInfiniteQuery<{
-    posts: {
-      id: string;
+    reviews: {
       author: {
+        avatarUrl: any;
         id: string;
         username: string;
         name: string;
-        country: string;
-        avatarUrl: string;
       };
+      comment: string;
+      id: string;
+      rating: number;
       createdAt: string;
-      description: string;
-      budget: number;
-      title: string;
-      tags: string[];
-      slug: true;
     }[];
     next?: number;
   }>({
-    queryKey: ["job-posts", username],
+    queryKey: ["reviews", username],
     queryFn: async ({ pageParam = 10 }) => {
       const res = await fetch(
-        URLBuilder(`/jobpost/${username}?take=${pageParam}`)
+        URLBuilder(`/reviews/${username}?take=${pageParam}`)
       );
       return await res.json();
     },
@@ -63,17 +57,9 @@ const JobPosts = ({ username }: Props) => {
       <LoadingOverlay visible={isLoading} overlayBlur={2} />
       {data?.pages.map((page, index) => (
         <Fragment key={index}>
-          {page.posts?.map((post) => (
+          {page.reviews?.map((post) => (
             <div key={post.id} className="flex flex-col">
-              <Paper
-                withBorder
-                radius="md"
-                p="md"
-                my="sm"
-                className={clsx("cursor-pointer")}
-                component={Link}
-                href={`/profile/${username}/post/${post.slug}`}
-              >
+              <Paper withBorder radius="md" p="md" my="sm">
                 <div className="flex flex-row ">
                   <div className="flex flex-row items-center">
                     <img
@@ -86,7 +72,7 @@ const JobPosts = ({ username }: Props) => {
                       alt="avatar"
                     />
                     <div className="flex flex-col ml-2">
-                      <span className="font-bold">{post.title}</span>
+                      <span className="font-bold">{post.author.name}</span>
                       <span className="text-gray-500 text-sm">
                         @{post.author.username}
                       </span>
@@ -94,16 +80,17 @@ const JobPosts = ({ username }: Props) => {
                   </div>
                   <div className="flex flex-row items-center ml-auto">
                     <span className={clsx("text-gray-500 text-sm ml-4")}>
-                      {dayjs(post.createdAt).fromNow()}
+                      {r(post.createdAt)}
                     </span>
                   </div>
                 </div>
-                <div className="flex flex-row mt-2">
+                <div className="flex flex-col mt-2 ml-12">
+                  <Rating readOnly value={post.rating} fractions={2} />
                   <span
                     className="text-gray-500 text-sm "
                     style={{ lineClamp: 2 }}
                   >
-                    {post.description}
+                    {post.comment}
                   </span>
                 </div>
               </Paper>
@@ -132,7 +119,7 @@ const JobPosts = ({ username }: Props) => {
         ) : null}
       </div>
       <div>{isFetching && !isFetchingNextPage ? "Fetching..." : null}</div>
-      {data?.pages[0].posts.length === 0 && (
+      {data?.pages[0].reviews.length === 0 && (
         <div className="flex flex-col items-center justify-center w-[100%] container">
           <p>
             <span className="font-bold">{username}</span> has not posted any job
@@ -148,4 +135,4 @@ const JobPosts = ({ username }: Props) => {
   );
 };
 
-export default JobPosts;
+export default Reviews;

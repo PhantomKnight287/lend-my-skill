@@ -5,7 +5,13 @@ import JobPosts from "@components/tabs/profile/job-posts";
 import { outfit } from "@fonts";
 import { readCookie } from "@helpers/cookie";
 import useHydrateUserContext from "@hooks/hydrate/user";
-import { Divider, Paper, Tabs, useMantineColorScheme } from "@mantine/core";
+import {
+  Divider,
+  Paper,
+  Rating,
+  Tabs,
+  useMantineColorScheme,
+} from "@mantine/core";
 import {
   IconBrandGithub,
   IconBrandTwitter,
@@ -26,6 +32,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import Reviews from "@components/tabs/profile/reviews";
 
 const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   props
@@ -109,6 +116,14 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
               >
                 @{props.username}
               </span>
+              {props.rating ? (
+                <>
+                  <div className="flex flex-row">
+                    <Rating readOnly value={props.rating} fractions={2} />
+                    <span className="ml-2 text-[13px]">{props.rating}{" "}({props.reviews})</span>
+                  </div>
+                </>
+              ) : null}
               <Divider
                 orientation="horizontal"
                 className={clsx("w-full mt-3 mb-1 ")}
@@ -204,7 +219,10 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
               {props.type === "client" ? (
                 <Tabs.Tab value="job-posts">Job Posts</Tabs.Tab>
               ) : props.type === "freelancer" ? (
-                <Tabs.Tab value="services">Services</Tabs.Tab>
+                <>
+                  <Tabs.Tab value="services">Services</Tabs.Tab>
+                  <Tabs.Tab value="reviews">Reviews</Tabs.Tab>
+                </>
               ) : null}
             </Tabs.List>
             {props.type === "client" ? (
@@ -212,9 +230,14 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                 <JobPosts username={props.username} />
               </Tabs.Panel>
             ) : (
-              <Tabs.Panel value="services">
-                <ServicesTab username={props.username} />
-              </Tabs.Panel>
+              <>
+                <Tabs.Panel value="services">
+                  <ServicesTab username={props.username} />
+                </Tabs.Panel>
+                <Tabs.Panel value="reviews">
+                  <Reviews username={props.username} />
+                </Tabs.Panel>
+              </>
             )}
           </Tabs>
         </div>
@@ -254,6 +277,8 @@ export const getStaticProps: GetStaticProps<
     | "linkedinUsername"
   > & {
     type: "client" | "freelancer";
+    rating?: number;
+    reviews?: number;
   }
 > = async ({ params }) => {
   const username = params!.username;

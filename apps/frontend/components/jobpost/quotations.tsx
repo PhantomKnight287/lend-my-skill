@@ -1,8 +1,9 @@
-import { Loader } from "@mantine/core";
+import { Button, Loader } from "@mantine/core";
+import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { URLBuilder } from "@utils/url";
 import clsx from "clsx";
-import { Fragment } from "react";
+import { Fragment, useEffect, useRef } from "react";
 
 interface Props {
   username: string;
@@ -26,11 +27,9 @@ interface Type {
 const Quotations = ({ slug, username }: Props) => {
   const {
     data,
-    refetch,
+    isFetching,
     fetchNextPage,
     hasNextPage,
-    error,
-    isLoading,
     isFetchingNextPage,
     status,
   } = useInfiniteQuery<Type>({
@@ -40,10 +39,23 @@ const Quotations = ({ slug, username }: Props) => {
         URLBuilder(`/jobpost/${slug}/${username}/quotations?take=${pageParam}`)
       );
       return await res.json();
+      0;
     },
     getNextPageParam: (lastPage, pages) => lastPage.next,
   });
-  console.log(data);
+
+  const baseRef = useRef<HTMLDivElement>(null);
+  const { entry, ref } = useIntersection({
+    root: baseRef.current,
+    threshold: 0.5,
+  });
+
+  useEffect(() => {
+    if (entry?.isIntersecting) {
+      fetchNextPage();
+    }
+  }, [entry?.isIntersecting]);
+
   if (status === "loading")
     return (
       <div className="container">
@@ -57,11 +69,11 @@ const Quotations = ({ slug, username }: Props) => {
       </div>
     );
   return (
-    <div className="container">
+    <div className="container" ref={baseRef}>
       {data?.pages.length === 0 ||
         (data?.pages[0].quotations.length === 0 && (
           <div className="container">
-            <p className={clsx("text-center ", "text-md","mt-2")}>
+            <p className={clsx("text-center ", "text-md", "mt-2")}>
               No Quotations Found
             </p>
           </div>
@@ -75,6 +87,25 @@ const Quotations = ({ slug, username }: Props) => {
           ))}
         </Fragment>
       ))}
+      <div ref={ref} />
+      <div className="flex flex-col items-center justify-center mt-10">
+        <Button
+          variant="outline"
+          color="blue"
+          onClick={() => fetchNextPage()}
+          disabled={!hasNextPage || isFetchingNextPage}
+          className={clsx("",{
+            "cursor-not-allowed": !hasNextPage || isFetchingNextPage,
+          })}
+        >
+          {isFetchingNextPage
+            ? "Loading more..."
+            : hasNextPage
+            ? "Load More"
+            : "Nothing more to load"}
+        </Button>
+      </div>
+      <div>{isFetching && !isFetchingNextPage ? "Fetching..." : null}</div>
     </div>
   );
 };

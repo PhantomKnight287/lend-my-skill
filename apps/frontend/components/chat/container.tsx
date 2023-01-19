@@ -1,4 +1,5 @@
 import { Message } from "@components/message";
+import { ReviewModal } from "@components/modal/review";
 import { readCookie } from "@helpers/cookie";
 import { r } from "@helpers/date";
 import { uploadFiles } from "@helpers/upload";
@@ -23,13 +24,15 @@ import { profileImageRouteGenerator } from "@utils/profile";
 import { assetURLBuilder, URLBuilder } from "@utils/url";
 import { MessageType } from "db";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { io as socket, Socket } from "socket.io-client";
 
 interface Props {
   orderId: string;
   chatId: string;
   completed: boolean;
+  freelancerUsername: string;
+  setCompleted: Dispatch<SetStateAction<boolean>>;
 }
 
 export type message = {
@@ -97,15 +100,16 @@ const ChatContainer = (prop: Props) => {
         }, 3000);
       });
       io.on("completed", () => {
+        prop.setCompleted(true);
         setDisabled(true);
       });
-      io.on("error",(err)=>{
+      io.on("error", (err) => {
         showNotification({
           title: "Error",
           message: err,
           color: "red",
-        })
-      })
+        });
+      });
     });
 
     return () => {
@@ -199,6 +203,7 @@ const ChatContainer = (prop: Props) => {
   function rejectHandler() {
     io?.emit("reject");
   }
+  const [reviewModalOpened, setReviewModalOpened] = useState(false);
 
   const [attachmentModalOpened, setAttachmentModalOpened] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -219,22 +224,35 @@ const ChatContainer = (prop: Props) => {
             >
               Load More
             </Button>
-            <Button
-              onClick={() => {
-                setDoneModalOpened((o) => !o);
-              }}
-              variant="outline"
-            >
-              Mark as Done
-            </Button>
+            {prop.completed ? null : (
+              <Button
+                onClick={() => {
+                  setDoneModalOpened((o) => !o);
+                }}
+                variant="outline"
+              >
+                Mark as Done
+              </Button>
+            )}
+            {userType === "client" && prop.completed === true ? (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setReviewModalOpened((o) => !o);
+                }}
+              >
+                Leave a Review
+              </Button>
+            ) : null}
           </Group>
         )}
         {messages.map((o) => {
-          if (!o.client && !o.freelancer) return <div className="flex flex-col w-full items-center">
-            {
-              o.content
-            }
-          </div>
+          if (!o.client && !o.freelancer)
+            return (
+              <div className="flex flex-col w-full items-center">
+                {o.content}
+              </div>
+            );
           if (o.client)
             return (
               <Message
@@ -283,6 +301,7 @@ const ChatContainer = (prop: Props) => {
                 rejectHandler={
                   userType === "freelancer" ? rejectHandler : undefined
                 }
+                completed={prop.completed}
               />
             );
           return (
@@ -291,6 +310,7 @@ const ChatContainer = (prop: Props) => {
               key={o.id}
               type={o.type}
               isAttachment={o.attachments.length > 0}
+              completed={prop.completed}
               content={
                 o.attachments.length === 0 ? (
                   o.content
@@ -476,6 +496,11 @@ const ChatContainer = (prop: Props) => {
           </Group>
         </div>
       </Modal>
+      <ReviewModal
+        modalOpen={reviewModalOpened}
+        setModalOpen={setReviewModalOpened}
+        freelancerUsername={prop.freelancerUsername}
+      />
     </div>
   );
 };

@@ -31,8 +31,8 @@ export class StaticController {
         },
       },
     });
-    const f = jobPosts.map(j=>j.author.username && j.slug)
-    return f;
+    
+    return jobPosts;
   }
   @Get('categories')
   async generateCategories() {
@@ -55,7 +55,7 @@ export class StaticController {
         slug: true,
       },
     });
-    const f = services.map(s=>s.freelancer.username && s.slug)
-    return f;
+    
+    return services;
   }
 }

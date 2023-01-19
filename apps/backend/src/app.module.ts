@@ -29,6 +29,8 @@ import { MessageGateway } from './gateways/message/message.gateway';
 import { MessagesController } from './routes/messages/messages.controller';
 import { ChatController } from './routes/chat/chat.controller';
 import { QuestionsController } from './routes/questions/questions.controller';
+import { QuotationsController } from './routes/quotations/quotations.controller';
+import { ReviewsController } from './routes/reviews/reviews.controller';
 
 @Module({
   imports: [
@@ -59,6 +61,8 @@ import { QuestionsController } from './routes/questions/questions.controller';
     MessagesController,
     ChatController,
     QuestionsController,
+    QuotationsController,
+    ReviewsController,
   ],
   providers: [
     AppService,

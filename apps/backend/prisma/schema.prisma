@@ -42,6 +42,9 @@ model Freelancer {
   Order           Order[]
   chat            Chat[]
   Message         Message[]
+
+  rating  Float?   @default(0)
+  reviews Review[]
 }
 
 model Client {
@@ -78,6 +81,7 @@ model Client {
   order         Order[]
   Chat          Chat[]
   Message       Message[]
+  Review        Review[]
 }
 
 model Service {
@@ -271,4 +275,17 @@ model Message {
 enum MessageType {
   BASIC
   CONFIRM_AND_CANCEL_PROMPT
+}
+
+model Review {
+  id        String   @id @unique @default(cuid())
+  rating    Float
+  comment   String
+  createdAt DateTime @default(now())
+
+  freelancer   Freelancer @relation(fields: [freelancerId], references: [id])
+  freelancerId String
+
+  author   Client @relation(fields: [clientId], references: [id])
+  clientId String
 }

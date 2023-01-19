@@ -14,10 +14,11 @@ interface Props {
   type: MessageType;
   acceptHandler?: () => void;
   rejectHandler?: () => void;
+  completed?: boolean;
 }
 
 export function Message(props: Props) {
-  const { content, profileURL, username, timestamp, isAttachment, type } =
+  const { content, profileURL, username, timestamp, isAttachment, type,completed,acceptHandler,rejectHandler } =
     props;
   if (type === "BASIC")
     return (
@@ -75,14 +76,16 @@ export function Message(props: Props) {
               <Button
                 variant="outline"
                 radius={"md"}
-                onClick={props.acceptHandler}
+                onClick={acceptHandler}
+                disabled={completed}
               >
                 <span className={styles.accept}>Yes</span>
               </Button>
               <Button
                 variant="outline"
                 radius={"md"}
-                onClick={props.rejectHandler}
+                onClick={rejectHandler}
+                disabled={completed}
               >
                 <span className={styles.reject}>No</span>
               </Button>
