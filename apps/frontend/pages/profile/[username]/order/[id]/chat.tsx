@@ -22,7 +22,7 @@ import clsx from "clsx";
 import { AnswerType, OrderStatus } from "db";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export type ChatDetails = {
   Chat: {
@@ -66,6 +66,7 @@ const Chat = () => {
     to: "/auth/login",
   });
   const { isReady, query, asPath, replace } = useRouter();
+  const [complete,setCompleted] = useState(false);
 
   useEffect(() => {
     if (!isReady) return;
@@ -81,7 +82,12 @@ const Chat = () => {
     fetchChatDetails(
       query.id as string,
       token,
-      setchatConfig,
+      d=>{
+        setchatConfig(d);
+        if(d.status === OrderStatus.COMPLETED){
+          setCompleted(true);
+        }
+      },
       (error) => {
         if (error.code === "ERR_CANCELED") return;
         showNotification({
@@ -154,10 +160,11 @@ const Chat = () => {
           <h1 className="text-2xl font-bold">
             Chat With{" "}
             <Link
-              href={`/profile/${userType === "client"
+              href={`/profile/${
+                userType === "client"
                   ? chatConfig.freelancer.username
                   : chatConfig.client.username
-                }`}
+              }`}
               className="text-blue-500 hover:underline"
               target="_blank"
               rel="noopener noreferrer"
@@ -178,7 +185,9 @@ const Chat = () => {
               <ChatContainer
                 orderId={query.id as string}
                 chatId={chatConfig.Chat.id}
-                completed={chatConfig.status === "COMPLETED"}
+                completed={complete}
+                setCompleted={setCompleted}
+                freelancerUsername={chatConfig.freelancer.username}
               />
             </div>
           </div>

@@ -100,6 +100,7 @@ const ChatContainer = (prop: Props) => {
         }, 3000);
       });
       io.on("completed", () => {
+        prop.setCompleted(true);
         setDisabled(true);
       });
       io.on("error", (err) => {
