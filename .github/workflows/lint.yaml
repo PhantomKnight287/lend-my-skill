@@ -28,30 +28,6 @@ jobs:
       - name: Run Lint
         run: cd apps/frontend && pnpm lint
 
-  build_docker:
-    name: Build Docker Image for frontend
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version:
-          - 16.x
-    env:
-      Repo: ${{secrets.DOCKER_REPO}}
-
-    steps:
-      - uses: actions/checkout@v1
-      - name: Set up Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Login to Docker Hub
-        run: docker login -u ${{ secrets.DOCKER_USER }}
-          -p ${{ secrets.DOCKER_PASS }}
-      - name: Build Docker image
-        run: docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
-      - name: Publish Docker image
-        run: docker push $REPO
-
   backend_linter:
     name: Run linter for Backend
     runs-on: ubuntu-latest
