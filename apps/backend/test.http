@@ -1,6 +1,8 @@
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNsY2dqa240ZjAwMDBld21zNDBrMTJxN2IiLCJ1c2VyVHlwZSI6ImNsaWVudCIsImlhdCI6MTY3NDE1MjA0OSwiZXhwIjoxNjc0MjM4NDQ5fQ.Y0WnpSRTegTcfslQMMxXmMnFzoDb2Syt_aJ5Kd2G1UQ
+
 POST http://localhost:5000/order/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNsYzJ6NGFuNDAwMDBldzVvaHoycnZheDAiLCJ1c2VyVHlwZSI6ImNsaWVudCIsImlhdCI6MTY3MjI2MDgyMywiZXhwIjoxNjcyMzQ3MjIzfQ.uK5dLziniBVWDAMhWD7zFUMRYlYpxh8j9Qtf2ycg_D4
+Authorization: Bearer {{token}}
 
 {
     "packageId":"clc5zotyn0001ewfojjs3ncqt",
@@ -10,30 +12,35 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNsYzJ6NGFuN
 ### 
 
 GET http://localhost:5000/order/list?take=1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNsYzl4b2wyMDAwMDBld2FzZjZzOG40bjciLCJ1c2VyVHlwZSI6ImZyZWVsYW5jZXIiLCJpYXQiOjE2NzI1MDUzMjAsImV4cCI6MTY3MjU5MTcyMH0.G06oCBkJXzHH7HtVrBan1DbBWs45pd0K1L6RSw0VGVI
+Authorization: Bearer {{token}}
 
 ###
 GET http://localhost:5000/order/details/clc9yslmu001gewhwlptpv5vi
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNsYzl4b2wyMDAwMDBld2FzZjZzOG40bjciLCJ1c2VyVHlwZSI6ImZyZWVsYW5jZXIiLCJpYXQiOjE2NzI1MDUzMjAsImV4cCI6MTY3MjU5MTcyMH0.G06oCBkJXzHH7HtVrBan1DbBWs45pd0K1L6RSw0VGVI
+Authorization: Bearer {{token}}
 
 ### 
 
 GET http://localhost:5000/chat/clchep8900000ew3cv7fptkbe
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNsY2dqa240ZjAwMDBld21zNDBrMTJxN2IiLCJ1c2VyVHlwZSI6ImNsaWVudCIsImlhdCI6MTY3Mjg0NzIwNiwiZXhwIjoxNjcyOTMzNjA2fQ.AE2p_XFdgI93qBOXOQGZ3kMewkHv4TrrmHRRAmatfGo
+Authorization: Bearer {{token}}
 
 ###
 Get http://localhost:5000/chat/clchvhqn00000ewts3tl4kk7d/info
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNsY2dqa240ZjAwMDBld21zNDBrMTJxN2IiLCJ1c2VyVHlwZSI6ImNsaWVudCIsImlhdCI6MTY3Mjg0NzIwNiwiZXhwIjoxNjcyOTMzNjA2fQ.AE2p_XFdgI93qBOXOQGZ3kMewkHv4TrrmHRRAmatfGo
+Authorization: Bearer {{token}}
 
 ###
 Get http://localhost:5000/chat/clchvhqn00000ewts3tl4kk7d/questions
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNsY2dqa240ZjAwMDBld21zNDBrMTJxN2IiLCJ1c2VyVHlwZSI6ImNsaWVudCIsImlhdCI6MTY3Mjg0NzIwNiwiZXhwIjoxNjcyOTMzNjA2fQ.AE2p_XFdgI93qBOXOQGZ3kMewkHv4TrrmHRRAmatfGo
+Authorization: Bearer {{token}}
 
 
 ###
 Get http://localhost:5000/messages/clchep8900000ew3cv7fptkbe
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNsY2dqa240ZjAwMDBld21zNDBrMTJxN2IiLCJ1c2VyVHlwZSI6ImNsaWVudCIsImlhdCI6MTY3Mjg0NzIwNiwiZXhwIjoxNjcyOTMzNjA2fQ.AE2p_XFdgI93qBOXOQGZ3kMewkHv4TrrmHRRAmatfGo
+Authorization: Bearer {{token}}
 
 ###
 Get http://localhost:5000/messages/clchep8900000ew3cv7fptkbe/count
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNsY2dqa240ZjAwMDBld21zNDBrMTJxN2IiLCJ1c2VyVHlwZSI6ImNsaWVudCIsImlhdCI6MTY3Mjk0MDY3MywiZXhwIjoxNjczMDI3MDczfQ.2IFCY80WeiiH93lZmqXznKt56qeQDSfA1_tAdhtBE9A
+Authorization: Bearer {{token}}
+
+
+###
+
+GET http://localhost:5000/reviews/gurpalsingh?take=0
