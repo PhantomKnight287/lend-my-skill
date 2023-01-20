@@ -6,10 +6,13 @@ services:
     build:
       context: apps/backend
       dockerfile: Dockerfile
+      tags:
+        - "phantomknight/lms-backend:latest"
     networks:
       - lend-my-skill
     ports:
       - 5000:5000
+    
     
   
 
