@@ -25,7 +25,7 @@ import { assetURLBuilder, URLBuilder } from "@utils/url";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { io as socket, Socket } from "socket.io-client";
-type MessageType = "BASIC" | "CONFIRM_AND_CANCEL_PROMPT"
+type MessageType = "BASIC" | "CONFIRM_AND_CANCEL_PROMPT";
 
 interface Props {
   orderId: string;
@@ -207,11 +207,90 @@ const ChatContainer = (prop: Props) => {
 
   const [attachmentModalOpened, setAttachmentModalOpened] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [uploadWorkModal, setUploadWorkModal] = useState(false);
   return (
     <div className="relative">
+      {
+        userType !== "client" && !prop.completed ? null :
+          <Modal
+            centered
+            opened={uploadWorkModal}
+            onClose={() => setUploadWorkModal(false)}
+            title="Upload Work"
+          >
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (attachments.length === 0)
+                  return showNotification({
+                    message: "Please select at least one attachment",
+                    color: "red",
+                  });
+                setLoading(true);
+                const token = readCookie("token")!;
+                const data = await uploadFiles(attachments, token).catch((e) => {
+                  showNotification({
+                    message: e?.response?.data?.message || "Something went wrong",
+                    color: "red",
+                  });
+                  return null;
+                });
+                if (data === null) return setLoading(false);
+                const urls = data.data.paths;
+                io?.emit("message", {
+                  message: urls,
+                  attachment: true,
+                });
+                io?.emit("message", {
+                  message: "Here is my work",
+                  attachment: false,
+                });
+                setLoading(false);
+                setUploadWorkModal(false);
+                setAttachments([]);
+              }}
+            >
+              <FileInput multiple label="Select Files(Max 10MB)"
+                onChange={e => {
+                  const validFiles = e.filter(file => file.size < 10000000)
+                  if (validFiles.length < e.length) {
+                    showNotification({
+                      title: "Error",
+                      message: "Some files are too large",
+                      color: "red",
+                    });
+                  }
+                  setAttachments(validFiles)
+                }}
+              />
+              <Group mt="md" position="center" >
+                <Button
+                  type="submit"
+                  variant="outline"
+
+                  loading={loading}
+                >
+                  Upload
+                </Button>
+
+              </Group>
+            </form>
+          </Modal>
+      }
+
       <div className="overflow-y-scroll mb-[50px]">
         {messages?.length < count && (
           <Group position="center">
+            {userType == "freelancer" && !prop.completed ? (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setUploadWorkModal(true);
+                }}
+              >
+                Submit Work
+              </Button>
+            ) : null}
             <Button
               onClick={() => {
                 fetchMessages(
