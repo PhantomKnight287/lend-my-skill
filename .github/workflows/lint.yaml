@@ -27,6 +27,35 @@ jobs:
 
       - name: Run Lint
         run: cd apps/frontend && pnpm lint
+  
+  build_frontend_docker_image:
+    name: Build Docker Image for frontend
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:
+          - 16.x
+    env:
+      Repo: ${{secrets.FRONTEND_DOCKER_REPO}}
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USER }}
+          -p ${{ secrets.DOCKER_PASS }}
+      - name: Setup env 
+        run: |
+          echo "${{secrets.FRONTEND_ENV}}" > apps/frontend/.env.production
+      - name: Build Docker image
+        run: docker compose -f ./docker-compose.frontend.yml
+      - name: Publish Docker image
+        run: docker push $REPO
+    needs: frontend_linter
+
   backend_linter:
     name: Run linter for Backend
     runs-on: ubuntu-latest
@@ -47,3 +76,31 @@ jobs:
 
       - name: Run Lint
         run: cd apps/backend && pnpm lint
+  
+  build_backend_docker_image:
+    name: Build Docker Image for Backend
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:
+          - 16.x
+    env:
+      Repo: ${{secrets.BACKEND_DOCKER_REPO}}
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USER }}
+          -p ${{ secrets.DOCKER_PASS }}
+      - name: Setup env 
+        run: |
+          echo "${{secrets.BACKEND_ENV}}" > apps/backend/.env
+      - name: Build Docker image
+        run: docker compose -f ./docker-compose.backend.yml
+      - name: Publish Docker image
+        run: docker push $REPO
+    needs: backend_linter
