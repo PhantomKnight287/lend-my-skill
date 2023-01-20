@@ -374,6 +374,7 @@ function CreateService() {
                                 });
                                 setLoading(false);
                               });
+                              return null
                           }}
                         />
                       </div>

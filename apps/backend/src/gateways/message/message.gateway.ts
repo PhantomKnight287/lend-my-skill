@@ -47,7 +47,17 @@ export class MessageGateway implements OnGatewayConnection {
       },
     }) as DecodedJWT;
     const chatId = client.handshake.query.chatId;
-
+    const order = await this.prisma.order.findFirst({
+      where: {
+        id: client.handshake.query.orderId as string,
+      },
+    });
+    if (!order) {
+      return client.emit('error', 'Invalid order');
+    }
+    if (order.status === 'COMPLETED') {
+      return client.emit('error', 'Order is already completed');
+    }
     const message = await this.prisma.message.create({
       data: {
         attachments: payload.attachment ? payload.message : undefined,
