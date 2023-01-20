@@ -1,4 +1,3 @@
-import { Container } from "@components/container";
 import Textarea from "@components/input/textarea";
 import { MetaTags } from "@components/meta";
 import { outfit } from "@fonts";
@@ -46,20 +45,20 @@ function CreateJobPost() {
         value.length < 20
           ? "Title should be atleast 20 characters long"
           : value.length > 100
-          ? "Title should be less than 100 characters long"
-          : null,
+            ? "Title should be less than 100 characters long"
+            : null,
       description: (value) =>
         value.length < 100
           ? "Description should be atleast 100 characters long"
           : value.length > 1000
-          ? "Description should be less than 1000 characters long"
-          : null,
+            ? "Description should be less than 1000 characters long"
+            : null,
       price: (value) =>
         !value
           ? null
           : Number(value) < 100
-          ? "Price should be atleast 100"
-          : null,
+            ? "Price should be atleast 100"
+            : null,
     },
   });
   const [tags, setTags] = useState<{ value: string; label: string }[]>([]);
@@ -244,7 +243,7 @@ function CreateJobPost() {
                                     formState.values.description.length < 100,
                                   "text-[#28a745]":
                                     formState.values.description.length >=
-                                      100 &&
+                                    100 &&
                                     formState.values.description.length < 1000,
                                 })}
                               >
@@ -315,9 +314,9 @@ function CreateJobPost() {
                           data={
                             data
                               ? data?.map((d) => ({
-                                  value: d.id,
-                                  label: d.name,
-                                }))
+                                value: d.id,
+                                label: d.name,
+                              }))
                               : []
                           }
                           {...formState.getInputProps("category")}
@@ -362,8 +361,11 @@ function CreateJobPost() {
                                     "An error occured",
                                 });
                                 setLoading(false);
+
                               });
-                          }}
+                            return null
+                          }
+                          }
                         />
                       </div>
                       <MultiSelect
