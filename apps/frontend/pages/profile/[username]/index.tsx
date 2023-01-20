@@ -22,7 +22,6 @@ import { profileImageRouteGenerator } from "@utils/profile";
 import { assetURLBuilder, URLBuilder } from "@utils/url";
 import axios from "axios";
 import clsx from "clsx";
-import { Client } from "db";
 import {
   GetStaticPaths,
   GetStaticProps,
@@ -33,6 +32,34 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Reviews from "@components/tabs/profile/reviews";
+
+
+type Client = {
+  id: string
+  name: string
+  username: string
+  email: string
+  password: string
+  country: string
+  aboutMe: string | null
+  githubId: string | null
+  linkedinUsername: string | null
+  twitterUsername: string | null
+  facebookUsername: string | null
+  instagramUsername: string | null
+  kycDocuments: string[]
+  kycCompleted: boolean
+  phoneNumber: string | null
+  profileCompleted: boolean
+  avatarUrl: string | null
+  bio: string | null
+  paypalEmail: string | null
+  upiId: string | null
+  createdAt: Date
+  updatedAt: Date
+  verified: boolean
+  emailVerified: boolean
+}
 
 const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   props

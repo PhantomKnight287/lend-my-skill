@@ -1,6 +1,7 @@
 import { URLBuilder } from "@utils/url";
 import axios from "axios";
-import { AnswerType } from "db";
+type AnswerType = "TEXT" | "MULTIPLE_CHOICE" | "ATTACHMENT"
+
 
 interface Props {
   title: string;

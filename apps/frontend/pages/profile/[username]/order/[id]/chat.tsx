@@ -19,11 +19,12 @@ import {
   isChatQuestionsAnswered,
 } from "@services/chats.service";
 import clsx from "clsx";
-import { AnswerType, OrderStatus } from "db";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect,  useState } from "react";
 
+type OrderStatus = "PENDING" | "COMPLETED" | "CANCELLED"
+type AnswerType = "TEXT" | "MULTIPLE_CHOICE" | "ATTACHMENT"
 export type ChatDetails = {
   Chat: {
     id: string;
@@ -84,7 +85,7 @@ const Chat = () => {
       token,
       d=>{
         setchatConfig(d);
-        if(d.status === OrderStatus.COMPLETED){
+        if(d.status === "COMPLETED"){
           setCompleted(true);
         }
       },
