@@ -1,4 +1,4 @@
-import { OrderStatus } from "db";
+type OrderStatus = "PENDING" | "COMPLETED" | "CANCELLED"
 
 export interface Orders {
   orders: Order[];
@@ -14,7 +14,7 @@ export interface Order {
   deadline: string;
   price: number;
   createdAt: string;
-  status: keyof typeof OrderStatus;
+  status: OrderStatus;
   amountPaid?: number;
   user: "client" | "freelancer";
 }

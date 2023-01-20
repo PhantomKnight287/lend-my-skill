@@ -1,8 +1,7 @@
-import { r } from "@helpers/date";
 import { Button, Group, Image } from "@mantine/core";
-import { MessageType } from "db";
 import { ReactNode } from "react";
 import styles from "./message.module.scss";
+type MessageType = "BASIC" | "CONFIRM_AND_CANCEL_PROMPT"
 
 interface Props {
   username: string;

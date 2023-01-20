@@ -22,10 +22,10 @@ import {
 import { IconCheck, IconFile, IconPlus, IconX } from "@tabler/icons";
 import { profileImageRouteGenerator } from "@utils/profile";
 import { assetURLBuilder, URLBuilder } from "@utils/url";
-import { MessageType } from "db";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { io as socket, Socket } from "socket.io-client";
+type MessageType = "BASIC" | "CONFIRM_AND_CANCEL_PROMPT"
 
 interface Props {
   orderId: string;

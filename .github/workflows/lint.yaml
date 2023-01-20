@@ -47,3 +47,45 @@ jobs:
 
       - name: Run Lint
         run: cd apps/backend && pnpm lint
+
+  build_docker_images:
+    needs:
+      - frontend_linter
+      - backend_linter
+    name: Build Docker image of frontend
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    env:
+      FRONTEND_REPO: ${{secrets.DOCKER_REPO}}
+      BACKEND_REPO: ${{secrets.BACKEND_DOCKER_REPO}}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USER }}
+          -p ${{ secrets.DOCKER_PASS }}
+      - name: Setup env for frontend
+        run: |
+          echo "${{secrets.FRONTEND_ENV}}" > apps/frontend/.env.production
+
+      - name: Setup env for backend
+        run: |
+          echo "${{secrets.BACKEND_ENV}}" > apps/backend/.env
+      - name: Setup Base Env
+        run: |
+          echo "${{secrets.BASE}}" > .env
+      - name: Build Docker images
+        run: docker compose build
+      - name: Tag Frontend Image
+        run: docker tag lms-frontend $FRONTEND_REPO
+      - name: Tag Backend Image
+        run: docker tag lms-backend $BACKEND_REPO
+      - name: Push Frontend Image
+        run: docker push $FRONTEND_REPO
+      - name: Push Backend Image
+        run: docker push $BACKEND_REPO
