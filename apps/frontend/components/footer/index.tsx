@@ -63,8 +63,10 @@ export function Footer({ links }: FooterSimpleProps) {
     >
       <Container className={classes.inner}>
         <div className="flex flex-row gap-3 items-center justify-center flex-wrap">
-          <Avatar src={"/brand/icon-transparent.png"} size={50} />
-          <h1 className={clsx("text-lg")}>Lend My Skill</h1>
+          <Avatar src={"/brand/lms-logo.png"} size={50} />
+          <h1 className={clsx("text-lg",{
+            [outfit.className]: true,
+          })}>Lend My Skill</h1>
         </div>
         <Group className={classes.links}>{items}</Group>
       </Container>
