@@ -36,7 +36,7 @@ jobs:
         node-version:
           - 16.x
     env:
-      Repo: ${{secrets.FRONTEND_DOCKER_REPO}}
+      REPO: ${{secrets.FRONTEND_DOCKER_REPO}}
 
     steps:
       - uses: actions/checkout@v1
@@ -51,7 +51,7 @@ jobs:
         run: |
           echo "${{secrets.FRONTEND_ENV}}" > apps/frontend/.env.production
       - name: Build Docker image
-        run: docker compose -f ./docker-compose.frontend.yml
+        run: docker compose -f ./docker-compose.frontend.yml build
       - name: Publish Docker image
         run: docker push $REPO
     needs: frontend_linter
@@ -85,7 +85,7 @@ jobs:
         node-version:
           - 16.x
     env:
-      Repo: ${{secrets.BACKEND_DOCKER_REPO}}
+      REPO: ${{secrets.BACKEND_DOCKER_REPO}}
 
     steps:
       - uses: actions/checkout@v1
@@ -100,7 +100,7 @@ jobs:
         run: |
           echo "${{secrets.BACKEND_ENV}}" > apps/backend/.env
       - name: Build Docker image
-        run: docker compose -f ./docker-compose.backend.yml
+        run: docker compose -f ./docker-compose.backend.yml build
       - name: Publish Docker image
         run: docker push $REPO
     needs: backend_linter
