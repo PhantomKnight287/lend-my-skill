@@ -52,7 +52,7 @@ jobs:
     needs:
       - frontend_linter
       - backend_linter
-    name: Build Docker image of frontend
+    name: Build Docker images
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -80,7 +80,7 @@ jobs:
         run: |
           echo "${{secrets.BASE}}" > .env
       - name: Build Docker images
-        run: docker compose build
+        run: docker compose -p lms build
       - name: Tag Frontend Image
         run: docker tag lms-frontend $FRONTEND_REPO
       - name: Tag Backend Image
