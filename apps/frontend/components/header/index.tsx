@@ -121,7 +121,7 @@ export function Header() {
         <Link
           href={username ? "/dashboard" : "/"}
           className={clsx({
-            "min-w-[183px]": !username,
+            "lg:min-w-[183px]": !username,
           })}
         >
           <Avatar size={50} src={"/brand/lms-logo.png"} />
@@ -129,7 +129,9 @@ export function Header() {
 
         <Group
           style={{ height: "100%" }}
-          className={clsx(classes.hiddenMobile)}
+          className={clsx(classes.hiddenMobile, {
+            hidden: username,
+          })}
         >
           {userType !== "freelancer" ? (
             <Link href="/search?type=services">
@@ -156,11 +158,13 @@ export function Header() {
             </Link>
           ) : null}
         </Group>
-        <Group className={clsx("md:hidden",{
-          "hidden":!username,
-          
-        })} >
-          <HeaderMenu/>
+        <Group
+          className={clsx("md:hidden", {
+            hidden: !username,
+            [classes.hiddenMobile]: true,
+          })}
+        >
+          <HeaderMenu />
         </Group>
         <Group
           className={clsx("", {
@@ -202,21 +206,23 @@ export function Header() {
               </Link>
             </>
           ) : (
-            <HeaderMenu />
-          )}
-
-          {!username ? (
-            <Burger
-              opened={drawerOpened}
-              onClick={toggleDrawer}
-              className={classes.hiddenDesktop}
-            />
-          ) : (
-            <div className={classes.hiddenDesktop}>
+            <div className={classes.hiddenMobile}>
               <HeaderMenu />
             </div>
           )}
         </Group>
+
+        {!username ? (
+          <Burger
+            opened={drawerOpened}
+            onClick={toggleDrawer}
+            className={classes.hiddenDesktop}
+          />
+        ) : (
+          <div className={classes.hiddenDesktop}>
+            <HeaderMenu />
+          </div>
+        )}
       </H>
 
       <Drawer
