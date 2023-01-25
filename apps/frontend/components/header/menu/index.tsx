@@ -31,6 +31,13 @@ export default function HeaderMenu() {
           >
             Profile
           </Menu.Item>
+          <Menu.Item
+            onClick={() => {
+              push(`/search`);
+            }}
+          >
+            Search
+          </Menu.Item>
           {userType === "client" ? (
             <Menu.Item
               color="green"
@@ -43,7 +50,10 @@ export default function HeaderMenu() {
           ) : (
             <>
               {userType === "freelancer" ? (
-                <Menu.Item color="green" onClick={() => push(`/create/service`)}>
+                <Menu.Item
+                  color="green"
+                  onClick={() => push(`/create/service`)}
+                >
                   Post a Service
                 </Menu.Item>
               ) : null}
@@ -58,7 +68,9 @@ export default function HeaderMenu() {
             </Menu.Item>
           )}
           <Menu.Item
-            onClick={() => { push(`/profile/${username}/orders`) }}
+            onClick={() => {
+              push(`/profile/${username}/orders`);
+            }}
           >
             Orders
           </Menu.Item>
