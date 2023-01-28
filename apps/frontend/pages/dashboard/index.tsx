@@ -81,7 +81,6 @@ const Dashboard = () => {
       fetchMoreJobposts();
     }
   }, [jobpostsEntry?.isIntersecting]);
-  console.log(services?.pages?.[0].services);
 
   return (
     <div
