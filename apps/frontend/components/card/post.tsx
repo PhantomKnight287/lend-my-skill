@@ -40,7 +40,13 @@ export function PostCard({
 }: Props) {
   const { colorScheme } = useMantineColorScheme();
   return (
-    <Card shadow="sm" p="lg" radius="md" withBorder className={"max-w-[350px]"}>
+    <Card
+      shadow="sm"
+      p="lg"
+      radius="md"
+      withBorder
+      className={"min-w-[300px] h-[21rem] mx-1"}
+    >
       <Card.Section>
         <Image
           src={resolveImageUrl ? assetURLBuilder(image) : image}
