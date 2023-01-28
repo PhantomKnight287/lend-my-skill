@@ -11,6 +11,7 @@ import { useIntersection } from "@mantine/hooks";
 import { Loader, Title } from "@mantine/core";
 import { Posts } from "~/types/jobpost";
 import { PostCard } from "@components/card/post";
+import styles from "../../styles/Dashboard.module.css";
 
 const Dashboard = () => {
   useHydrateUserContext("replace", true, "/auth/login", true);
@@ -80,10 +81,11 @@ const Dashboard = () => {
       fetchMoreJobposts();
     }
   }, [jobpostsEntry?.isIntersecting]);
+  console.log(services?.pages?.[0].services);
 
   return (
     <div
-      className={clsx("flex mt-8 p-20", {
+      className={clsx("flex mt-8 w-full", {
         [outfit.className]: true,
       })}
     >
@@ -92,35 +94,43 @@ const Dashboard = () => {
         title="Lend My Skill"
       />
       <div
-        className={clsx("flex gap-3 flex-wrap w-full  ", {
+        className={clsx("flex gap-3 flex-wrap w-full", {
           "flex-col": userType === "client",
           "flex-col-reverse": userType === "freelancer",
         })}
       >
-        <div>
+        <div className="w-full px-8 py-4">
+          <Title
+            className={clsx("", {
+              [outfit.className]: true,
+            })}
+            align="left"
+          >
+            Services
+          </Title>
           {services?.pages?.[0].services.length === 0 ? (
             <>
               <Title
-                className={clsx("", {
-                  [outfit.className]: true,
-                })}
+                className={clsx(
+                  "bg-gray-100 text-gray-500 text-2xl py-10 rounded-lg my-4",
+                  {
+                    [outfit.className]: true,
+                  }
+                )}
                 align="center"
               >
                 No Services Found
               </Title>
             </>
-          ) : (
-            <Title
-              className={clsx("", {
-                [outfit.className]: true,
-              })}
-              align="left"
-            >
-              Services
-            </Title>
-          )}
+          ) : null}
           <div
-            className="flex flex-row gap-3 flex-nowrap overflow-x-scroll"
+            className={clsx(
+              "flex flex-row gap-3 flex-nowrap px-2 py-3",
+              styles.scroll,
+              {
+                "overflow-x-scroll": services?.pages?.[0].services.length !== 0,
+              }
+            )}
             ref={servicesContainer}
           >
             {servicesFetchingStatus === "loading" ? (
@@ -155,30 +165,34 @@ const Dashboard = () => {
             )}
           </div>
         </div>
-        <div>
+        <div className="w-full px-8 py-4">
+          <Title
+            className={clsx("", {
+              [outfit.className]: true,
+            })}
+            align="left"
+          >
+            Job Posts
+          </Title>
           {jobposts?.pages[0].posts.length === 0 ? (
             <>
               <Title
-                className={clsx("", {
-                  [outfit.className]: true,
-                })}
+                className={clsx(
+                  "bg-gray-100 text-gray-500 text-2xl py-10 rounded-lg my-4",
+                  {
+                    [outfit.className]: true,
+                  }
+                )}
                 align="center"
               >
                 No Job Posts Found
               </Title>
             </>
-          ) : (
-            <Title
-              className={clsx("", {
-                [outfit.className]: true,
-              })}
-              align="left"
-            >
-              Job Posts
-            </Title>
-          )}
+          ) : null}
           <div
-            className="flex flex-row gap-3 flex-nowrap overflow-x-scroll"
+            className={clsx("flex flex-row gap-3 flex-nowrap", {
+              "overflow-x-scroll": jobposts?.pages[0].posts.length,
+            })}
             ref={servicesContainer}
           >
             {servicesFetchingStatus === "loading" ? (
