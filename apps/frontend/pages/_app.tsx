@@ -4,7 +4,7 @@ import {
   ColorSchemeProvider,
   MantineProvider,
 } from "@mantine/core";
-import "../styles/globals.css";
+import "@styles/globals.scss";
 import { useHotkeys, useLocalStorage } from "@mantine/hooks";
 import { UserProvider } from "@context/user";
 import { Header } from "@components/header";
