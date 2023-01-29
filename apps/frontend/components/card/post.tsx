@@ -45,7 +45,7 @@ export function PostCard({
       p="lg"
       radius="md"
       withBorder
-      className={"min-w-[300px] h-[21rem] mx-1"}
+      className={"max-w-sm min-h-[21rem] mx-1"}
     >
       <Card.Section>
         <Image
