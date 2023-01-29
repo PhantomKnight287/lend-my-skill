@@ -46,7 +46,8 @@ The instructions are provided in `.env.example`
 
 
 > **Warning**
-> You'll need `pnpm` to run commands in this repo. Run `corepack prepare pnpm@7.14.0 --activate`. This will setup pnpm. It works on any OS.
+> You'll need `pnpm` to run commands in this repo. 
+> Run `corepack prepare pnpm@7.14.0 --activate` in Administrator powershell window or `sudo corepack prepare pnpm@7.14.0 --activate` for mac and linux.
 
 Now run `pnpm dev`, This will run the dev server and you'll be able to access the frontend on `http://localhost:3000` and backend at `http://localhost:5000`.
 
