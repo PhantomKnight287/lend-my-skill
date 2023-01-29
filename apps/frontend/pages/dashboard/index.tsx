@@ -11,7 +11,7 @@ import { useIntersection } from "@mantine/hooks";
 import { Loader, Title } from "@mantine/core";
 import { Posts } from "~/types/jobpost";
 import { PostCard } from "@components/card/post";
-import styles from "../../styles/Dashboard.module.css";
+import styles from "@styles/Dashboard.module.scss";
 
 const Dashboard = () => {
   useHydrateUserContext("replace", true, "/auth/login", true);
