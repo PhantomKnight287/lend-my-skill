@@ -49,7 +49,6 @@ This idea was presented in [Business Blaster Project](https://thebusinessblaster
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/shivam1317"><img src="https://avatars.githubusercontent.com/u/70281451?v=4?s=100" width="100px;" alt="shivam danawale"/><br /><sub><b>shivam danawale</b></sub></a><br /><a href="https://github.com/PhantomKnight287/lend-my-skill/commits?author=shivam1317" title="Code">💻</a> <a href="#design-shivam1317" title="Design">🎨</a></td>
-
       <td align="center" valign="top" width="14.28%"><a href="https://gurpalsingh.me"><img src="https://avatars.githubusercontent.com/u/76196237?v=4?s=100" width="100px;" alt="Gurpal Singh"/><br /><sub><b>Gurpal Singh</b></sub></a><br /><a href="https://github.com/PhantomKnight287/lend-my-skill/commits?author=PhantomKnight287" title="Code">💻</a></td>
     </tr>
   </tbody>
