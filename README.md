@@ -5,6 +5,9 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <p align="center">
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 <img src="./assets/lms-logo.png" />
 </p>
 
@@ -51,6 +54,8 @@ This idea was presented in [Business Blaster Project](https://thebusinessblaster
     <td align="center" valign="top" width="14.28%"><a href="https://gurpalsingh.me"><img src="https://avatars.githubusercontent.com/u/76196237?v=4?s=100" width="100px;" alt="Gurpal Singh"/><br /><sub><b>Gurpal Singh</b></sub></a><br /><a href="https://github.com/PhantomKnight287/lend-my-skill/commits?author=PhantomKnight287" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/shivam1317"><img src="https://avatars.githubusercontent.com/u/70281451?v=4?s=100" width="100px;" alt="shivam danawale"/><br /><sub><b>shivam danawale</b></sub></a><br /><a href="https://github.com/PhantomKnight287/lend-my-skill/commits?author=shivam1317" title="Code">💻</a> <a href="#design-shivam1317" title="Design">🎨</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/paras3048"><img src="https://avatars.githubusercontent.com/u/113226718?v=4?s=100" width="100px;" alt="Paras Jain"/><br /><sub><b>Paras Jain</b></sub></a><br /><a href="#ideas-paras3048" title="Ideas, Planning, & Feedback">🤔</a> <a href="#design-paras3048" title="Design">🎨</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://gurpalsingh.me"><img src="https://avatars.githubusercontent.com/u/76196237?v=4?s=100" width="100px;" alt="Gurpal Singh"/><br /><sub><b>Gurpal Singh</b></sub></a><br /><a href="https://github.com/PhantomKnight287/lend-my-skill/commits?author=PhantomKnight287" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/shivam1317"><img src="https://avatars.githubusercontent.com/u/70281451?v=4?s=100" width="100px;" alt="shivam danawale"/><br /><sub><b>shivam danawale</b></sub></a><br /><a href="https://github.com/PhantomKnight287/lend-my-skill/commits?author=shivam1317" title="Code">💻</a> <a href="#design-shivam1317" title="Design">🎨</a></td>
     </tr>
   </tbody>
 </table>
@@ -75,3 +80,18 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+
+[![All Contributors](https://img.shields.io/github/all-contributors/phantomknight287/lend-my-skill?color=ee8449&style=flat-square)](#contributors)
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+
