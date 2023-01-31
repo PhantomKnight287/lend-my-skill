@@ -10,7 +10,9 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "dev:backend": "turbo run dev --filter @lend-my-skill/backend",
+    "dev:frontend": "turbo run dev --filter @lend-my-skill/frontend"
   },
   "devDependencies": {
     "prettier": "latest",
