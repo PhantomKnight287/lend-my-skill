@@ -9,6 +9,15 @@
 
 A Freelance platform designed specially for Indians supporting payment methods like `Rupay Card` and `UPI`.
 
+> Work on this project is stopped for now, it will be continued once my exams end(23 March). 
+
+# Table of Contents
+
+- [Stack Used](#stack)
+- [Contributing](#contributing)
+- [Credits](#credits)
+
+# Stack 
 
 |  Platform | Stack |
 |-----------|-------|
@@ -17,4 +26,17 @@ A Freelance platform designed specially for Indians supporting payment methods l
 | Mobile Apps | ![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)  |
 
 
-To view the deployed site, [Click here](https://beta.lendmyskill.com), The main site doesn't work due to old buggy code, this code will be pushed to production in few days. You can use the beta version of the site, no money will be deducted from your account while the site is available at `beta` subdomain.
+
+# Contributing
+
+Thanks for thinking about contributing to this project, please read [Contribution Instructions](/CONTRIBUTING.md). It has all the required instructions to start this project locally. If you encounter some errors please let me know by creating an issue.
+
+# Credits
+
+We started this project under a Team called `Just Done` lead by [Paras Jain](https://github.com/paras3048/) with me being a lead developer. We are a team of 8 people(technically 2 of us). 
+
+This idea was presented in [Business Blaster Project](https://thebusinessblasters.in/) and we were one of the 3 teams selected from our school who got a chance to present this project in front of the judges. 
+
+# Contributors
+
+Please Refer to [Contributors](/CONTRIBUTORS.md) for a list of all the contributors.
