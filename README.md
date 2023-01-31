@@ -1,4 +1,7 @@
 <p align="center">
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 <img src="./assets/lms-logo.png" />
 </p>
 
@@ -42,6 +45,13 @@ This idea was presented in [Business Blaster Project](https://thebusinessblaster
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://gurpalsingh.me"><img src="https://avatars.githubusercontent.com/u/76196237?v=4?s=100" width="100px;" alt="Gurpal Singh"/><br /><sub><b>Gurpal Singh</b></sub></a><br /><a href="https://github.com/PhantomKnight287/lend-my-skill/commits?author=PhantomKnight287" title="Code">💻</a></td>
+    </tr>
+  </tbody>
+</table>
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
@@ -50,3 +60,15 @@ This idea was presented in [Business Blaster Project](https://thebusinessblaster
 
 
 [![All Contributors](https://img.shields.io/github/all-contributors/phantomknight287/lend-my-skill?color=ee8449&style=flat-square)](#contributors)
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
