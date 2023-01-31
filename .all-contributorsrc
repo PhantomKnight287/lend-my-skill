@@ -7,6 +7,15 @@
   "commitConvention": "angular",
   "contributors": [
     {
+      "login": "PhantomKnight287",
+      "name": "Gurpal Singh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/76196237?v=4",
+      "profile": "https://gurpalsingh.me",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
       "login": "shivam1317",
       "name": "shivam danawale",
       "avatar_url": "https://avatars.githubusercontent.com/u/70281451?v=4",
@@ -14,14 +23,15 @@
       "contributions": [
         "code",
         "design"
-        ],
-        },{
-      "login": "PhantomKnight287",
-      "name": "Gurpal Singh",
-      "avatar_url": "https://avatars.githubusercontent.com/u/76196237?v=4",
-      "profile": "https://gurpalsingh.me",
+      ]
+    },
+    {
+      "login": "paras3048",
+      "name": "Paras Jain",
+      "avatar_url": "https://avatars.githubusercontent.com/u/113226718?s=64&v=4",
+      "profile": "https://github.com/paras3048",
       "contributions": [
-        "code"
+        "design"
       ]
     }
   ],
