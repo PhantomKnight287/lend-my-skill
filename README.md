@@ -48,7 +48,7 @@ This idea was presented in [Business Blaster Project](https://thebusinessblaster
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/paras3048"><img src="https://avatars.githubusercontent.com/u/113226718?v=4?s=100" width="100px;" alt="Paras Jain"/><br /><sub><b>Paras Jain</b></sub></a><br /><a href="#ideas-paras3048" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/paras3048"><img src="https://avatars.githubusercontent.com/u/113226718?v=4?s=100" width="100px;" alt="Paras Jain"/><br /><sub><b>Paras Jain</b></sub></a><br /><a href="#ideas-paras3048" title="Ideas, Planning, & Feedback">🤔</a> <a href="#design-paras3048" title="Design">🎨</a></td>
     </tr>
   </tbody>
 </table>
