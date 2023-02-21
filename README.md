@@ -7,6 +7,8 @@
   India's First Freelance Platform
 </h1>
 
+
+
 A Freelance platform designed specially for Indians supporting payment methods like `Rupay Card` and `UPI`.
 
 > Work on this project is stopped for now, it will be continued once my exams end(23 March).
@@ -16,10 +18,9 @@ A Freelance platform designed specially for Indians supporting payment methods l
 - [Features](#features)
 - [Stack Used](#stack)
 - [Flow Chart](#flow-chart-of-application)
-- [Credits](#credits)
 - [Contributing](#contributing)
-- [Contributors](#contributors-✨)
-
+- [Contributors](#contributors-)
+- [License](#license)
 
 
 
@@ -44,12 +45,6 @@ This is a rough flowchart of the application, it is not complete and will be upd
 
 ![Flow Chart](./assets/flowchart.png)
 
-# Credits
-
-We started this project under a Team called `Just Done` lead by [Paras Jain](https://github.com/paras3048/) with [Gurpal Singh](https://github.com/PhantomKnight287) being a lead developer. We are a team of 8 people(but they simply do not care).
-
-This idea was presented in [Business Blaster Project](https://thebusinessblasters.in/) and we were one of the 3 teams selected from our school who got a chance to present this project in front of the judges.
-
 # Contributing
 
 Thanks for thinking about contributing to this project, please read [Contribution Instructions](/CONTRIBUTING.md). It has all the required instructions to start this project locally. If you encounter some errors please let me know by creating an issue.
@@ -60,3 +55,17 @@ Thanks for thinking about contributing to this project, please read [Contributio
 <a href="https://github.com/phantomknight287/lend-my-skill/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=phantomknight287/lend-my-skill" />
 </a>
+
+
+# License
+
+Shield: [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
+
+This work is licensed under a
+[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-nc-sa].
+
+[![CC BY-NC-SA 4.0][cc-by-nc-sa-image]][cc-by-nc-sa]
+
+[cc-by-nc-sa]: http://creativecommons.org/licenses/by-nc-sa/4.0/
+[cc-by-nc-sa-image]: https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png
+[cc-by-nc-sa-shield]: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
