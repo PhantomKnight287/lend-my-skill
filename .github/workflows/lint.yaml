@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "apps/frontend/**"
+      - "apps/backend/**"
+      - "package.json"
+      - "pnpm**"
+
 
 jobs:
   frontend_linter:
