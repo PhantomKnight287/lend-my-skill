@@ -25,6 +25,9 @@ model Freelancer {
   phoneNumber      String?
   profileCompleted Boolean  @default(false)
 
+  banned    Boolean @default(false)
+  banReason String?
+
   avatarUrl   String?
   bio         String?
   aboutMe     String?
@@ -61,6 +64,9 @@ model Client {
   twitterUsername   String?
   facebookUsername  String?
   instagramUsername String?
+  
+  banned    Boolean @default(false)
+  banReason String?
 
   kycDocuments String[]
   kycCompleted Boolean  @default(false)
