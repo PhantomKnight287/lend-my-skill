@@ -134,6 +134,8 @@ export class AuthController {
         name: true,
         avatarUrl: true,
         password: true,
+        banned: true,
+        banReason: true,
       },
     });
     if (!user) {
@@ -146,6 +148,12 @@ export class AuthController {
 
     if (!isPasswordCorrect) {
       throw new HttpException('Incorrect Password', HttpStatus.UNAUTHORIZED);
+    }
+    if (user.banned) {
+      throw new HttpException(
+        `You Have Been Banned: ${user.banReason}`,
+        HttpStatus.UNAUTHORIZED,
+      );
     }
     const token = sign({ id: user.id, userType: 'freelancer' }, SIGN_SECRET, {
       expiresIn: '1d',
