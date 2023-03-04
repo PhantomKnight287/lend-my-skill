@@ -234,6 +234,17 @@ importers:
       sass: 1.58.3
       tailwindcss: 3.2.7_postcss@8.4.21
 
+  packages/alerts:
+    specifiers:
+      '@novu/node': ^0.11.0
+      '@types/node': ^18.14.0
+      typescript: ^4.9.5
+    dependencies:
+      '@novu/node': 0.11.0
+    devDependencies:
+      '@types/node': 18.14.0
+      typescript: 4.9.5
+
 packages:
 
   /@ampproject/remapping/2.2.0:
@@ -1871,6 +1882,32 @@ packages:
       - supports-color
     dev: false
 
+  /@novu/node/0.11.0:
+    resolution: {integrity: sha512-HW6LvYbrF3tN0PNKwh5uFqV+ZCuw1fZztif/weUbP9tbKJsK+lDjYmdLttXdnbW9hGMIzynxuz3WwGoLggo5eg==}
+    engines: {node: '>=10'}
+    dependencies:
+      '@novu/shared': 0.11.0
+      axios: 0.26.1
+      handlebars: 4.7.7
+      lodash.get: 4.4.2
+      lodash.merge: 4.6.2
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+    dev: false
+
+  /@novu/shared/0.11.0:
+    resolution: {integrity: sha512-z2pXMbNbDxjjl0chphWHbjcOoZ3WkTyZTS9VYwRgBdPXtsAOiMKw7yTzXZrYz9BHT2WF4h98r25axD/djNWDKg==}
+    dependencies:
+      axios: 0.26.1
+      class-transformer: 0.5.1
+      class-validator: 0.14.0
+      mixpanel: 0.13.0
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+    dev: false
+
   /@nuxtjs/opencollective/0.3.2:
     resolution: {integrity: sha512-um0xL3fO7Mf4fDxcqx9KryrB7zgRM5JSlvGN5AGkP6JLM5XEKyjeAiPbNxdXVXQ16isuAhYpvP88NgL2BGd6aA==}
     engines: {node: '>=8.0.0', npm: '>=5.0.0'}
@@ -2738,6 +2775,10 @@ packages:
 
   /@types/node/18.11.17:
     resolution: {integrity: sha512-HJSUJmni4BeDHhfzn6nF0sVmd1SMezP7/4F0Lq+aXzmp2xm9O7WXrUtHW/CHlYVtZUbByEvWidHqRtcJXGF2Ng==}
+
+  /@types/node/18.14.0:
+    resolution: {integrity: sha512-5EWrvLmglK+imbCJY0+INViFWUHg1AHel1sq4ZVSfdcNqGy9Edv3UB9IIzzg+xPaUcAgZYcfVs2fBcwDeZzU0A==}
+    dev: true
 
   /@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
@@ -9639,6 +9680,20 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       '@lukeed/csprng': 1.0.1
+
+  /typescript/4.9.5:
+    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: true
+
+  /uglify-js/3.17.4:
+    resolution: {integrity: sha512-T9q82TJI9e/C1TAxYvfb16xO120tMVFZrGA3f9/P4424DNu6ypK103y0GPFVa17yotwSyZW5iYXgjYHkGrJW/g==}
+    engines: {node: '>=0.8.0'}
+    hasBin: true
+    requiresBuild: true
+    dev: false
+    optional: true
 
   /unbox-primitive/1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
