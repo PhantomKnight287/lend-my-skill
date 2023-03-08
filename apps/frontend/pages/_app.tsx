@@ -31,7 +31,7 @@ export default function App(props: AppProps) {
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
 
-  // useHotkeys([["mod+J", () => toggleColorScheme()]]);
+  useHotkeys([["mod+J", () => toggleColorScheme()]]);
 
   return (
     <>
@@ -47,19 +47,19 @@ export default function App(props: AppProps) {
                 colorScheme,
                 fontFamily: inter.style.fontFamily,
                 colors: {
-                  brand: [
-                    "#e3f2fd",
-                    "#bbdefb",
-                    "#90caf9",
-                    "#64b5f6",
-                    "#42a5f5",
-                    "#2196f3",
-                    "#1e88e5",
-                    "#1976d2",
-                    "#1565c0",
+                  dark: [
+                    "#C1C2C5",
+                    "#A6A7AB",
+                    "#909296",
+                    "#5c5f66",
+                    "#373A40",
+                    "#2C2E33",
+                    "#25262b",
+                    "#0c0d14",
+                    "#141517",
+                    "#101113",
                   ],
                 },
-                primaryColor: "brand",
               }}
               withGlobalStyles
               withNormalizeCSS
@@ -80,7 +80,6 @@ export default function App(props: AppProps) {
                       }}
                       animate="enter"
                       initial="initial"
-                      // animate="animate"
                       exit="exit"
                       key={props.router.pathname}
                     >
