@@ -4,6 +4,8 @@ import * as morgan from 'morgan';
 import './constants';
 import { PORT } from './constants';
 import helmet from 'helmet';
+import { PrismaService } from './services/prisma/prisma.service';
+import "@total-typescript/ts-reset"
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -20,6 +22,7 @@ async function bootstrap() {
     }),
   );
   app.enableCors();
+  app.get(PrismaService).enableShutdownHooks(app);
   await app.listen(PORT);
   console.log(`Application is running on: http://localhost:${PORT}`);
 }
