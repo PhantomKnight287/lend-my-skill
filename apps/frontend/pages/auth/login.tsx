@@ -77,7 +77,7 @@ export default function Login() {
             avatarUrl: profileImageRouteGenerator(d.user.username),
           },
         });
-        createCookie("token", d.token, 1);
+        createCookie("token", d.token);
         showNotification({
           message: `Welcome back @${upperFirst(d.user.username)}`,
           color: "green",
