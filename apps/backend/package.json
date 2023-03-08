@@ -19,15 +19,18 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "dev": "cross-env NODE_ENV=development nest start --watch --preserveWatchOutput"
+    "dev": "cross-env NODE_ENV=development nest start --watch --preserveWatchOutput",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@prisma/client": "^4.11.0",
     "dotenv": "^16.0.3",
     "helmet": "^6.0.1",
     "morgan": "^1.10.0",
+    "prisma": "^4.11.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
