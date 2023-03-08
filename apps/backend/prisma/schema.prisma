@@ -8,8 +8,8 @@ datasource db {
 }
 
 enum Role {
-  Freelancer
-  Client
+  Freelancer @map("freelancer")
+  Client     @map("client")
 }
 
 model User {
