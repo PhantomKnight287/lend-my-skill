@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useForm } from "@mantine/form";
 import {
   TextInput,
@@ -15,7 +16,7 @@ import {
 import { Container } from "@components/container";
 import clsx from "clsx";
 import { MetaTags } from "@components/meta";
-import { outfit, spaceGrotest } from "@fonts";
+import { outfit } from "@fonts";
 import Link from "next/link";
 import axios from "axios";
 import { URLBuilder } from "@utils/url";
@@ -59,19 +60,22 @@ export default function Register() {
   const dispatch = useSetUser();
   const { isReady, replace } = useRouter();
   const { id } = useUser();
-  const [userType, setUserType] = useState<"client" | "freelancer" | "">("");
-  const [checked, setChecked] = useState<"client" | "freelancer" | "">("");
+  const [userType, setUserType] = useState<"Client" | "Freelancer" | "">("");
+  const [checked, setChecked] = useState<"Client" | "Freelancer" | "">("");
+  const [loading, setLoading] = useState(false);
   useHydrateUserContext();
   function handleSubmit(values: typeof form.values) {
+    setLoading(true);
     const { confirmPass, email, name, password, username, country } = values;
     axios
-      .post<RegisterResponse>(URLBuilder(`/${userType}/auth/register`), {
+      .post<RegisterResponse>(URLBuilder(`/auth/register`), {
         confirmPassword: confirmPass,
         email,
         name,
         password,
         username,
         country,
+        role: userType,
       })
       .then((d) => d.data)
       .then((d) => {
@@ -80,11 +84,10 @@ export default function Register() {
           payload: {
             ...d.user,
             avatarUrl: profileImageRouteGenerator(d.user.username),
-            userType: userType as "client" | "freelancer",
+            userType: userType as "Client" | "Freelancer",
           },
         });
-        createCookie("token", d.tokens.auth, 1);
-        createCookie("refreshToken", d.tokens.refresh, 7);
+        createCookie("token", d.token);
         showNotification({
           message: "Successfully Registered",
           color: "green",
@@ -98,7 +101,8 @@ export default function Register() {
             error || err?.response?.data?.message || "Something went wrong",
           color: "red",
         });
-      });
+      })
+      .finally(() => setLoading(false));
   }
 
   useEffect(() => {
@@ -106,7 +110,7 @@ export default function Register() {
       return;
     }
     if (id) replace("/dashboard");
-  }, [isReady,id]);
+  }, [isReady, id]);
 
   if (!userType)
     return (
@@ -145,15 +149,15 @@ export default function Register() {
                   {
                     [outfit.className]: true,
                     "text-white": colorScheme === "dark",
-                    "border-[1px] border-pink-400": checked === "client",
+                    "border-[1px] border-pink-400": checked === "Client",
                   }
                 )}
                 onClick={() => {
-                  setChecked("client");
+                  setChecked("Client");
                 }}
               >
-                <img src="/icons/customer-50.png" alt="client" />I am a Client,
-                I want to hire a freelancer
+                <img src="/icons/customer-50.png" alt="Client" />I am a Client,
+                I want to hire a Freelancer
               </Paper>
               <Paper
                 radius={"md"}
@@ -164,15 +168,15 @@ export default function Register() {
                   {
                     [outfit.className]: true,
                     "text-white": colorScheme === "dark",
-                    "border-[1px] border-pink-400": checked === "freelancer",
+                    "border-[1px] border-pink-400": checked === "Freelancer",
                   }
                 )}
                 onClick={() => {
-                  setChecked("freelancer");
+                  setChecked("Freelancer");
                 }}
               >
-                <img src="/icons/freelancer-50.png" alt="freelancer" />I am a
-                Freelancer, I want to work for clients
+                <img src="/icons/Freelancer-50.png" alt="Freelancer" />I am a
+                Freelancer, I want to work for Clients
               </Paper>
             </div>
             <Button
@@ -189,7 +193,7 @@ export default function Register() {
       </Container>
     );
 
-  if (userType === "client" || userType === "freelancer")
+  if (userType === "Client" || userType === "Freelancer")
     return (
       <>
         <MetaTags
@@ -218,7 +222,7 @@ export default function Register() {
                 "text-white": colorScheme === "dark",
               })}
             >
-              {userType === "client"
+              {userType === "Client"
                 ? "Sign Up to Hire Freelancers"
                 : "Sign Up to Start Earning Money"}
             </Text>
@@ -308,6 +312,7 @@ export default function Register() {
                       colorScheme === "dark",
                   })}
                   disabled={!form.values.terms}
+                  loading={false}
                 >
                   Register
                 </Button>
