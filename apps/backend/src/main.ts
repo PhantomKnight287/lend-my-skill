@@ -5,11 +5,15 @@ import './constants';
 import { PORT } from './constants';
 import helmet from 'helmet';
 import { PrismaService } from './services/prisma/prisma.service';
-import "@total-typescript/ts-reset"
+import '@total-typescript/ts-reset';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: ['debug', 'error', 'warn'],
+    logger:
+      process.env.NODE_ENV === 'development'
+        ? ['debug', 'error', 'warn', 'log', 'verbose']
+        : ['debug', 'error', 'warn'],
   });
   app.use(morgan('dev'));
   app.use(helmet());
@@ -23,7 +27,10 @@ async function bootstrap() {
   );
   app.enableCors();
   app.get(PrismaService).enableShutdownHooks(app);
+  app.useGlobalPipes(new ValidationPipe());
+
   await app.listen(PORT);
+
   console.log(`Application is running on: http://localhost:${PORT}`);
 }
 bootstrap();

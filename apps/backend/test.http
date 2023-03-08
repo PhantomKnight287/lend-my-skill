@@ -1,0 +1,11 @@
+@url =http://localhost:5000
+
+###
+
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test",
+  "password":"pass"
+}
