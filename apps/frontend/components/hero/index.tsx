@@ -1,12 +1,11 @@
 import styles from "./hero.module.scss";
-import { Button } from "@mantine/core";
+import { Button, Title, useMantineColorScheme } from "@mantine/core";
 import Link from "next/link";
-import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import TextTransition from "@components/text";
 import { config } from "react-spring";
 import clsx from "clsx";
-import { outfit } from "@fonts";
+import { outfit, sen } from "@fonts";
 
 const Features = [
   {
@@ -41,8 +40,8 @@ export function Hero() {
     }, 2000);
     return () => clearTimeout(intervalId);
   }, []);
+  const { colorScheme } = useMantineColorScheme();
 
-  const isSmallScreen = useMediaQuery("(max-width:700px)", false);
   return (
     <div
       className={clsx(`items-center justify-center`, {
@@ -50,28 +49,31 @@ export function Hero() {
         [outfit.className]: true,
       })}
     >
-      <h1 className="text-center">
+      <Title
+        align="center"
+        className={clsx(sen.className, {
+          "text-white": colorScheme === "dark",
+        })}
+      >
         A Platform For
         <span>
           <TextTransition
             springConfig={config.gentle}
-            className={"text-center"}
+            className={clsx("text-center", sen.className)}
           >
             {
               <span
-                className={
-                  Words[index % Words.length].toLowerCase() === "everyone."
-                    ? `text-center bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] bg-clip-text text-transparent`
-                    : "text-center"
-                }
+                className={clsx("text-center", sen.className, {
+                  " bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] bg-clip-text text-transparent":
+                    Words[index % Words.length].toLowerCase() === "everyone.",
+                })}
               >
                 {Words[index % Words.length]}
               </span>
             }
           </TextTransition>
-          {/* Everyone. */}
         </span>
-      </h1>
+      </Title>
       <p className="text-xl text-gray-600 mb-8 mt-2" style={{}}>
         Get Your Work Done By Skilled Freelancers
       </p>
@@ -88,9 +90,7 @@ export function Hero() {
       </div>
       <div className={styles.featuresContainer}>
         <h2 className={styles.feature}>Features</h2>
-        <div
-          className={clsx(styles.featureContainer,"w-full m-0")}
-        >
+        <div className={clsx(styles.featureContainer, "w-full m-0")}>
           <h2 className={styles.featureTitle}>Open Source</h2>
           <p className={styles.featureDescription}>
             {" "}
