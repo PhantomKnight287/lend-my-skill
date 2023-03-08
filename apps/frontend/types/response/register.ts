@@ -4,8 +4,5 @@ export interface RegisterResponse {
     id: string;
     name: string;
   };
-  tokens: {
-    auth: string;
-    refresh: string;
-  };
+  token: string;
 }
