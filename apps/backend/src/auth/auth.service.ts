@@ -1,18 +1,64 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { compare } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { SIGN_SECRET } from 'src/constants';
 import { PrismaService } from 'src/services/prisma/prisma.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
+import { CreateUserDto } from './dto/create-auth.dto';
 import { LoginUserDto } from './dto/login.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @Injectable()
 export class AuthService {
   constructor(protected p: PrismaService) {}
 
-  create(createAuthDto: LoginUserDto) {
-    const { email, password } = createAuthDto;
+  async create(c: CreateUserDto): Promise<{
+    token: string;
+    user: {
+      username: string;
+      role: string;
+    };
+  }> {
+    const { email, password, country, confirmPassword, username, role, name } =
+      c;
+    const oldUser = await this.p.user.findFirst({
+      where: {
+        OR: [
+          {
+            email,
+          },
+          {
+            username,
+          },
+        ],
+      },
+    });
+    if (oldUser)
+      throw new HttpException('Email or Username already in use.', 409);
+    if (password !== confirmPassword)
+      throw new HttpException('Passwords do not match.', 400);
+    const user = await this.p.user.create({
+      data: {
+        email,
+        name,
+        password: await hash(password, 10),
+        username,
+        country,
+        role,
+      },
+    });
+    const token = sign(
+      {
+        id: user.id,
+        role: user.role,
+      },
+      SIGN_SECRET,
+    );
+    return {
+      token,
+      user: {
+        role: user.role,
+        username: user.username,
+      },
+    };
   }
 
   async login(createAuthDto: LoginUserDto): Promise<{
@@ -47,21 +93,5 @@ export class AuthService {
       },
       token,
     };
-  }
-
-  findAll() {
-    return `This action returns all auth`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
   }
 }
