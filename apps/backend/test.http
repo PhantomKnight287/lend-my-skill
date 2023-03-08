@@ -1,8 +1,18 @@
-@url =http://localhost:5000
+@url=http://localhost:5000
 
 ###
 
 POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test",
+  "password":"pass"
+}
+
+###
+
+POST {{url}}/auth/register
 Content-Type: application/json
 
 {
