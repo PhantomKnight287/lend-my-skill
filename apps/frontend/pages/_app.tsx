@@ -20,18 +20,9 @@ import { ModalsProvider } from "@mantine/modals";
 const client = new QueryClient();
 
 export default function App(props: AppProps) {
-  const { Component, session, pageProps } = props as any;
+  const { Component, pageProps } = props as any;
 
-  const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
-    key: "mantine-color-scheme",
-    defaultValue: "light",
-    getInitialValueInEffect: true,
-  });
-
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
-
-  useHotkeys([["mod+J", () => toggleColorScheme()]]);
+  const colorScheme: ColorScheme = "dark";
 
   return (
     <>
@@ -40,7 +31,7 @@ export default function App(props: AppProps) {
         <UserProvider>
           <ColorSchemeProvider
             colorScheme={colorScheme}
-            toggleColorScheme={toggleColorScheme}
+            toggleColorScheme={() => {}}
           >
             <MantineProvider
               theme={{
@@ -67,25 +58,31 @@ export default function App(props: AppProps) {
             >
               <NotificationsProvider>
                 <ModalsProvider>
-                  <Header />
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      variants={{
-                        exit: {
-                          filter: "blur(8px)",
-                        },
-                        enter: {
-                          filter: "blur(0px)",
-                        },
-                      }}
-                      animate="enter"
-                      initial="initial"
-                      exit="exit"
-                      key={props.router.pathname}
-                    >
-                      <Component {...pageProps} key={props.router.asPath} />
-                    </motion.div>
-                  </AnimatePresence>
+                  <div
+                    className={
+                      props.router.asPath === "/" ? "gradient" : undefined
+                    }
+                  >
+                    <Header />
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        variants={{
+                          exit: {
+                            filter: "blur(8px)",
+                          },
+                          enter: {
+                            filter: "blur(0px)",
+                          },
+                        }}
+                        animate="enter"
+                        initial="initial"
+                        exit="exit"
+                        key={props.router.pathname}
+                      >
+                        <Component {...pageProps} key={props.router.asPath} />
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
                 </ModalsProvider>
               </NotificationsProvider>
               <ReactQueryDevtools />
