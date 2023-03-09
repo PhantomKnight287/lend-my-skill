@@ -48,7 +48,11 @@ export function Header() {
               Contact
             </Link>
           </div>
-          <div className="flex flex-row items-center justify-center">
+          <div
+            className={clsx("flex flex-row items-center justify-center", {
+              hidden: username,
+            })}
+          >
             <Link
               href="/auth/login"
               className={clsx("p-5 font-medium hover:underline")}
@@ -57,10 +61,19 @@ export function Header() {
             </Link>
             <Link
               href="/auth/signup"
-              className={clsx("p-5 font-medium hover:underline")}
+              className={clsx(
+                "p-3 font-medium rounded-3xl py-2 text-white bg-gray-900  px-4  "
+              )}
             >
               Signup
             </Link>
+          </div>
+          <div
+            className={clsx({
+              hidden: !username,
+            })}
+          >
+            <HeaderMenu />
           </div>
         </div>
       </div>
