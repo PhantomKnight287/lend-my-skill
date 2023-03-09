@@ -7,6 +7,7 @@ import { ProfileModule } from './resources/profile/profile.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { UploadModule } from './resources/upload/upload.module';
+import { StaticModule } from './resources/static/static.module';
 
 @Module({
   controllers: [AppController],
@@ -23,6 +24,7 @@ import { UploadModule } from './resources/upload/upload.module';
     AuthModule,
     ProfileModule,
     UploadModule,
+    StaticModule,
   ],
   exports: [PrismaService],
 })
