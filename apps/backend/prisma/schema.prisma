@@ -25,6 +25,18 @@ model User {
   profileCompleted Boolean @default(false)
   bio              String  @default("")
 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Uploads   Uploads[]
+}
+
+// This will be helpful to moderate the content and also get rid of it when it is not required
+model Uploads {
+  id        String   @id @unique @default(cuid())
+  url       String
+  type      String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
