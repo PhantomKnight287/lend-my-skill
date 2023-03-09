@@ -24,6 +24,7 @@ model User {
   emailVerified    Boolean @default(false)
   profileCompleted Boolean @default(false)
   bio              String  @default("")
+  avatarUrl        String  @default("")
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
