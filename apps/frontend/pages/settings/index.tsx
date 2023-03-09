@@ -43,13 +43,13 @@ const NumberPicker = dynamic(() => import("react-phone-input-2"), {
 });
 
 function Settings() {
-  useHydrateUserContext("replace", true, "/auth/login");
+  const updateState = useHydrateUserContext("replace", true, "/auth/login");
   const [activeTab, setActiveTab] = useState("account");
   const { push, query, isReady } = useRouter();
   const { username } = useUser();
   const [profileCompleted, setProfileCompleted] = useState(false);
   const dispatch = useSetUser();
-  const { data, error, refetch, isLoading } = useQuery<{
+  const { data, error, isLoading } = useQuery<{
     bio: string;
     aboutMe: string;
     country: string;
@@ -57,7 +57,7 @@ function Settings() {
   }>({
     queryKey: ["account"],
     queryFn: async () => {
-      return await fetch(URLBuilder(`/profile/${username}/authenticated`), {
+      return await fetch(URLBuilder(`/profile?settings=true`), {
         headers: {
           authorization: `Bearer ${readCookie("token")}`,
         },
@@ -85,7 +85,6 @@ function Settings() {
     if (!isLoading) {
       formState.setValues({
         bio: data!.bio,
-        aboutMe: data!.aboutMe,
         country: data!.country,
         avatarUrl: data!.avatarUrl,
       });
@@ -112,14 +111,14 @@ function Settings() {
     const controller = new AbortController();
     const token = readCookie("token")!;
     axios
-      .get(URLBuilder(`/profile/${username}/completed`), {
+      .get(URLBuilder(`/profile`), {
         headers: {
           authorization: `Bearer ${token}`,
         },
         signal: controller.signal,
       })
       .then((d) => d.data)
-      .then((d) => setProfileCompleted(d.completed))
+      .then((d) => setProfileCompleted(d.profileCompleted))
       .catch(() => null);
     return () => controller.abort();
   }, [isReady]);
@@ -186,7 +185,7 @@ function Settings() {
                         )}
                       </FileButton>
                       <span
-                        className={clsx("text-md leading-[18px] mt-3", {
+                        className={clsx("text-md leading-[18px] my-3 ", {
                           "text-gray-500": colorScheme === "dark",
                           "text-[#666666]": colorScheme === "light",
                         })}
@@ -219,7 +218,6 @@ function Settings() {
                               URLBuilder("/profile/update"),
                               {
                                 bio: d.bio || undefined,
-                                aboutMe: d.aboutMe || undefined,
                                 country: d.country || undefined,
                                 avatarUrl: url || d.avatarUrl || undefined,
                               },
@@ -238,6 +236,7 @@ function Settings() {
                               });
                               formState.resetDirty();
                               setAvatar(undefined);
+                              updateState();
                             })
                             .catch((err) => {
                               showNotification({
@@ -265,7 +264,7 @@ function Settings() {
                               }),
                             }}
                             classNames={{
-                              input: clsx("h-[44px]"),
+                              input: "h-[44px]",
                             }}
                           />
                           <Select
@@ -278,33 +277,23 @@ function Settings() {
                             }}
                             placeholder="Country"
                             {...formState.getInputProps("country")}
+                            classNames={{
+                              input: "h-[44px]",
+                            }}
+                            searchable
                           />
                         </SimpleGrid>
-                        <Textarea
-                          label="About me"
-                          placeholder="About me"
-                          {...formState.getInputProps("aboutMe")}
-                          labelProps={{
-                            className: clsx({
-                              [outfit.className]: true,
-                            }),
-                          }}
-                          autosize
-                        />
+
                         {formState.isDirty() || avatar != undefined ? (
                           <>
                             <Group position="center">
                               <Button
                                 type="submit"
                                 mt="md"
-                                color="black"
-                                className={clsx("", {
-                                  [outfit.className]: true,
-                                  "bg-gray-900 hover:bg-black":
-                                    colorScheme === "light",
-                                  "bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] text-white":
-                                    colorScheme === "dark",
-                                })}
+                                className={clsx(
+                                  outfit.className,
+                                  "text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 "
+                                )}
                                 loading={loading}
                               >
                                 Update
