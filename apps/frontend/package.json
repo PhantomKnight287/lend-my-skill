@@ -27,7 +27,7 @@
     "@mdx-js/react": "^2.2.1",
     "@next/font": "13.0.7",
     "@next/mdx": "^13.1.1",
-    "@tabler/icons": "^1.117.0",
+    "@tabler/icons": "1.118.0",
     "@tanstack/react-query": "^4.20.4",
     "@tanstack/react-query-devtools": "^4.20.4",
     "@tiptap/extension-highlight": "2.0.0-beta.209",
