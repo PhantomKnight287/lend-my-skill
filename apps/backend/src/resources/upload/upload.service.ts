@@ -41,4 +41,35 @@ export class UploadService {
       path: data.path,
     };
   }
+  async uploadMultipleFiles(
+    files: Express.Multer.File[],
+    id: string,
+    folderName?: string,
+  ) {
+    const urls = [];
+    for (const file of files) {
+      const fileContent = readFileSync(`${process.cwd()}/${file.path}`);
+
+      const { data, error } = await client.storage
+        .from('images')
+        .upload(
+          `${folderName || 'assets'}/${id}-${randomUUID()}-${file.filename}`,
+          fileContent,
+          {
+            contentType: file.mimetype,
+          },
+        );
+      unlink(
+        `${process.cwd()}/${file.path}`,
+        (err) => err && console.log(`${err.message}`),
+      );
+      if (error) {
+        throw new BadRequestException(error.message, error.message);
+      }
+      urls.push(data.path);
+    }
+    return {
+      paths: urls,
+    };
+  }
 }

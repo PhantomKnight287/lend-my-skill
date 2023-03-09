@@ -3,9 +3,10 @@ import {
   Post,
   Query,
   UploadedFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { randomUUID } from 'crypto';
 import { Token } from 'decorator/token/token.decorator';
 import { diskStorage } from 'multer';
@@ -31,5 +32,23 @@ export class UploadController {
     @Query('to') to?: string,
   ) {
     return await this.uploadService.uploadFile(file, id, to);
+  }
+
+  @Post('multiple')
+  @UseInterceptors(
+    FilesInterceptor('files', undefined, {
+      storage: diskStorage({
+        destination: './public/uploads',
+        filename: (_, file, cb) =>
+          cb(null, `${Date.now()}-${randomUUID()}-${file.originalname}`),
+      }),
+    }),
+  )
+  async uploadMultipleFiles(
+    @Token({ serialize: true }) { id },
+    @UploadedFiles() files: Express.Multer.File[],
+    @Query('to') to?: string,
+  ) {
+    return await this.uploadService.uploadMultipleFiles(files, id, to);
   }
 }
