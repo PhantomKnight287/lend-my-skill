@@ -4,18 +4,23 @@ import { AppService } from './app.service';
 import { PrismaService } from './services/prisma/prisma.service';
 import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './resources/profile/profile.module';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [
+    AppService,
+    PrismaService,
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
+  ],
   imports: [
-    AuthModule,
-    ProfileModule,
     ThrottlerModule.forRoot({
       limit: 100,
       ttl: 60,
     }),
+    AuthModule,
+    ProfileModule,
   ],
   exports: [PrismaService],
 })
