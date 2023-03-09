@@ -1,3 +1,4 @@
 *env
 !.env.example
 dist
+public/uploads/*
