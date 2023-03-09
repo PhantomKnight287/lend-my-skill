@@ -15,6 +15,9 @@ export class AuthService {
     user: {
       username: string;
       role: string;
+      name: string;
+      id: string;
+      profileCompleted: boolean;
     };
   }> {
     const { email, password, country, confirmPassword, username, role, name } =
@@ -57,6 +60,9 @@ export class AuthService {
       user: {
         role: user.role,
         username: user.username,
+        id: user.id,
+        name: user.name,
+        profileCompleted: false,
       },
     };
   }
@@ -65,6 +71,9 @@ export class AuthService {
     user: {
       username: string;
       role: string;
+      id: string;
+      name: string;
+      profileCompleted: boolean;
     };
     token: string;
   }> {
@@ -90,6 +99,9 @@ export class AuthService {
       user: {
         role: user.role,
         username: user.username,
+        id: user.id,
+        name: user.name,
+        profileCompleted: user.profileCompleted,
       },
       token,
     };
