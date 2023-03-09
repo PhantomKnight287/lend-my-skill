@@ -10,6 +10,7 @@ import {
   IconBrandGithub,
   IconPremiumRights,
 } from "@tabler/icons";
+import { useUser } from "@hooks/user";
 
 const Features: Array<{
   title: string;
@@ -60,15 +61,9 @@ const Features: Array<{
   },
 ];
 
-const Words = [
-  "Web Developers 💻",
-  "Blog Writers 📝",
-  "Video Editors 📹",
-  "Everyone.",
-];
-
 export function Hero() {
   const { colorScheme } = useMantineColorScheme();
+  const { username } = useUser();
 
   return (
     <div
@@ -96,7 +91,11 @@ export function Hero() {
       >
         Get Your Work Done By Skilled Freelancers.
       </p>
-      <div className="flex flex-row justify-between w-full items-center ">
+      <div
+        className={clsx("flex flex-row justify-between w-full items-center ", {
+          hidden: username,
+        })}
+      >
         <div
           className={clsx(
             "mt-2 mb-4 flex items-center justify-center rounded-md bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[2px] duration-[125ms] transition-all hover:scale-110 w-fit ml-auto mr-5"
@@ -132,6 +131,31 @@ export function Hero() {
               color="dark"
             >
               How It Works?
+            </Button>
+          </Link>
+        </div>
+      </div>
+      <div
+        className={clsx("flex flex-row justify-between w-full items-center ", {
+          hidden: !username,
+        })}
+      >
+        <div
+          className={clsx(
+            "mt-2 mb-4 flex items-center justify-center rounded-md bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[2px] duration-[125ms] transition-all hover:scale-110 w-fit  mx-auto"
+          )}
+          data-aos="zoom-in"
+        >
+          <Link href="/dashboard" passHref>
+            <Button
+              variant="filled"
+              className={clsx("", {
+                "bg-[#201e1e] hover:bg-gray-900 ": colorScheme === "light",
+                "bg-[#201e1e]  text-white": colorScheme === "dark",
+              })}
+              color="dark"
+            >
+              Take Me to Dashboard <IconArrowRight className="m-0 p-0 ml-2" />
             </Button>
           </Link>
         </div>
