@@ -29,7 +29,6 @@ export default function Textarea({
       <label
         className={clsx("text-sm font-bold py-2", {
           [outfit.className]: true,
-          "text-[#495057] ": colorScheme === "light",
         })}
         htmlFor={props.id}
       >
@@ -39,10 +38,10 @@ export default function Textarea({
         </span>
       </label>
       <div
-        className={clsx("border-[1px]  rounded-sm flex flex-col", {
-          "border-[#ced4da]": colorScheme === "light",
-          "border-[#495057]": colorScheme === "dark",
-        })}
+        className={clsx(
+          "bg-[#25262b]  rounded-md flex flex-col",
+          {}
+        )}
       >
         <T
           required
