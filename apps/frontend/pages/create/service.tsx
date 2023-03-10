@@ -49,13 +49,7 @@ import { useUser } from "@hooks/user";
 import Editor from "@components/editor";
 import { DELIVERY_DAYS } from "~/constants";
 import { createService } from "../../services/services.service";
-
-export const AnswerType= {
-  TEXT: 'TEXT',
-  MULTIPLE_CHOICE: 'MULTIPLE_CHOICE',
-  ATTACHMENT: 'ATTACHMENT'
-};
-
+import { AnswerType } from "~/types/answer";
 
 function CreateService() {
   const formState = useForm<{
@@ -74,6 +68,7 @@ function CreateService() {
       type: keyof typeof AnswerType;
       required: boolean;
     }[];
+    tags: string[];
   }>({
     initialValues: {
       title: "I will ",
@@ -91,10 +86,11 @@ function CreateService() {
       questions: [
         {
           question: "",
-          type:"TEXT",
+          type: "TEXT",
           required: false,
         },
       ],
+      tags: [],
     },
     validateInputOnBlur: true,
     validate: {
@@ -234,6 +230,22 @@ function CreateService() {
         setLoadingVisible(false);
       });
   };
+
+  const {
+    data: tagsData,
+    isLoading: tagsLoading,
+    refetch: tagsRefetch,
+  } = useQuery<{ id: string; name: string }[]>({
+    queryKey: ["tags"],
+    queryFn: async () => {
+      const res = await axios.get(URLBuilder("/tags"));
+      return res.data;
+    },
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: true,
+  });
+
   return (
     <>
       <MetaTags
@@ -305,7 +317,7 @@ function CreateService() {
                           maxLength={1000}
                           wordsComponent={
                             <span
-                              className={clsx("text-sm ml-auto pr-3 my-2", {
+                              className={clsx("text-sm ml-auto pr-3 my-2 ", {
                                 "text-[#6c757d]":
                                   formState.values.title.length < 20,
                                 "text-[#28a745]":
@@ -374,13 +386,21 @@ function CreateService() {
                                 });
                                 setLoading(false);
                               });
-                              return null
+                            return null;
                           }}
                         />
                       </div>
                       <MultiSelect
                         mt="md"
-                        data={tags}
+                        data={
+                          tagsData
+                            ? tagsData.map((d) => ({
+                                value: d.id,
+                                label: d.name,
+                              }))
+                            : []
+                        }
+                        {...formState.getInputProps("tags")}
                         label="Tags"
                         labelProps={{
                           className: clsx("text-sm font-bold ", {
@@ -394,14 +414,45 @@ function CreateService() {
                         creatable={tags.length < 5}
                         getCreateLabel={(query) => `+ Create ${query}`}
                         onCreate={(query) => {
-                          const item = { value: query, label: query };
-                          setTags((current) => [...current, item]);
-                          return item;
+                          setLoading(true);
+                          axios
+                            .post(
+                              URLBuilder(`/tags/create`),
+                              {
+                                name: query,
+                              },
+                              {
+                                headers: {
+                                  authorization: `Bearer ${readCookie(
+                                    "token"
+                                  )}`,
+                                },
+                              }
+                            )
+                            .then((d) =>
+                              tagsRefetch().then(() => setLoading(false))
+                            )
+                            .catch((err) => {
+                              showNotification({
+                                color: "red",
+                                message:
+                                  err?.response?.data?.message ||
+                                  "An error occured",
+                              });
+                            });
+                          setLoading(false);
                         }}
                         maxSelectedValues={5}
+                        classNames={{
+                          input: "focus:outline-none",
+                        }}
                       />
                       <Group position="center" mt="xl">
-                        <Button variant="default" disabled>
+                        <Button
+                          variant="default"
+                          disabled
+                          className="cursor-not-allowed"
+                        >
                           Back
                         </Button>
                         <NextButton />
@@ -691,7 +742,10 @@ function CreateService() {
                   </Text>
                   <div className="flex flex-col gap-4 mt-8">
                     {formState.values.questions?.map((q, i) => (
-                      <div className="flex flex-row items-center justify-center gap-4" key={i} >
+                      <div
+                        className="flex flex-row items-center justify-center gap-4"
+                        key={i}
+                      >
                         <T
                           placeholder="Question"
                           required
@@ -781,8 +835,8 @@ function CreateService() {
                       "text-black": theme === "light",
                     })}
                   >
-                    Add some images to your service to make it more appealing and
-                    stand out.
+                    Add some images to your service to make it more appealing
+                    and stand out.
                   </Text>
                   <div className="flex flex-row gap-5 flex-wrap">
                     <FileButton
