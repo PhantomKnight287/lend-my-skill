@@ -54,3 +54,10 @@ model Category {
   createdAt DateTime @default(now())
   slug      String   @unique
 }
+
+model Tags {
+  id        String   @id @unique @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  slug      String   @unique
+}
