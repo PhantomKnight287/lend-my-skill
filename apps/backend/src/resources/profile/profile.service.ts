@@ -1,5 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/services/prisma/prisma.service';
+import { CompletedProfileDTO } from './dto/complete-profile.dto';
 import { UpdateProfileDTO } from './dto/update-profile.dto';
 
 @Injectable()
@@ -66,5 +67,44 @@ export class ProfileService {
     if (!user) throw new HttpException('No User Found', 404);
 
     return user;
+  }
+
+  private async checkIfProfileCompleted(id: string) {
+    const user = await this.p.user.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        profileCompleted: true,
+      },
+    });
+    if (!user) throw new HttpException('No User Found', 404);
+    return user.profileCompleted;
+  }
+
+  async completeProfile(id: string, body: CompletedProfileDTO) {
+    const profileCompleted = await this.checkIfProfileCompleted(id);
+    if (profileCompleted)
+      throw new HttpException('Profile Already Completed', 400);
+    const { documents, mobileNumber, paypalEmail, upiId } = body;
+    if (!paypalEmail && !upiId)
+      throw new HttpException(
+        'Please Provide Either Paypal Email or UPI ID',
+        400,
+      );
+
+    await this.p.user.update({
+      where: {
+        id,
+      },
+      data: {
+        kycDocuments: documents,
+        phone: mobileNumber,
+        paypalEmail,
+        upiId,
+        profileCompleted: true,
+      },
+    });
+    return 'Profile Completed';
   }
 }
