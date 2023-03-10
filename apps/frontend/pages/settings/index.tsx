@@ -36,6 +36,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Countries } from "~/constants";
 import dynamic from "next/dynamic";
+import { useToggle } from "@mantine/hooks";
 
 const NumberPicker = dynamic(() => import("react-phone-input-2"), {
   ssr: false,
@@ -49,7 +50,7 @@ function Settings() {
   const { username } = useUser();
   const [profileCompleted, setProfileCompleted] = useState(false);
   const dispatch = useSetUser();
-  const { data, error, isLoading } = useQuery<{
+  const { data, error, isLoading, refetch } = useQuery<{
     bio: string;
     aboutMe: string;
     country: string;
@@ -68,7 +69,6 @@ function Settings() {
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
   });
-
   const formState = useForm({
     initialValues: {
       bio: "",
@@ -96,6 +96,7 @@ function Settings() {
     initialValues: {
       mobileNumber: "",
       upiId: "",
+      paypalEmail: "",
     },
     validate: {
       upiId: (val) =>
@@ -125,6 +126,7 @@ function Settings() {
 
   const { colorScheme } = useMantineColorScheme();
   const [loading, setLoading] = useState(false);
+  const [paymentInfo, setPaymentInfo] = useToggle(["upi", "paypal"]);
   return (
     <div className="flex flex-row ">
       <MetaTags description="Settings" title="Settings" />
@@ -237,6 +239,7 @@ function Settings() {
                               formState.resetDirty();
                               setAvatar(undefined);
                               updateState();
+                              refetch();
                             })
                             .catch((err) => {
                               showNotification({
@@ -316,7 +319,6 @@ function Settings() {
             >
               {profileCompleted ? (
                 <div>
-                  {/* show a nice message saying profile completed, you can use all features */}
                   <div className="flex flex-col">
                     <Text
                       align="center"
@@ -454,13 +456,19 @@ function Settings() {
                       }
 
                       const urls = data.data.paths;
+                      setLoading(true);
                       axios
                         .post(
                           URLBuilder("/profile/complete"),
                           {
                             mobileNumber: d.mobileNumber,
                             urls,
-                            upiId: d.upiId,
+                            upiId: paymentInfo === "upi" ? d.upiId : undefined,
+                            paypalEmail:
+                              paymentInfo === "paypal"
+                                ? d.paypalEmail
+                                : undefined,
+                            documents: urls,
                           },
                           {
                             headers: {
@@ -480,6 +488,7 @@ function Settings() {
                             },
                             type: "SET_USER",
                           });
+                          setKycDocuments([]);
                         })
                         .catch((err) => {
                           showNotification({
@@ -488,10 +497,11 @@ function Settings() {
                               err?.response?.data?.message ||
                               "Error completing profile",
                           });
-                        });
+                        })
+                        .finally(() => setLoading(false));
                     })}
                   >
-                    <div className="flex flex-col mt-8">
+                    <div className="flex flex-col mt-8 w-full">
                       <Text>
                         Please enter your mobile number
                         <span className="text-red-500">*</span>
@@ -510,26 +520,57 @@ function Settings() {
                         enableSearch
                         inputProps={{
                           required: true,
+                          className:
+                            "text-white bg-gray-900 px-4 py-2 w-full rounded-md",
                         }}
                       />
-                      <TextInput
-                        label="UPI ID"
-                        placeholder="abcd@upi"
-                        required
-                        {...completeProfileState.getInputProps("upiId")}
-                      />
+                      {paymentInfo === "upi" ? (
+                        <>
+                          <TextInput
+                            label="UPI ID"
+                            placeholder="abcd@upi"
+                            required
+                            mt="md"
+                            {...completeProfileState.getInputProps("upiId")}
+                          />
+                          <Text
+                            className="text-md mt-2 text-blue-300"
+                            role="button"
+                            onClick={() => setPaymentInfo()}
+                          >
+                            Switch to Paypal Email
+                          </Text>
+                        </>
+                      ) : (
+                        <>
+                          <TextInput
+                            label="Paypal Email"
+                            placeholder="johndoe@mail.com"
+                            required
+                            mt="md"
+                            {...completeProfileState.getInputProps(
+                              "paypalEmail"
+                            )}
+                          />
+                          <Text
+                            className="text-md mt-2 text-blue-300"
+                            role="button"
+                            onClick={() => setPaymentInfo()}
+                          >
+                            Switch to Upi
+                          </Text>
+                        </>
+                      )}
                       <div className="flex flex-col items-center justify-center">
                         <Button
                           type="submit"
                           mt="md"
-                          color="black"
-                          className={clsx("max-w-fit", {
-                            [outfit.className]: true,
-                            "bg-gray-900 hover:bg-black":
-                              colorScheme === "light",
-                            "bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] text-white":
-                              colorScheme === "dark",
-                          })}
+                          className={clsx(
+                            outfit.className,
+                            "text-white bg-purple-700 hover:bg-purple-800 focus:outline-none font-medium rounded-full text-sm px-5 py-2.5 text-center mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 "
+                          )}
+                          loading={loading}
+                          disabled={loading}
                         >
                           Submit
                         </Button>
