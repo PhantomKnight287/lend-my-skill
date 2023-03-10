@@ -9,6 +9,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { UploadModule } from './resources/upload/upload.module';
 import { StaticModule } from './resources/static/static.module';
 import { CategoriesModule } from './resources/categories/categories.module';
+import { TagsModule } from './resources/tags/tags.module';
 
 @Module({
   controllers: [AppController],
@@ -27,6 +28,7 @@ import { CategoriesModule } from './resources/categories/categories.module';
     UploadModule,
     StaticModule,
     CategoriesModule,
+    TagsModule,
   ],
   exports: [PrismaService],
 })
