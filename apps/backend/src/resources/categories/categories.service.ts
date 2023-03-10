@@ -14,7 +14,7 @@ export class CategoriesService {
     await this.p.category.create({
       data: {
         name: name,
-        slug: stringToSlug(name),
+        slug: stringToSlug(name, 10),
       },
     });
     return 'Category created successfully';
