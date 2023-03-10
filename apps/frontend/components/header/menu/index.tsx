@@ -38,7 +38,7 @@ export default function HeaderMenu() {
           >
             Search
           </Menu.Item>
-          {userType === "client" ? (
+          {userType === "Client" ? (
             <Menu.Item
               color="green"
               onClick={() => {
@@ -49,7 +49,7 @@ export default function HeaderMenu() {
             </Menu.Item>
           ) : (
             <>
-              {userType === "freelancer" ? (
+              {userType === "Freelancer" ? (
                 <Menu.Item
                   color="green"
                   onClick={() => push(`/create/service`)}
