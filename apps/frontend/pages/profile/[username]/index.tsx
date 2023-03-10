@@ -99,7 +99,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
         description={props.bio || `${props.name} on Lend My Skill`}
       />
       <div className="flex flex-row items-center justify-evenly flex-wrap">
-        <div className="w-full h-40 bg-[#e0f3ff]"></div>
+        <div className="w-full h-52 bg-[#e0f3ff]"></div>
         <Paper
           withBorder
           p="xl"
