@@ -61,7 +61,7 @@ const Features: Array<{
   },
 ];
 
-export function Hero() {
+export function Hero(props: { hideDashboardButton?: boolean }) {
   const { colorScheme } = useMantineColorScheme();
   const { username } = useUser();
 
@@ -93,7 +93,7 @@ export function Hero() {
       </p>
       <div
         className={clsx("flex flex-row justify-between w-full items-center ", {
-          hidden: username,
+          hidden: username && !props.hideDashboardButton,
         })}
       >
         <div
@@ -137,7 +137,7 @@ export function Hero() {
       </div>
       <div
         className={clsx("flex flex-row justify-between w-full items-center ", {
-          hidden: !username,
+          hidden: props.hideDashboardButton ? true : !username,
         })}
       >
         <div
