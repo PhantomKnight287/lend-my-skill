@@ -60,7 +60,9 @@ export default function App(props: AppProps) {
                 <ModalsProvider>
                   <div
                     className={
-                      props.router.asPath === "/" ? "gradient" : undefined
+                      ["/", "/home"].includes(props.router.asPath)
+                        ? "gradient"
+                        : undefined
                     }
                   >
                     <Header />
