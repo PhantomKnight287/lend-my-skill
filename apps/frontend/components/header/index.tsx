@@ -17,7 +17,9 @@ export function Header() {
               "min-w-[175px]": !username,
             })}
           >
-            <Avatar size={60} src="/brand/lms-logo.png" />
+            <Link href={username ? "/dashboard" : "/"}>
+              <Avatar size={60} src="/brand/lms-logo.png" />
+            </Link>
           </div>
           <div
             className={clsx("flex-row mx-auto items-center px-5", {
