@@ -8,7 +8,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { UploadModule } from './resources/upload/upload.module';
 import { StaticModule } from './resources/static/static.module';
-import { CategoriesModule } from './categories/categories.module';
+import { CategoriesModule } from './resources/categories/categories.module';
 
 @Module({
   controllers: [AppController],
