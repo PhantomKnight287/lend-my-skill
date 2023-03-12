@@ -1,8 +1,9 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ProfileService } from './profile.service';
-import { Token } from 'decorator/token/token.decorator';
+import { Token } from 'src/decorators/token/token.decorator';
 import { UpdateProfileDTO } from './dto/update-profile.dto';
 import { CompletedProfileDTO } from './dto/complete-profile.dto';
+import { BodyWithUser } from 'src/types/body';
 
 @Controller('profile')
 export class ProfileController {
@@ -13,11 +14,9 @@ export class ProfileController {
     return await this.profileService.findUser(id);
   }
   @Post('update')
-  async updateProfile(
-    @Token({ serialize: true }) { id },
-    @Body() body: UpdateProfileDTO,
-  ) {
-    return await this.profileService.updateUser(id, body);
+  async updateProfile(@Body() body: BodyWithUser<UpdateProfileDTO>) {
+    const { user, ...data } = body;
+    return await this.profileService.updateUser(user.id, data);
   }
 
   @Get(':username')
@@ -26,10 +25,8 @@ export class ProfileController {
   }
 
   @Post('complete')
-  async completedProfile(
-    @Token({ serialize: true }) { id },
-    @Body() body: CompletedProfileDTO,
-  ) {
-    return await this.profileService.completeProfile(id, body);
+  async completedProfile(@Body() body: BodyWithUser<CompletedProfileDTO>) {
+    const { user } = body;
+    return await this.profileService.completeProfile(user.id, body);
   }
 }
