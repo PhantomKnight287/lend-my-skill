@@ -142,6 +142,7 @@ importers:
       axios: ^1.2.1
       clsx: ^1.2.1
       dayjs: ^1.11.7
+      embla-carousel-auto-height: ^7.1.0
       embla-carousel-react: ^7.0.5
       eslint: 8.30.0
       eslint-config-next: 13.0.0
@@ -159,6 +160,7 @@ importers:
       react-dom: 18.2.0
       react-phone-input-2: ^2.15.1
       react-phone-number-input: ^3.2.13
+      react-responsive-carousel: ^3.2.23
       react-spring: ^9.6.1
       sanitize-html: ^2.8.1
       sass: ^1.57.1
@@ -199,6 +201,7 @@ importers:
       axios: 1.2.1
       clsx: 1.2.1
       dayjs: 1.11.7
+      embla-carousel-auto-height: 7.1.0
       embla-carousel-react: 7.0.5_react@18.2.0
       eslint: 8.30.0
       eslint-config-next: 13.0.0_lzzuuodtsqwxnvqeq4g4likcqa
@@ -215,6 +218,7 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       react-phone-input-2: 2.15.1_biqbaboplfbrettd7655fr4n2y
       react-phone-number-input: 3.2.13_biqbaboplfbrettd7655fr4n2y
+      react-responsive-carousel: 3.2.23
       react-spring: 9.6.1_biqbaboplfbrettd7655fr4n2y
       sanitize-html: 2.8.1
       socket.io-client: 4.5.4
@@ -4244,6 +4248,12 @@ packages:
     resolution: {integrity: sha512-M8WEXFuKXMYMVr45fo8mq0wUrrJHheiKZf6BArTKk9ZBYCKJEOU5H8cdWgDT+qCVZf7Na4lVUaZsA+h6uA9+PA==}
     dev: true
 
+  /embla-carousel-auto-height/7.1.0:
+    resolution: {integrity: sha512-ghf+vB03/m85wBdkFVb2iM40ZtY/z8jfBI/Q5ez45HN89NXINW5+yEz5aaCY/MdcnhuzmJidUbKMmzgmZjb9Hg==}
+    peerDependencies:
+      embla-carousel: 7.1.0
+    dev: false
+
   /embla-carousel-react/7.0.5_react@18.2.0:
     resolution: {integrity: sha512-qhw980gKj7G+O5d3WSwj0TyhcbpGP3DqJPiAatt1t3wEEcZqn7csaIfLh4e1N/0kna9sZfZZRzz+//NSrUodSg==}
     peerDependencies:
@@ -7755,6 +7765,13 @@ packages:
       react: 18.2.0
     dev: false
 
+  /react-easy-swipe/0.0.21:
+    resolution: {integrity: sha512-OeR2jAxdoqUMHIn/nS9fgreI5hSpgGoL5ezdal4+oO7YSSgJR8ga+PkYGJrSrJ9MKlPcQjMQXnketrD7WNmNsg==}
+    engines: {node: '>= 6'}
+    dependencies:
+      prop-types: 15.8.1
+    dev: false
+
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: false
@@ -7796,6 +7813,14 @@ packages:
 
   /react-property/2.0.0:
     resolution: {integrity: sha512-kzmNjIgU32mO4mmH5+iUyrqlpFQhF8K2k7eZ4fdLSOPFrD1XgEuSBv9LDEgxRXTMBqMd8ppT0x6TIzqE5pdGdw==}
+    dev: false
+
+  /react-responsive-carousel/3.2.23:
+    resolution: {integrity: sha512-pqJLsBaKHWJhw/ItODgbVoziR2z4lpcJg+YwmRlSk4rKH32VE633mAtZZ9kDXjy4wFO+pgUZmDKPsPe1fPmHCg==}
+    dependencies:
+      classnames: 2.3.2
+      prop-types: 15.8.1
+      react-easy-swipe: 0.0.21
     dev: false
 
   /react-spring/9.6.1_biqbaboplfbrettd7655fr4n2y:
