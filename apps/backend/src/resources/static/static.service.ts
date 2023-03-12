@@ -12,4 +12,16 @@ export class StaticService {
       },
     });
   }
+  async getStaticServices() {
+    return await this.p.service.findMany({
+      select: {
+        slug: true,
+        user: {
+          select: {
+            username: true,
+          },
+        },
+      },
+    });
+  }
 }
