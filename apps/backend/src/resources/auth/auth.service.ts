@@ -1,10 +1,13 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { compare, hash } from 'bcrypt';
-import { sign } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import { SIGN_SECRET } from 'src/constants';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-auth.dto';
 import { LoginUserDto } from './dto/login.dto';
+
+type UserPayload = Pick<User, 'id' | 'role'>;
 
 @Injectable()
 export class AuthService {
@@ -105,5 +108,16 @@ export class AuthService {
       },
       token,
     };
+  }
+  async verify(token: string): Promise<User> {
+    try {
+      const payload = verify(token, SIGN_SECRET) as UserPayload;
+      const user: User = await this.p.user.findFirstOrThrow({
+        where: { id: payload.id },
+      });
+      return user;
+    } catch {
+      throw Error('Unauthorized');
+    }
   }
 }
