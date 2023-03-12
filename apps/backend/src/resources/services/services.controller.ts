@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { Token } from 'decorator/token/token.decorator';
+import { BodyWithUser } from 'src/types/body';
 import { CreateServiceDTO } from './dto/create-service.dto';
 import { ServicesService } from './services.service';
 
@@ -8,11 +8,8 @@ export class ServicesController {
   constructor(private readonly servicesService: ServicesService) {}
 
   @Post()
-  async createService(
-    @Token({ serialize: true }) { id },
-    @Body() body: CreateServiceDTO,
-  ) {
-    return this.servicesService.createService(body, id);
+  async createService(@Body() body: BodyWithUser<CreateServiceDTO>) {
+    return this.servicesService.createService(body, body.user.id);
   }
 
   @Get(':username/:slug')

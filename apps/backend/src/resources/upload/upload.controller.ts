@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Post,
   Query,
@@ -8,8 +9,8 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { randomUUID } from 'crypto';
-import { Token } from 'decorator/token/token.decorator';
 import { diskStorage } from 'multer';
+import { BodyWithUser } from 'src/types/body';
 import { UploadService } from './upload.service';
 
 @Controller('upload')
@@ -27,7 +28,7 @@ export class UploadController {
     }),
   )
   async uploadFile(
-    @Token({ serialize: true }) { id },
+    @Body() { user: { id } }: BodyWithUser<unknown>,
     @UploadedFile() file: Express.Multer.File,
     @Query('to') to?: string,
   ) {
@@ -45,7 +46,7 @@ export class UploadController {
     }),
   )
   async uploadMultipleFiles(
-    @Token({ serialize: true }) { id },
+    @Body() { user: { id } }: BodyWithUser<unknown>,
     @UploadedFiles() files: Express.Multer.File[],
     @Query('to') to?: string,
   ) {

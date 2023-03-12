@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ProfileService } from './profile.service';
-import { Token } from 'src/decorators/token/token.decorator';
 import { UpdateProfileDTO } from './dto/update-profile.dto';
 import { CompletedProfileDTO } from './dto/complete-profile.dto';
 import { BodyWithUser } from 'src/types/body';
@@ -10,7 +9,7 @@ export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
   @Get()
-  async getProfile(@Token({ serialize: true }) { id }) {
+  async getProfile(@Body() { user: { id } }: BodyWithUser<unknown>) {
     return await this.profileService.findUser(id);
   }
   @Post('update')
