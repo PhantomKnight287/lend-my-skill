@@ -27,7 +27,7 @@ async function bootstrap() {
   );
   app.enableCors();
   app.get(PrismaService).enableShutdownHooks(app);
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(PORT);
 
