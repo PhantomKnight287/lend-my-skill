@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './services/prisma/prisma.service';
@@ -11,6 +11,8 @@ import { StaticModule } from './resources/static/static.module';
 import { CategoriesModule } from './resources/categories/categories.module';
 import { TagsModule } from './resources/tags/tags.module';
 import { ServicesModule } from './resources/services/services.module';
+import { AuthService } from './resources/auth/auth.service';
+import { UserMiddleware } from './resources/auth/middleware/auth/auth.middleware';
 
 @Module({
   controllers: [AppController],
@@ -18,6 +20,7 @@ import { ServicesModule } from './resources/services/services.module';
     AppService,
     PrismaService,
     { provide: APP_GUARD, useClass: ThrottlerGuard },
+    AuthService,
   ],
   imports: [
     ThrottlerModule.forRoot({
@@ -34,4 +37,19 @@ import { ServicesModule } from './resources/services/services.module';
   ],
   exports: [PrismaService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(UserMiddleware)
+      .exclude(
+        'static/*',
+        'categories',
+        'tags',
+        'services',
+        'profile/:username',
+        'auth/*',
+        'services/:username/:slug',
+      )
+      .forRoutes('*');
+  }
+}
