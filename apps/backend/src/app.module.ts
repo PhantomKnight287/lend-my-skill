@@ -10,6 +10,7 @@ import { UploadModule } from './resources/upload/upload.module';
 import { StaticModule } from './resources/static/static.module';
 import { CategoriesModule } from './resources/categories/categories.module';
 import { TagsModule } from './resources/tags/tags.module';
+import { ServicesModule } from './resources/services/services.module';
 
 @Module({
   controllers: [AppController],
@@ -29,6 +30,7 @@ import { TagsModule } from './resources/tags/tags.module';
     StaticModule,
     CategoriesModule,
     TagsModule,
+    ServicesModule,
   ],
   exports: [PrismaService],
 })
