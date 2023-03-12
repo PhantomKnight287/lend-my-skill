@@ -290,17 +290,17 @@ function Settings() {
                         {formState.isDirty() || avatar != undefined ? (
                           <>
                             <Group position="center">
-                              <Button
-                                type="submit"
-                                mt="md"
-                                className={clsx(
-                                  outfit.className,
-                                  "text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 "
-                                )}
-                                loading={loading}
-                              >
-                                Update
-                              </Button>
+                            <Button
+                          type="submit"
+                          mt="md"
+                          variant="outline"
+                          color={"green"}
+                          className={clsx(outfit.className)}
+                          loading={loading}
+                          radius="lg"
+                        >
+                          Update
+                        </Button>
                             </Group>
                           </>
                         ) : null}
@@ -565,12 +565,11 @@ function Settings() {
                         <Button
                           type="submit"
                           mt="md"
-                          className={clsx(
-                            outfit.className,
-                            "text-white bg-purple-700 hover:bg-purple-800 focus:outline-none font-medium rounded-full text-sm px-5 py-2.5 text-center mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 "
-                          )}
+                          variant="outline"
+                          color={"green"}
+                          className={clsx(outfit.className)}
                           loading={loading}
-                          disabled={loading}
+                          radius="lg"
                         >
                           Submit
                         </Button>
