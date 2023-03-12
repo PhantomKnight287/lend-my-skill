@@ -1,4 +1,5 @@
 @url=http://localhost:5000
+@token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNsZjQwdmwwdDAwMDBld3JvdWNwODA1eGUiLCJyb2xlIjoiRnJlZWxhbmNlciIsImlhdCI6MTY3ODU0MjUxOX0.WKjIopUXfHGreOCqlUkiy5L0Y8iPfrSb3XcXyt3_koU
 
 ###
 
@@ -19,4 +20,14 @@ Content-Type: application/json
 {
   "email": "test",
   "password":"pass"
+}
+
+###
+
+POST {{url}}/profile/update
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "bio":"Hey there 12242"
 }
