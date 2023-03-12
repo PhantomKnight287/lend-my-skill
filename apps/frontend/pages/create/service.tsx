@@ -177,7 +177,9 @@ function CreateService() {
         icon: <IconX />,
       });
     }
-    const upload = await uploadFile(bannerImage, token).catch((err) => null);
+    const upload = await uploadFile(bannerImage, token, "bannerImage").catch(
+      (err) => null
+    );
     if (upload === null) {
       setLoadingVisible(false);
       return showNotification({
@@ -190,7 +192,9 @@ function CreateService() {
     const { path: bannerImagePath } = upload.data;
     let imagePaths: string[] = [];
     if (images.length > 0) {
-      const uploads = await uploadFiles(images, token).catch((err) => null);
+      const uploads = await uploadFiles(images, token, "serviceImages").catch(
+        (err) => null
+      );
       if (uploads === null) {
         setLoadingVisible(false);
         return showNotification({
@@ -213,7 +217,7 @@ function CreateService() {
           price: Number(p.price),
         })),
         questions: values.questions!,
-        tags: tags.map((tag) => tag.value),
+        tags: values.tags,
         title: values.title,
         images: imagePaths,
       },
@@ -294,6 +298,7 @@ function CreateService() {
                   }),
                 }}
                 completedIcon={<IconCheck />}
+                orientation="horizontal"
               >
                 <Stepper.Step label="Overview" allowStepSelect={active > 0}>
                   <Paper radius={"md"} p="xl" className={clsx("max-w-3xl ")}>
@@ -470,6 +475,10 @@ function CreateService() {
                     >
                       List the features of your Service.
                     </Text>
+                    <span className="text-sm text-[#6c757d]">
+                      You&apos;ll be asked to choose the features that are
+                      included in your service
+                    </span>
                     <div className="mt-5 w-full">
                       {features.map((feature, id) => (
                         <div
@@ -729,104 +738,6 @@ function CreateService() {
                     setActive={setActive}
                   />
                 </Stepper.Step>
-                <Stepper.Step label="Requirements">
-                  <Text
-                    align="center"
-                    className={clsx("text-lg font-bold", {
-                      [outfit.className]: true,
-                      "text-black": theme === "light",
-                    })}
-                  >
-                    These questions will be asked to your client before they
-                    hire you.
-                  </Text>
-                  <div className="flex flex-col gap-4 mt-8">
-                    {formState.values.questions?.map((q, i) => (
-                      <div
-                        className="flex flex-row items-center justify-center gap-4"
-                        key={i}
-                      >
-                        <T
-                          placeholder="Question"
-                          required
-                          spellCheck={false}
-                          {...formState.getInputProps(
-                            `questions.${i}.question`
-                          )}
-                        />
-                        <Select
-                          required
-                          label="Type"
-                          data={[
-                            { label: "Text", value: AnswerType.TEXT },
-                            {
-                              label: "Attachments",
-                              value: AnswerType.ATTACHMENT,
-                            },
-                          ]}
-                          {...formState.getInputProps(`questions.${i}.type`)}
-                        />
-                        <Select
-                          label="Required"
-                          placeholder="Is this question required?"
-                          required
-                          data={[
-                            { label: "Yes", value: true },
-                            { label: "No", value: false },
-                          ]}
-                          {...formState.getInputProps(
-                            `questions.${i}.required`
-                          )}
-                        />
-
-                        <Button
-                          onClick={() => {
-                            formState.removeListItem("questions", i);
-                          }}
-                          variant="filled"
-                          className={clsx("bg-red-500 hover:bg-red-500/90")}
-                        >
-                          <IconTrash />
-                        </Button>
-                      </div>
-                    ))}
-                    <Group position="center" className="mt-4">
-                      <Button
-                        onClick={() => {
-                          setActive((o) => o - 1);
-                        }}
-                        variant="filled"
-                        className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
-                      >
-                        Back
-                      </Button>
-
-                      <Button
-                        onClick={() => {
-                          formState.insertListItem("questions", {
-                            question: "",
-                            type: AnswerType.TEXT,
-                          });
-                        }}
-                        variant="filled"
-                        className={clsx(
-                          "bg-purple-600 hover:bg-purple-700 max-w-fit"
-                        )}
-                      >
-                        Add question
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          setActive((o) => o + 1);
-                        }}
-                        variant="filled"
-                        className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
-                      >
-                        Next Step
-                      </Button>
-                    </Group>
-                  </div>
-                </Stepper.Step>
                 <Stepper.Step label={"Assets"}>
                   <Text
                     align="center"
@@ -863,6 +774,7 @@ function CreateService() {
                                 classNames={{
                                   image: "object-cover  rounded-md",
                                 }}
+                                alt="Banner image"
                               />
                               <span
                                 className={clsx("text-sm  cursor-pointer", {
@@ -917,6 +829,7 @@ function CreateService() {
                             classNames={{
                               image: "object-cover  rounded-md",
                             }}
+                            alt="Image"
                           />
                           <div className="absolute top-0 right-0">
                             <Button
