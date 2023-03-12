@@ -5,7 +5,6 @@ import {
   MantineProvider,
 } from "@mantine/core";
 import "@styles/globals.scss";
-import { useHotkeys, useLocalStorage } from "@mantine/hooks";
 import { UserProvider } from "@context/user";
 import { Header } from "@components/header";
 import { inter } from "@fonts";
@@ -16,6 +15,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "react-phone-input-2/lib/style.css";
 import { ModalsProvider } from "@mantine/modals";
+import ErrorBoundary from "@components/error";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const client = new QueryClient();
 
@@ -25,7 +26,7 @@ export default function App(props: AppProps) {
   const colorScheme: ColorScheme = "dark";
 
   return (
-    <>
+    <ErrorBoundary>
       <QueryClientProvider client={client}>
         <RouterTransition />
         <UserProvider>
@@ -92,6 +93,6 @@ export default function App(props: AppProps) {
           </ColorSchemeProvider>
         </UserProvider>
       </QueryClientProvider>
-    </>
+    </ErrorBoundary>
   );
 }
