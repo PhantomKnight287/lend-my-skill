@@ -9,4 +9,8 @@ export class StaticController {
   async getProfiles() {
     return await this.staticService.getStaticProfiles();
   }
+  @Get('services')
+  async getServices() {
+    return await this.staticService.getStaticServices();
+  }
 }
