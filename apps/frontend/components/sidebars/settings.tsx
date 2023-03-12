@@ -1,24 +1,6 @@
 import { useState } from "react";
-import { Navbar, SegmentedControl, Text, createStyles } from "@mantine/core";
-import {
-  IconShoppingCart,
-  IconLicense,
-  IconMessage2,
-  IconBellRinging,
-  IconMessages,
-  IconFingerprint,
-  IconKey,
-  IconSettings,
-  Icon2fa,
-  IconUsers,
-  IconFileAnalytics,
-  IconDatabaseImport,
-  IconReceipt2,
-  IconReceiptRefund,
-  IconLogout,
-  IconSwitchHorizontal,
-} from "@tabler/icons";
-import Link from "next/link";
+import { Navbar, createStyles } from "@mantine/core";
+import { IconFingerprint, IconUsers } from "@tabler/icons";
 import { useRouter } from "next/router";
 
 const useStyles = createStyles((theme, _params, getRef) => {
