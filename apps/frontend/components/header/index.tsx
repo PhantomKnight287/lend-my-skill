@@ -62,7 +62,7 @@ export function Header() {
               Login
             </Link>
             <Link
-              href="/auth/signup"
+              href="/auth/register"
               className={clsx(
                 "p-3 font-medium rounded-3xl py-2 text-white bg-gray-900  px-4  "
               )}
