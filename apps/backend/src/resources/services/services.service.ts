@@ -117,4 +117,71 @@ export class ServicesService {
       throw new HttpException('No Service Found.', HttpStatus.NOT_FOUND);
     return service;
   }
+  async getServices(username: string, take?: string) {
+    const toTake = Number.isNaN(parseInt(take)) ? 10 : parseInt(take);
+    const data = await this.p.service.findMany({
+      where: {
+        user: {
+          username: {
+            equals: username,
+            mode: 'insensitive',
+          },
+        },
+      },
+      select: {
+        category: {
+          select: {
+            name: true,
+            slug: true,
+          },
+        },
+        id: true,
+        slug: true,
+        user: {
+          select: { username: true, avatarUrl: true, name: true },
+        },
+        title: true,
+        createdAt: true,
+        description: true,
+        bannerImage: true,
+        package: {
+          select: {
+            price: true,
+          },
+          take: 1,
+          orderBy: [
+            {
+              price: 'asc',
+            },
+          ],
+        },
+        rating: true,
+        tags: {
+          select: {
+            name: true,
+            id: true,
+            slug: true,
+          },
+        },
+        ratedBy: true,
+      },
+      take: toTake,
+      skip: toTake > 10 ? toTake - 10 : undefined,
+      orderBy: [
+        {
+          createdAt: 'desc',
+        },
+      ],
+    });
+    if (data.length === 0) throw new HttpException('No services found', 404);
+    if (data.length > 10) {
+      return {
+        services: data,
+        next: toTake + 10,
+      };
+    }
+    return {
+      services: data,
+    };
+  }
 }

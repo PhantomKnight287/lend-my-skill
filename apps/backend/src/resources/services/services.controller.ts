@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { BodyWithUser } from 'src/types/body';
 import { CreateServiceDTO } from './dto/create-service.dto';
 import { ServicesService } from './services.service';
@@ -18,5 +18,13 @@ export class ServicesController {
     @Param('slug') slug: string,
   ) {
     return this.servicesService.getService(slug, username);
+  }
+
+  @Get(':username')
+  async getServices(
+    @Param('username') username: string,
+    @Query('take') take?: string,
+  ) {
+    return this.servicesService.getServices(username, take);
   }
 }
