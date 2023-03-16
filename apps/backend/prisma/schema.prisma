@@ -33,6 +33,7 @@ model User {
 
   services Service[]
   uploads  Uploads[]
+  reviews  Review[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -74,10 +75,13 @@ model Service {
   categoryId  String
   bannerImage String
   images      String[]
+  rating      Int      @default(0)
+  ratedBy     Int      @default(0)
 
   tags     Tags[]
   package  Package[]
   features Feature[]
+  review   Review[]
   user     User?     @relation(fields: [userId], references: [id])
   userId   String?
 
@@ -106,4 +110,14 @@ model Feature {
   serviceId  String?
 
   createdAt DateTime @default(now())
+}
+
+model Review {
+  id        String  @id @unique @default(cuid())
+  ratedBy   User    @relation(fields: [userId], references: [id])
+  userId    String
+  rating    Int
+  review    String
+  service   Service @relation(fields: [serviceId], references: [id])
+  serviceId String
 }
