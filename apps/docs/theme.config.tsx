@@ -4,12 +4,10 @@ import { DocsThemeConfig } from "nextra-theme-docs";
 const config: DocsThemeConfig = {
   logo: <span>Lend My Skill</span>,
   project: {
-    link: "https://github.com/shuding/nextra-docs-template",
+    link: "https://github.com/PhantomKnight287/lend-my-skill",
   },
-  chat: {
-    link: "https://discord.com",
-  },
-  docsRepositoryBase: "https://github.com/shuding/nextra-docs-template",
+  docsRepositoryBase:
+    "https://github.com/PhantomKnight287/lend-my-skill/tree/backend-refactor/apps/docs",
   footer: {
     text: "Lend My Skill",
   },
