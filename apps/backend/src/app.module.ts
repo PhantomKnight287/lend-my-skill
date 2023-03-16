@@ -42,14 +42,15 @@ export class AppModule implements NestModule {
     consumer
       .apply(UserMiddleware)
       .exclude(
-        'static/*',
+        'static/(.*)',
         'categories',
         'tags',
-        'services',
+        'services/:username/:slug',
+        'services/:username',
         'profile/:username',
         'auth/login',
         'services/:username/:slug',
-        "auth/register"
+        'auth/register',
       )
       .forRoutes('*');
   }
