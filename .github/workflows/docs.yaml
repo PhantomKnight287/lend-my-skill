@@ -19,7 +19,7 @@ jobs:
         run: cd apps/docs
 
       - name: Setup Corepack
-        run: corepack prepare
+        run: corepack prepare pnpm --activate
       - name: Install dependencies
         run: pnpm install
       - name: Build website
