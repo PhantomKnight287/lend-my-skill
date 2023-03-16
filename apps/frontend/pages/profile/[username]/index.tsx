@@ -36,6 +36,7 @@ import React, { useEffect, useState } from "react";
 import Reviews from "@components/tabs/profile/reviews";
 import dayjs from "dayjs";
 import { r } from "@helpers/date";
+import { Container } from "@components/container";
 
 type Client = {
   id: string;
@@ -67,7 +68,6 @@ type Client = {
 const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   props
 ) => {
-  const { colorScheme } = useMantineColorScheme();
   const [editable, setEditable] = useState(false);
   useHydrateUserContext();
   useEffect(() => {
@@ -87,7 +87,6 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
         null;
       });
   }, []);
-  const { query, push } = useRouter();
   return (
     <div
       className={clsx({
@@ -153,16 +152,6 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
               >
                 @{props.username}
               </span>
-              {props.rating ? (
-                <>
-                  <div className="flex flex-row">
-                    <Rating readOnly value={props.rating} fractions={2} />
-                    <span className="ml-2 text-[13px]">
-                      {props.rating} ({props.reviews})
-                    </span>
-                  </div>
-                </>
-              ) : null}
               <p className="text-center mt-4 font-medium text-base">
                 {props.bio}
               </p>
@@ -189,6 +178,11 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
           </div>
         </Paper>
       </div>
+      <Container>
+        {props.role === "Freelancer" ? (
+          <ServicesTab username={props.username} />
+        ) : null}
+      </Container>
     </div>
   );
 };
@@ -204,30 +198,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
     })),
   };
 };
-export const getStaticProps: GetStaticProps<
-  Pick<
-    Client,
-    | "avatarUrl"
-    | "bio"
-    | "country"
-    | "createdAt"
-    | "id"
-    | "name"
-    | "username"
-    | "verified"
-    | "profileCompleted"
-    | "aboutMe"
-    | "facebookUsername"
-    | "twitterUsername"
-    | "instagramUsername"
-    | "githubId"
-    | "linkedinUsername"
-  > & {
-    type: "client" | "freelancer";
-    rating?: number;
-    reviews?: number;
-  }
-> = async ({ params }) => {
+export const getStaticProps: GetStaticProps<{
+  name: string;
+  id: string;
+  createdAt: Date;
+  username: string;
+  country: string;
+  verified: boolean;
+  role: "Freelancer" | "Client";
+  bio: string;
+  avatarUrl: string;
+}> = async ({ params }) => {
   const username = params!.username;
   const profile = await (
     await fetch(URLBuilder(`/profile/${username}`))
