@@ -25,6 +25,9 @@ export class UploadController {
         filename: (_, file, cb) =>
           cb(null, `${Date.now()}-${randomUUID()}-${file.originalname}`),
       }),
+      limits: {
+        fileSize: 10 * 1024 * 1024,
+      },
     }),
   )
   async uploadFile(
@@ -43,6 +46,9 @@ export class UploadController {
         filename: (_, file, cb) =>
           cb(null, `${Date.now()}-${randomUUID()}-${file.originalname}`),
       }),
+      limits: {
+        fileSize: 10 * 1024 * 1024,
+      },
     }),
   )
   async uploadMultipleFiles(
