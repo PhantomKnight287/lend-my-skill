@@ -62,6 +62,7 @@ export class ProfileService {
         verified: true,
         name: true,
         username: true,
+        role: true,
       },
     });
     if (!user) throw new HttpException('No User Found', 404);
