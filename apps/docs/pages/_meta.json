@@ -1,0 +1,12 @@
+{
+  "index": "Introduction",
+  "authentication": {
+    "order": 1
+  },
+  "upload": {
+    "order": 2
+  },
+  "profile": {
+    "order": 3
+  }
+}

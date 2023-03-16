@@ -47,8 +47,9 @@ export class AppModule implements NestModule {
         'tags',
         'services',
         'profile/:username',
-        'auth/*',
+        'auth/login',
         'services/:username/:slug',
+        "auth/register"
       )
       .forRoutes('*');
   }
