@@ -18,8 +18,8 @@ jobs:
       - name: Go to Docs Folder
         run: cd apps/docs
 
-      - name: Setup Corepack
-        run: corepack prepare pnpm@7.14.0 --activate
+      - name: Setup Pnpm
+        run: npm i -g pnpm@latest
       - name: Install dependencies
         run: pnpm install
       - name: Build website
