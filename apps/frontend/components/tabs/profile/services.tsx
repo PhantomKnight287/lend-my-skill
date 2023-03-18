@@ -154,7 +154,7 @@ const ServicesTab = ({ username }: Props) => {
                 </div>
               </Group>
               <Divider />
-              <Group position="apart" p="md">
+              <Group position="apart" pt="md" pb={undefined}>
                 <div className="flex flex-row pl-4">
                   <IconStar color="yellow" fill="yellow" width={15} />
                   <span className="ml-1">
@@ -208,7 +208,7 @@ const ServicesTab = ({ username }: Props) => {
         ) : null}
       </div>
       <div>{isFetching && !isFetchingNextPage ? "Fetching..." : null}</div>
-      {data?.pages[0].services.length === 0 && (
+      {data?.pages?.[0]?.services?.length === 0 && (
         <div className="flex flex-col items-center justify-center w-[100%] container">
           <p>
             <span className="font-bold">{username}</span> has not posted any
