@@ -169,6 +169,7 @@ function Settings() {
                             formState.setFieldValue("imageSelected", true);
                           }
                         }}
+                        accept={"image/*"}
                       >
                         {(props) => (
                           <Avatar
@@ -209,6 +210,7 @@ function Settings() {
                                   "Something went wrong",
                                 color: "red",
                               });
+                              setLoading(false);
                               return null;
                             });
                             if (urls === null) return;
@@ -290,17 +292,17 @@ function Settings() {
                         {formState.isDirty() || avatar != undefined ? (
                           <>
                             <Group position="center">
-                            <Button
-                          type="submit"
-                          mt="md"
-                          variant="outline"
-                          color={"green"}
-                          className={clsx(outfit.className)}
-                          loading={loading}
-                          radius="lg"
-                        >
-                          Update
-                        </Button>
+                              <Button
+                                type="submit"
+                                mt="md"
+                                variant="outline"
+                                color={"green"}
+                                className={clsx(outfit.className)}
+                                loading={loading}
+                                radius="lg"
+                              >
+                                Update
+                              </Button>
                             </Group>
                           </>
                         ) : null}
