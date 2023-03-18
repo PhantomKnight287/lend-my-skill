@@ -446,6 +446,7 @@ function CreateService() {
                               });
                             });
                           setLoading(false);
+                          return null;
                         }}
                         maxSelectedValues={5}
                         classNames={{
@@ -625,7 +626,7 @@ function CreateService() {
                               `packages.${index}.deliveryDays`
                             )}
                             required
-                            data={DELIVERY_DAYS}
+                            data={DELIVERY_DAYS as any}
                             placeholder="Select an Option"
                           />
                           <Text
