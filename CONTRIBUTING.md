@@ -4,12 +4,11 @@ Thanks for investing your precious time to contribute to this repository.
 
 Read our [Code Of Conduct](/CODE_OF_CONDUCT.md) to keep our community approachable and respectable.
 
-
 ## Getting Started
 
 ### Setting up this repository
 
-To contribute to `Backend` and `Frotend`, you will need nodejs `v16.x`. Please refrain from using any other version. To contribute to `apps/mobile`, you will need `Flutter>=3.3.10 • channel stable`. 
+To contribute to `Backend` and `Frotend`, you will need nodejs `v16.x`. Please refrain from using any other version. To contribute to `apps/mobile`, you will need `Flutter>=3.3.10 • channel stable`.
 
 ### Arranging Environment Variables
 
@@ -17,8 +16,7 @@ Each folder in `apps` using environment variables has an `.env.example`, which y
 
 ### For Frontend
 
-#### Getting `NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET_URL` 
-
+#### Getting `NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET_URL`
 
 ### How to get storage bucket url?
 
@@ -44,13 +42,11 @@ Sign in into [Razorpay](https://razorpay.com) and click on Settings in the left 
 
 The instructions are provided in `.env.example`
 
-
 > **Warning**
-> You'll need `pnpm` to run commands in this repo. 
+> You'll need `pnpm` to run commands in this repo.
 > Run `corepack prepare pnpm@7.14.0 --activate` in Administrator powershell window or `sudo corepack prepare pnpm@7.14.0 --activate` for mac and linux.
 
 Now run `pnpm dev`, This will run the dev server and you'll be able to access the frontend on `http://localhost:3000` and backend at `http://localhost:5000`.
-
 
 ## Commit Convention
 
@@ -59,5 +55,8 @@ Please make sure to follow the commit convention. The commit must start with the
 Example: `[frontend] Update mantine to version 5.9`
 
 > **Warning**
->  Please DO NOT commit all files in 1 commit. Please make separate commit for each file.
+> Please DO NOT commit all files in 1 commit. Please make separate commit for each file.
 
+## Contributing in Frontend
+
+If you just want to contribute for frontend, you can find all the api docs on [this](https://phantomknight287.github.io/lend-my-skill/) link. You can also find examples of response returned by the api so you can integrate it with the backend and also add type of the response.
