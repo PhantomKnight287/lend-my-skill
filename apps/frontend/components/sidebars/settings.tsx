@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Navbar, createStyles } from "@mantine/core";
 import { IconFingerprint, IconUsers } from "@tabler/icons";
 import { useRouter } from "next/router";
+import { useUser } from "@hooks/user";
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef("icon");
@@ -92,6 +93,7 @@ const links = [
     id: 2,
     title: "Complete Profile",
     icon: IconFingerprint,
+    showIfProfileIsNotComplete: true,
   },
 ];
 
@@ -103,10 +105,12 @@ export function SettingsSidebar({
   const { classes, cx } = useStyles();
   const [active, setActive] = useState("");
   const { push } = useRouter();
+  const { profileCompleted } = useUser();
   return (
     <Navbar height={840} width={{ sm: 300 }} p="md" className={classes.navbar}>
       <Navbar.Section grow mt="xl">
         {links.map((link) => {
+          if (link.showIfProfileIsNotComplete && profileCompleted) return null;
           return (
             <p
               className={cx(classes.link, {
