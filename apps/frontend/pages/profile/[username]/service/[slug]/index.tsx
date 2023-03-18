@@ -153,7 +153,7 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
             emulateTouch
             useKeyboardArrows
             showArrows
-            showThumbs
+            showThumbs={false}
             swipeable
           >
             {props.images.map((i) => (
