@@ -4,6 +4,14 @@ import { profileImageRouteGenerator } from "@utils/profile";
 import { eraseCookie } from "@helpers/cookie";
 import { useRouter } from "next/router";
 import { assetURLBuilder } from "@utils/url";
+import {
+  IconBrandCashapp,
+  IconLogout,
+  IconSearch,
+  IconSettings2,
+  IconShoppingCart,
+  IconUserCircle,
+} from "@tabler/icons";
 
 export default function HeaderMenu() {
   const { avatarUrl, username, userType, profileCompleted } = useUser();
@@ -24,20 +32,6 @@ export default function HeaderMenu() {
           />
         </Menu.Target>
         <Menu.Dropdown>
-          <Menu.Item
-            onClick={() => {
-              push(`/profile/${username}`);
-            }}
-          >
-            Profile
-          </Menu.Item>
-          <Menu.Item
-            onClick={() => {
-              push(`/search`);
-            }}
-          >
-            Search
-          </Menu.Item>
           {userType === "Client" ? (
             <Menu.Item
               color="green"
@@ -53,12 +47,37 @@ export default function HeaderMenu() {
                 <Menu.Item
                   color="green"
                   onClick={() => push(`/create/service`)}
+                  icon={<IconBrandCashapp size={20} />}
                 >
                   Post a Service
                 </Menu.Item>
               ) : null}
             </>
           )}
+          <Menu.Item
+            onClick={() => {
+              push(`/profile/${username}`);
+            }}
+            icon={<IconUserCircle size={20} />}
+          >
+            Profile
+          </Menu.Item>
+          <Menu.Item
+            onClick={() => {
+              push(`/search`);
+            }}
+            icon={<IconSearch size={20} />}
+          >
+            Search
+          </Menu.Item>
+          <Menu.Item
+            onClick={() => {
+              push(`/settings`);
+            }}
+            icon={<IconSettings2 size={20} />}
+          >
+            Settings
+          </Menu.Item>
           {profileCompleted ? null : (
             <Menu.Item
               color="yellow"
@@ -71,6 +90,7 @@ export default function HeaderMenu() {
             onClick={() => {
               push(`/profile/${username}/orders`);
             }}
+            icon={<IconShoppingCart size={20} />}
           >
             Orders
           </Menu.Item>
@@ -87,6 +107,7 @@ export default function HeaderMenu() {
               });
               push("/auth/login");
             }}
+            icon={<IconLogout size={20} />}
           >
             Logout
           </Menu.Item>
