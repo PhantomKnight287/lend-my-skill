@@ -37,21 +37,4 @@ import { UserMiddleware } from './resources/auth/middleware/auth/auth.middleware
   ],
   exports: [PrismaService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(UserMiddleware)
-      .exclude(
-        'static/(.*)',
-        'categories',
-        'tags',
-        'services/:username/:slug',
-        'services/:username',
-        'profile/:username',
-        'auth/login',
-        'services/:username/:slug',
-        'auth/register',
-      )
-      .forRoutes('*');
-  }
-}
+export class AppModule {}
