@@ -34,6 +34,7 @@
     "@tiptap/extension-link": "2.0.0-beta.209",
     "@tiptap/extension-text-align": "2.0.0-beta.209",
     "@tiptap/extension-underline": "2.0.0-beta.209",
+    "@tiptap/pm": "2.0.0-beta.220",
     "@tiptap/react": "2.0.0-beta.209",
     "@tiptap/starter-kit": "2.0.0-beta.209",
     "@types/node": "18.11.17",
