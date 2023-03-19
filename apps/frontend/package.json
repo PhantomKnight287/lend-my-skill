@@ -60,6 +60,7 @@
     "react-dom": "18.2.0",
     "react-phone-input-2": "^2.15.1",
     "react-phone-number-input": "^3.2.13",
+    "react-razorpay": "^1.2.0",
     "react-responsive-carousel": "^3.2.23",
     "react-spring": "^9.6.1",
     "sanitize-html": "^2.8.1",

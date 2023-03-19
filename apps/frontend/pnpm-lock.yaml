@@ -55,6 +55,7 @@ specifiers:
   react-dom: 18.2.0
   react-phone-input-2: ^2.15.1
   react-phone-number-input: ^3.2.13
+  react-razorpay: ^1.2.0
   react-responsive-carousel: ^3.2.23
   react-spring: ^9.6.1
   sanitize-html: ^2.8.1
@@ -115,6 +116,7 @@ dependencies:
   react-dom: 18.2.0_react@18.2.0
   react-phone-input-2: 2.15.1_biqbaboplfbrettd7655fr4n2y
   react-phone-number-input: 3.2.19_biqbaboplfbrettd7655fr4n2y
+  react-razorpay: 1.2.0_react@18.2.0
   react-responsive-carousel: 3.2.23
   react-spring: 9.7.1_biqbaboplfbrettd7655fr4n2y
   sanitize-html: 2.10.0
@@ -4627,6 +4629,14 @@ packages:
 
   /react-property/2.0.0:
     resolution: {integrity: sha512-kzmNjIgU32mO4mmH5+iUyrqlpFQhF8K2k7eZ4fdLSOPFrD1XgEuSBv9LDEgxRXTMBqMd8ppT0x6TIzqE5pdGdw==}
+    dev: false
+
+  /react-razorpay/1.2.0_react@18.2.0:
+    resolution: {integrity: sha512-UMQF8od/yKPPgXcbv5+IaCDeRrZdeu9HCYsKjALpSsPMtPP1LU0QBcjJVYsPi1vjdrlXbrUH9/YhOVMcvFVsIQ==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-responsive-carousel/3.2.23:
