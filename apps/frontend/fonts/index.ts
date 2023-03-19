@@ -13,7 +13,7 @@ export const spaceGrotest = Space_Grotesk({
 });
 
 export const outfit = Outfit({
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "100", "200", "300", "800", "900"],
   subsets: ["latin"],
   display: "swap",
 });
