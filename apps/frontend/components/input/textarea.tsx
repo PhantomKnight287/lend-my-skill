@@ -23,7 +23,6 @@ export default function Textarea({
   wordsComponent,
   ...props
 }: Props) {
-  const { colorScheme } = useMantineColorScheme();
   return (
     <div className="mt-4">
       <label
@@ -37,12 +36,7 @@ export default function Textarea({
           <span className="text-red-500">*</span>
         </span>
       </label>
-      <div
-        className={clsx(
-          "bg-[#25262b]  rounded-md flex flex-col",
-          {}
-        )}
-      >
+      <div className={clsx("bg-[#25262b]  rounded-md flex flex-col", {})}>
         <T
           required
           placeholder="Enter the description of your job post"
