@@ -39,6 +39,7 @@
     "morgan": "^1.10.0",
     "nanoid": "3.3.4",
     "prisma": "^4.11.0",
+    "razorpay": "^2.8.6",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
