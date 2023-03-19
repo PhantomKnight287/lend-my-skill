@@ -4,7 +4,6 @@ import {
   IsEnum,
   IsOptional,
   IsString,
-  IsStrongPassword,
   MinLength,
 } from 'class-validator';
 
@@ -13,7 +12,6 @@ export class CreateUserDto {
 
   @IsString()
   @MinLength(8)
-  @IsStrongPassword()
   password: string;
 
   @IsString()
