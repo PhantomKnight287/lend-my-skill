@@ -7,7 +7,7 @@ import {
 import "@styles/globals.scss";
 import { UserProvider } from "@context/user";
 import { Header } from "@components/header";
-import { inter } from "@fonts";
+import { inter, outfit } from "@fonts";
 import { RouterTransition } from "@components/progress";
 import { AnimatePresence, motion } from "framer-motion";
 import { NotificationsProvider } from "@mantine/notifications";
@@ -37,7 +37,7 @@ export default function App(props: AppProps) {
             <MantineProvider
               theme={{
                 colorScheme,
-                fontFamily: inter.style.fontFamily,
+                fontFamily: outfit.style.fontFamily,
                 colors: {
                   dark: [
                     "#C1C2C5",
