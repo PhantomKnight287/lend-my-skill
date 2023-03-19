@@ -48,8 +48,6 @@ export default function Register() {
         val.length <= 6
           ? "Password should include at least 6 characters"
           : null,
-      username: (val) =>
-        val.length >= 8 ? null : "Username must be at least 8 characters long",
       confirmPass: (val, values) =>
         val === values.password ? null : "Passwords do not match",
     },
@@ -305,14 +303,14 @@ export default function Register() {
                   type="submit"
                   fullWidth
                   color="black"
-                  className={clsx("", {
-                    [outfit.className]: true,
-                    "bg-gray-900 hover:bg-black": colorScheme === "light",
-                    "bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] text-white":
-                      colorScheme === "dark",
-                  })}
+                  className={clsx(
+                    "focus:outline-none text-white bg-purple-700 hover:bg-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 ",
+                    {
+                      [outfit.className]: true,
+                    }
+                  )}
                   disabled={!form.values.terms}
-                  loading={false}
+                  loading={loading}
                 >
                   Register
                 </Button>
