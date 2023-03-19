@@ -308,7 +308,7 @@ function CreateService() {
                           required
                           id="title"
                           labelString="Title"
-                          placeholder="Enter the title of your job post"
+                          placeholder="Enter the title of your service"
                           labelProps={{
                             className: clsx({
                               [outfit.className]: true,
