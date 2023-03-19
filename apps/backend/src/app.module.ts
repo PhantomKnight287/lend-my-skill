@@ -13,6 +13,8 @@ import { TagsModule } from './resources/tags/tags.module';
 import { ServicesModule } from './resources/services/services.module';
 import { AuthService } from './resources/auth/auth.service';
 import { UserMiddleware } from './resources/auth/middleware/auth/auth.middleware';
+import { UpiModule } from './resources/upi/upi.module';
+import { JobPostModule } from './resources/job-post/job-post.module';
 
 @Module({
   controllers: [AppController],
@@ -34,6 +36,8 @@ import { UserMiddleware } from './resources/auth/middleware/auth/auth.middleware
     CategoriesModule,
     TagsModule,
     ServicesModule,
+    UpiModule,
+    JobPostModule,
   ],
   exports: [PrismaService],
 })

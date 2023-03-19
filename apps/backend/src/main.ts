@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as morgan from 'morgan';
+import morgan from 'morgan';
 import './constants';
 import { PORT } from './constants';
 import helmet from 'helmet';
