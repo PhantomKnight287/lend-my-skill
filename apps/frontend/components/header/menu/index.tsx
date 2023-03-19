@@ -7,6 +7,7 @@ import { assetURLBuilder } from "@utils/url";
 import {
   IconBrandCashapp,
   IconLogout,
+  IconPhotoCheck,
   IconSearch,
   IconSettings2,
   IconShoppingCart,
@@ -38,6 +39,7 @@ export default function HeaderMenu() {
               onClick={() => {
                 push("/create/job-post");
               }}
+              icon={<IconBrandCashapp size={20} />}
             >
               Post a Job Request
             </Menu.Item>
@@ -82,6 +84,7 @@ export default function HeaderMenu() {
             <Menu.Item
               color="yellow"
               onClick={() => push(`/settings?activeTab=complete-profile`)}
+              icon={<IconPhotoCheck size={20} />}
             >
               Complete Profile
             </Menu.Item>
