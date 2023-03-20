@@ -1,120 +1,192 @@
 import styles from "./hero.module.scss";
-import { Button } from "@mantine/core";
+import { Button, Title, useMantineColorScheme } from "@mantine/core";
 import Link from "next/link";
-import { useMediaQuery } from "@mantine/hooks";
-import { useEffect, useState } from "react";
-import TextTransition from "@components/text";
-import { config } from "react-spring";
+import { ReactNode } from "react";
 import clsx from "clsx";
-import { outfit } from "@fonts";
+import { outfit, sen } from "@fonts";
+import {
+  IconArrowRight,
+  IconBrandCashapp,
+  IconBrandGithub,
+  IconPremiumRights,
+} from "@tabler/icons";
+import { useUser } from "@hooks/user";
 
-const Features = [
+const Features: Array<{
+  title: string;
+  description: ReactNode;
+  icon?: ReactNode;
+}> = [
+  {
+    title: "Open Source",
+    description:
+      "We are an open source platform, you can contribute to our codebase.",
+    icon: <IconBrandGithub />,
+  },
   {
     title: "Ease Of Use",
     description:
       "Our platform is very easy to use, it has all the features needed by a user.",
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="icon icon-tabler icon-tabler-user-heart"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        strokeWidth="2"
+        stroke="currentColor"
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M6 21v-2a4 4 0 0 1 4 -4h.5"></path>
+        <path d="M18 22l3.35 -3.284a2.143 2.143 0 0 0 .005 -3.071a2.242 2.242 0 0 0 -3.129 -.006l-.224 .22l-.223 -.22a2.242 2.242 0 0 0 -3.128 -.006a2.143 2.143 0 0 0 -.006 3.071l3.355 3.296z"></path>
+        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
+      </svg>
+    ),
   },
   {
     title: "Low Comission",
     description:
       "We take very less comission out of your pay. You get almost full amount.",
+    icon: <IconPremiumRights size={30} />,
   },
   {
     title: "Multiple Payment Methods",
     description:
       "We support multiple payment methods including UPI and Paytm Wallet.",
+    icon: <IconBrandCashapp />,
   },
 ];
 
-const Words = [
-  "Web Developers 💻",
-  "Blog Writers 📝",
-  "Video Editors 📹",
-  "Everyone.",
-];
+export function Hero(props: { hideDashboardButton?: boolean }) {
+  const { colorScheme } = useMantineColorScheme();
+  const { username } = useUser();
 
-export function Hero() {
-  const [index, setIndex] = useState(0);
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setIndex((i) => i + 1);
-    }, 2000);
-    return () => clearTimeout(intervalId);
-  }, []);
-
-  const isSmallScreen = useMediaQuery("(max-width:700px)", false);
   return (
     <div
-      className={clsx(`items-center justify-center`, {
-        [styles.heroContainer]: true,
-        [outfit.className]: true,
-      })}
+      className={clsx(
+        `items-center justify-center flex flex-col`,
+        outfit.className,
+        styles.gradient
+      )}
     >
-      <h1 className="text-center">
+      <Title
+        align="center"
+        className={clsx(sen.className, "mt-10 text-7xl", {
+          "text-white": colorScheme === "dark",
+        })}
+      >
         A Platform For
-        <span>
-          <TextTransition
-            springConfig={config.gentle}
-            className={"text-center"}
-          >
-            {
-              <span
-                className={
-                  Words[index % Words.length].toLowerCase() === "everyone."
-                    ? `text-center bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] bg-clip-text text-transparent`
-                    : "text-center"
-                }
-              >
-                {Words[index % Words.length]}
-              </span>
-            }
-          </TextTransition>
-          {/* Everyone. */}
-        </span>
-      </h1>
-      <p className="text-xl text-gray-600 mb-8 mt-2" style={{}}>
-        Get Your Work Done By Skilled Freelancers
+        <br />
+        Everyone
+      </Title>
+      <p
+        className={clsx("text-xl mb-8 mt-4 text-center", {
+          "text-gray-600": colorScheme === "light",
+          "text-gray-400": colorScheme === "dark",
+        })}
+      >
+        Get Your Work Done By Skilled Freelancers.
       </p>
-      <div className={styles.buttonContainer} data-aos="zoom-in">
-        <Link href="/dashboard" passHref>
-          <Button
-            variant="filled"
-            className="bg-black hover:bg-gray-900 duration-[125ms] transition-all hover:scale-110"
-            color="dark"
-          >
-            Discover Dashboard
-          </Button>
-        </Link>
-      </div>
-      <div className={styles.featuresContainer}>
-        <h2 className={styles.feature}>Features</h2>
+      <div
+        className={clsx("flex flex-row justify-between w-full items-center ", {
+          hidden: username && !props.hideDashboardButton,
+        })}
+      >
         <div
-          className={clsx(styles.featureContainer,"w-full m-0")}
+          className={clsx(
+            "mt-2 mb-4 flex items-center justify-center rounded-md bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[2px] duration-[125ms] transition-all hover:scale-110 w-fit ml-auto mr-5"
+          )}
+          data-aos="zoom-in"
         >
-          <h2 className={styles.featureTitle}>Open Source</h2>
-          <p className={styles.featureDescription}>
-            {" "}
-            Our platform is Open Source. You can read the source code{" "}
-            <a
-              href="https://github.com/phantomknight287/lend-my-skill"
-              target="_blank"
-              rel="noreferrer"
-              className="text-blue-500 cursor-pointer"
+          <Link href="/auth/register" passHref>
+            <Button
+              variant="filled"
+              className={clsx("", {
+                "bg-[#201e1e] hover:bg-gray-900 ": colorScheme === "light",
+                "bg-[#201e1e]  text-white": colorScheme === "dark",
+              })}
+              color="dark"
             >
-              Here.
-            </a>
-          </p>
+              Get Started <IconArrowRight className="m-0 p-0 ml-2" />
+            </Button>
+          </Link>
         </div>
+        <div
+          className={clsx(
+            "mt-2 mb-4 flex items-center justify-center rounded-md bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[2px] duration-[125ms] transition-all hover:scale-110 w-fit mr-auto ml-5"
+          )}
+          data-aos="zoom-in"
+        >
+          <Link href="/about" passHref>
+            <Button
+              variant="filled"
+              className={clsx("", {
+                "bg-[#201e1e] hover:bg-gray-900 ": colorScheme === "light",
+                "bg-[#201e1e]  text-white": colorScheme === "dark",
+              })}
+              color="dark"
+            >
+              How It Works?
+            </Button>
+          </Link>
+        </div>
+      </div>
+      <div
+        className={clsx("flex flex-row justify-between w-full items-center ", {
+          hidden: props.hideDashboardButton ? true : !username,
+        })}
+      >
+        <div
+          className={clsx(
+            "mt-2 mb-4 flex items-center justify-center rounded-md bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[2px] duration-[125ms] transition-all hover:scale-110 w-fit  mx-auto"
+          )}
+          data-aos="zoom-in"
+        >
+          <Link href="/dashboard" passHref>
+            <Button
+              variant="filled"
+              className={clsx("", {
+                "bg-[#201e1e] hover:bg-gray-900 ": colorScheme === "light",
+                "bg-[#201e1e]  text-white": colorScheme === "dark",
+              })}
+              color="dark"
+            >
+              Take Me to Dashboard <IconArrowRight className="m-0 p-0 ml-2" />
+            </Button>
+          </Link>
+        </div>
+      </div>
+      <div className="container py-16 md:py-28 gap-6 flex flex-row flex-wrap items-center  justify-center shadow-2xl  shadow-[##281335]">
         {Features.map((f) => (
-          <div key={f.title} className={styles.featureContainer}>
-            <h2 className={styles.featureTitle}>{f.title}</h2>
-            <p className={styles.featureDescription}> {f.description}</p>
-          </div>
+          <Feature icon={null} {...f} key={f.title} />
         ))}
       </div>
-      {/* <h1 data-aos="zoom-y-out" data-aos-delay="300" className={styles.work}>
-        Your Work is Our <span className={styles.gradientText2}>Work.</span>
-      </h1> */}
+    </div>
+  );
+}
+
+type FeatureProps = {
+  title: string;
+  description: ReactNode;
+  icon: ReactNode;
+};
+
+function Feature({ description, title, icon }: FeatureProps) {
+  return (
+    <div className={clsx("p-4 md:w-1/3 flex ", styles.glass)}>
+      <div className="w-12 h-12 inline-flex items-center justify-center rounded-full bg-gray-800 text-indigo-400 mb-4 flex-shrink-0">
+        {icon}
+      </div>
+      <div className="flex-grow pl-6">
+        <h2 className="text-white text-lg title-font font-medium mb-2">
+          {title}
+        </h2>
+        <p className="leading-relaxed text-base max-w-sm">{description}</p>
+      </div>
     </div>
   );
 }

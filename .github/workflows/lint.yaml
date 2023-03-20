@@ -10,10 +10,9 @@ on:
       - "package.json"
       - "pnpm**"
 
-
 jobs:
-  frontend_linter:
-    name: Run Linter for frontend
+  linter:
+    name: Run Linter
     runs-on: ubuntu-latest
 
     steps:
@@ -32,32 +31,11 @@ jobs:
         run: pnpm i
 
       - name: Run Lint
-        run: cd apps/frontend && pnpm lint
-  backend_linter:
-    name: Run linter for Backend
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get Code
-        uses: actions/checkout@v2
-
-      - name: Setting Up Nodejs
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-
-      - name: Setup Pnpm
-        run: corepack enable
-
-      - name: Install Dependencies
-        run: pnpm i
-
-      - name: Run Lint
-        run: cd apps/backend && pnpm lint
+        run: pnpm lint
 
   build_docker_images:
     needs:
-      - frontend_linter
-      - backend_linter
+      - linter
     name: Build Docker images
     runs-on: ubuntu-latest
     strategy:

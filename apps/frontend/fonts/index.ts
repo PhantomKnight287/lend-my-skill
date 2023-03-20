@@ -1,4 +1,4 @@
-import { Inter, Outfit, Space_Grotesk } from "@next/font/google";
+import { Inter, Outfit, Sen, Space_Grotesk } from "@next/font/google";
 
 export const inter = Inter({
   weight: ["400", "500", "600", "700"],
@@ -13,7 +13,13 @@ export const spaceGrotest = Space_Grotesk({
 });
 
 export const outfit = Outfit({
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "100", "200", "300", "800", "900"],
   subsets: ["latin"],
   display: "swap",
+});
+
+export const sen = Sen({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "700", "800"],
 });

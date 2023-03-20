@@ -45,20 +45,20 @@ function CreateJobPost() {
         value.length < 20
           ? "Title should be atleast 20 characters long"
           : value.length > 100
-            ? "Title should be less than 100 characters long"
-            : null,
+          ? "Title should be less than 100 characters long"
+          : null,
       description: (value) =>
         value.length < 100
           ? "Description should be atleast 100 characters long"
           : value.length > 1000
-            ? "Description should be less than 1000 characters long"
-            : null,
+          ? "Description should be less than 1000 characters long"
+          : null,
       price: (value) =>
         !value
           ? null
           : Number(value) < 100
-            ? "Price should be atleast 100"
-            : null,
+          ? "Price should be atleast 100"
+          : null,
     },
   });
   const [tags, setTags] = useState<{ value: string; label: string }[]>([]);
@@ -147,12 +147,7 @@ function CreateJobPost() {
       <div className={clsx("flex flex-col items-center p-20")}>
         <div className="flex flex-row flex-wrap xl:items-center xl:justify-center gap-4">
           <div className={clsx("mr-20")}>
-            <Title
-              order={1}
-              className={clsx("", {
-                [outfit.className]: true,
-              })}
-            >
+            <Title order={1} className={clsx(outfit.className)}>
               Let&apos;s Get Your Work Done!
             </Title>
             <Text
@@ -199,13 +194,13 @@ function CreateJobPost() {
                           }}
                           {...formState.getInputProps("title")}
                           classNames={{
-                            input: clsx("border-0", {}),
+                            input: clsx("border-0 text-base", {}),
                           }}
                           minLength={20}
                           maxLength={1000}
                           wordsComponent={
                             <span
-                              className={clsx("text-sm ml-auto pr-3 my-2", {
+                              className={clsx("text-sm ml-auto pr-3 my-2 ", {
                                 "text-[#6c757d]":
                                   formState.values.title.length < 20,
                                 "text-[#28a745]":
@@ -231,7 +226,7 @@ function CreateJobPost() {
                           }}
                           {...formState.getInputProps("description")}
                           classNames={{
-                            input: clsx("border-0", {}),
+                            input: clsx("border-0 text-base", {}),
                           }}
                           minLength={20}
                           maxLength={1000}
@@ -243,7 +238,7 @@ function CreateJobPost() {
                                     formState.values.description.length < 100,
                                   "text-[#28a745]":
                                     formState.values.description.length >=
-                                    100 &&
+                                      100 &&
                                     formState.values.description.length < 1000,
                                 })}
                               >
@@ -288,7 +283,7 @@ function CreateJobPost() {
 
                           setFiles((o) => [...o, d]);
                         }}
-                        accept="image/png,image/jpeg"
+                        accept="image*"
                       >
                         {(props) => (
                           <Button
@@ -314,9 +309,9 @@ function CreateJobPost() {
                           data={
                             data
                               ? data?.map((d) => ({
-                                value: d.id,
-                                label: d.name,
-                              }))
+                                  value: d.id,
+                                  label: d.name,
+                                }))
                               : []
                           }
                           {...formState.getInputProps("category")}
@@ -361,11 +356,9 @@ function CreateJobPost() {
                                     "An error occured",
                                 });
                                 setLoading(false);
-
                               });
-                            return null
-                          }
-                          }
+                            return null;
+                          }}
                         />
                       </div>
                       <MultiSelect

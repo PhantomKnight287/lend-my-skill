@@ -1,7 +1,6 @@
 import { URLBuilder } from "@utils/url";
 import axios from "axios";
-type AnswerType = "TEXT" | "MULTIPLE_CHOICE" | "ATTACHMENT"
-
+type AnswerType = "TEXT" | "MULTIPLE_CHOICE" | "ATTACHMENT";
 
 interface Props {
   title: string;
@@ -21,7 +20,7 @@ interface Props {
 }
 
 export async function createService(props: Props, token: string) {
-  return axios.post(URLBuilder("/services/create"), props, {
+  return axios.post(URLBuilder("/services"), props, {
     headers: {
       authorization: `Bearer ${token}`,
     },

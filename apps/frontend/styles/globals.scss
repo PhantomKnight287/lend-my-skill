@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.gradient {
+  background-image: radial-gradient(
+      at 19% 75%,
+      hsla(231, 49%, 20%, 1) 0px,
+      transparent 50%
+    ),
+    radial-gradient(at 69% 20%, hsla(231, 45%, 28%, 1) 0px, transparent 50%);
+}
+.glass {
+  @apply shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-[11.6px] border rounded-2xl border-solid border-[rgba(255,255,255,0.44)];
+  background: rgba(255, 255, 255, 0.31);
+  -webkit-backdrop-filter: blur(11.6px);
+}

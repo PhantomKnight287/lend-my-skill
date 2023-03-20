@@ -20,19 +20,20 @@ import clsx from "clsx";
 import { MetaTags } from "@components/meta";
 import { outfit, spaceGrotest } from "@fonts";
 import Link from "next/link";
-import axios from "axios";
+import axios, { isCancel } from "axios";
 import { URLBuilder } from "@utils/url";
 import { showNotification } from "@mantine/notifications";
 import { RegisterResponse } from "~/types/response/register";
 import { useSetUser, useUser } from "@hooks/user";
 import { createCookie } from "@helpers/cookie";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { profileImageRouteGenerator } from "@utils/profile";
 
 import useHydrateUserContext from "@hooks/hydrate/user";
 
 export default function Login() {
+  const [loading, setLoading] = useState(false);
   const form = useForm({
     initialValues: {
       email: "",
@@ -47,8 +48,8 @@ export default function Login() {
           ? null
           : "Invalid email",
       password: (val) =>
-        val.length <= 6
-          ? "Password should include at least 6 characters"
+        val.length <= 8
+          ? "Password should include at least 8 characters"
           : null,
     },
     validateInputOnBlur: true,
@@ -60,9 +61,10 @@ export default function Login() {
   const { id } = useUser();
   useHydrateUserContext();
   function handleSubmit(values: typeof form.values) {
+    setLoading(true);
     const { email, password } = values;
     axios
-      .post<RegisterResponse>(URLBuilder("/login"), {
+      .post<RegisterResponse>(URLBuilder("/auth/login"), {
         email,
         password,
       })
@@ -75,8 +77,7 @@ export default function Login() {
             avatarUrl: profileImageRouteGenerator(d.user.username),
           },
         });
-        createCookie("token", d.tokens.auth, 1);
-        createCookie("refreshToken", d.tokens.refresh, 7);
+        createCookie("token", d.token);
         showNotification({
           message: `Welcome back @${upperFirst(d.user.username)}`,
           color: "green",
@@ -84,14 +85,17 @@ export default function Login() {
         replace((query.to as string) || "/dashboard");
       })
       .catch((err) => {
-        console.log(err);
-        const error = err?.response?.data?.errors?.[0].message;
+        if (isCancel(err)) return;
+        const error = Array.isArray(err?.response?.data?.message)
+          ? err?.response?.data?.message[0]
+          : err?.response?.data?.message;
         showNotification({
           message:
             error || err?.response?.data?.message || "Something went wrong",
           color: "red",
         });
-      });
+      })
+      .finally(() => setLoading(false));
   }
 
   useEffect(() => {
@@ -99,7 +103,7 @@ export default function Login() {
     if (id) {
       replace((query.to as string) || "/dashboard");
     }
-  }, [isReady,id]);
+  }, [isReady, id]);
 
   return (
     <>
@@ -111,8 +115,8 @@ export default function Login() {
         <Text
           size="lg"
           weight={500}
-          className={clsx("text-center text-2xl font-bold mb-4", {
-            [spaceGrotest.className]: true,
+          className={clsx("text-center text-3xl font-bold mb-4", {
+            [outfit.className]: true,
             "text-white": colorScheme === "dark",
           })}
         >
@@ -161,6 +165,7 @@ export default function Login() {
                   "bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] text-white":
                     colorScheme === "dark",
                 })}
+                loading={loading}
               >
                 Login
               </Button>

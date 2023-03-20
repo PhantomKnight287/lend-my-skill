@@ -1,0 +1,96 @@
+---
+title: Profile
+---
+
+import { Callout } from "nextra-theme-docs";
+
+# Profile
+
+These routes will be used to fetch and update user profiles.
+
+## Fetch Profile of authenticated user
+
+`GET /profile`
+
+<Callout type="warning">
+  <strong>Warning:</strong> Authorization header must be provided
+</Callout>
+
+```json
+{
+  "id": "clf40vl0t0000ewroucp805xe",
+  "name": "Gurpal Singh",
+  "username": "phantomknight287",
+  "profileCompleted": true,
+  "role": "Freelancer",
+  "avatarUrl": "images/clf40vl0t0000ewroucp805xe-173d5448-7508-49c6-9131-d74ea8f9b7d7-1678544261104-30fa3134-c144-40a0-a9a5-4238adf8fdc0-74ypssi41rma1.jpg",
+  "bio": "Hey there 12242",
+  "country": "India"
+}
+```
+
+## Update Profile of authenticated user
+
+`POST /profile/update`
+
+<Callout type="warning">
+  <strong>Warning:</strong> Authorization header must be provided
+</Callout>
+
+Request Body
+
+- `avatarUrl` - URL of the avatar image provided by upload routes(optional)
+- `country` - Country of the user (optional)
+- `bio` - Bio of the user (optional)
+
+Response
+
+```json
+{
+  "updated": true
+}
+```
+
+## Get Profile By Username
+
+`GET /profile/:username`
+
+Response
+
+```json
+{
+  "id": "clf40vl0t0000ewroucp805xe",
+  "avatarUrl": "images/clf40vl0t0000ewroucp805xe-173d5448-7508-49c6-9131-d74ea8f9b7d7-1678544261104-30fa3134-c144-40a0-a9a5-4238adf8fdc0-74ypssi41rma1.jpg",
+  "bio": "Hey there 12242",
+  "country": "India",
+  "createdAt": "2023-03-11T13:48:39.341Z",
+  "verified": false,
+  "name": "Gurpal Singh",
+  "username": "phantomknight287"
+}
+```
+
+## Completing a user's profile
+
+`POST /profile/complete`
+
+<Callout type="warning">
+  <strong>Warning:</strong> Authorization header must be provided
+</Callout>
+
+Request Body
+
+- `documents` - Array of document URLs provided by upload routes
+- `paypalEmail` - PayPal email of the user(optional)
+- `upiId` - UPI ID of the user(optional)
+- `mobileNumber` - Mobile number of the user
+
+<Callout type="warning">
+  <strong> Warning: </strong> either `paypalEmail` or `upiId` must be provided
+</Callout>
+
+Response
+
+```
+Profile Completed
+```

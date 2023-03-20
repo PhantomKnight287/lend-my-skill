@@ -21,6 +21,15 @@ const nextConfig = withMDX({
   typescript: {
     ignoreBuildErrors: true,
   },
+  async redirects() {
+    return [
+      {
+        source: "/@:username",
+        destination: `/profile/:username`,
+        permanent: true,
+      },
+    ];
+  },
 });
 
 module.exports = nextConfig;
