@@ -24,4 +24,16 @@ export class StaticService {
       },
     });
   }
+  async getStaticJobPosts() {
+    return await this.p.jobPost.findMany({
+      select: {
+        slug: true,
+        author: {
+          select: {
+            username: true,
+          },
+        },
+      },
+    });
+  }
 }
