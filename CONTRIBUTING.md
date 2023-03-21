@@ -8,7 +8,7 @@ Read our [Code Of Conduct](/CODE_OF_CONDUCT.md) to keep our community approachab
 
 ### Setting up this repository
 
-To contribute to `Backend` and `Frotend`, you will need nodejs `v16.x`. Please refrain from using any other version. To contribute to `apps/mobile`, you will need `Flutter>=3.3.10 • channel stable`.
+To contribute, you will need nodejs `v16.x`. Please refrain from using any other version.
 
 ### Arranging Environment Variables
 
