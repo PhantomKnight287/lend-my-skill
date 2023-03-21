@@ -38,6 +38,7 @@ function CreateJobPost() {
       description: "",
       price: "",
       category: "",
+      tags: [],
     },
     validateInputOnBlur: true,
     validate: {
@@ -53,15 +54,8 @@ function CreateJobPost() {
           : value.length > 1000
           ? "Description should be less than 1000 characters long"
           : null,
-      price: (value) =>
-        !value
-          ? null
-          : Number(value) < 100
-          ? "Price should be atleast 100"
-          : null,
     },
   });
-  const [tags, setTags] = useState<{ value: string; label: string }[]>([]);
   const { data, refetch } = useQuery<{ id: string; name: string }[]>({
     queryKey: ["categories"],
     queryFn: async () => {
@@ -81,9 +75,23 @@ function CreateJobPost() {
   const prevStep = () =>
     setActive((current) => (current > 0 ? current - 1 : current));
   const [loading, setLoading] = useState(false);
+  const {
+    data: tagsData,
+    isLoading: tagsLoading,
+    refetch: tagsRefetch,
+  } = useQuery<{ id: string; name: string }[]>({
+    queryKey: ["tags"],
+    queryFn: async () => {
+      const res = await axios.get(URLBuilder("/tags"));
+      return res.data;
+    },
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: true,
+  });
 
   const handleSubmit = async (data: typeof formState.values) => {
-    const { category, description, price, title } = data;
+    const { category, description, price, title, tags } = data;
     const token = readCookie("token");
     if (!token)
       return showNotification({
@@ -106,13 +114,13 @@ function CreateJobPost() {
     }
     await axios
       .post(
-        URLBuilder("/jobpost/create"),
+        URLBuilder("/job-post"),
         {
           title,
           description,
           price: Number(price),
           category,
-          tags: tags.map((t) => t.label),
+          tags: tags,
           images: urls.length > 0 ? urls : undefined,
           deadline: (deadline as unknown as Date)?.toISOString(),
         },
@@ -280,10 +288,10 @@ function CreateJobPost() {
                       <FileButton
                         onChange={(d) => {
                           if (!d) return;
-
-                          setFiles((o) => [...o, d]);
+                          setFiles((prev) => [...prev, ...d]);
                         }}
                         accept="image*"
+                        multiple
                       >
                         {(props) => (
                           <Button
@@ -325,7 +333,7 @@ function CreateJobPost() {
                           labelProps={{
                             className: clsx("text-sm font-bold ", {
                               [outfit.className]: true,
-                              "text-[#495057]": theme === "light",
+                              "": theme === "light",
                             }),
                           }}
                           onCreate={(query) => {
@@ -363,23 +371,56 @@ function CreateJobPost() {
                       </div>
                       <MultiSelect
                         mt="md"
-                        data={tags}
+                        data={
+                          tagsData
+                            ? tagsData.map((d) => ({
+                                value: d.id,
+                                label: d.name,
+                              }))
+                            : []
+                        }
+                        {...formState.getInputProps("tags")}
                         label="Tags"
                         labelProps={{
                           className: clsx("text-sm font-bold ", {
                             [outfit.className]: true,
-                            "text-[#495057]": theme === "light",
+                            "": theme === "light",
                           }),
                         }}
                         placeholder="Enter tags"
                         searchable
                         clearable
-                        creatable={tags.length < 5}
+                        creatable={formState.values.tags.length < 5}
                         getCreateLabel={(query) => `+ Create ${query}`}
                         onCreate={(query) => {
-                          const item = { value: query, label: query };
-                          setTags((current) => [...current, item]);
-                          return item;
+                          setLoading(true);
+                          axios
+                            .post(
+                              URLBuilder(`/tags/create`),
+                              {
+                                name: query,
+                              },
+                              {
+                                headers: {
+                                  authorization: `Bearer ${readCookie(
+                                    "token"
+                                  )}`,
+                                },
+                              }
+                            )
+                            .then((d) =>
+                              tagsRefetch().then(() => setLoading(false))
+                            )
+                            .catch((err) => {
+                              showNotification({
+                                color: "red",
+                                message:
+                                  err?.response?.data?.message ||
+                                  "An error occured",
+                              });
+                            });
+                          setLoading(false);
+                          return null;
                         }}
                         maxSelectedValues={5}
                       />
@@ -410,12 +451,9 @@ function CreateJobPost() {
                   >
                     <>
                       <Text
-                        className={clsx(
-                          "text-sm font-bold text-[#495057] py-2",
-                          {
-                            [outfit.className]: true,
-                          }
-                        )}
+                        className={clsx("text-sm font-bold  py-2", {
+                          [outfit.className]: true,
+                        })}
                       >
                         Deadline(optional)
                       </Text>
@@ -430,12 +468,9 @@ function CreateJobPost() {
                         }
                       />
                       <Text
-                        className={clsx(
-                          "text-sm font-bold text-[#495057] py-2 mt-5",
-                          {
-                            [outfit.className]: true,
-                          }
-                        )}
+                        className={clsx("text-sm font-bold  py-2 mt-5", {
+                          [outfit.className]: true,
+                        })}
                       >
                         Budget(optional)
                       </Text>
@@ -463,7 +498,7 @@ function CreateJobPost() {
                           loading={loading}
                           className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
                         >
-                          Next step
+                          Post
                         </Button>
                       </Group>
                     </>
