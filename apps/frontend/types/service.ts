@@ -3,13 +3,13 @@ export interface Service {
   category: Category;
   createdAt: string;
   description: string;
-  freelancer: Freelancer;
+  user: Freelancer;
   images: string[];
   id: string;
-  Package: Package[];
+  package: Package[];
   slug: string;
   title: string;
-  tags: string[];
+  tags: { name: string; slug: string; id: string }[];
 }
 
 export interface Category {

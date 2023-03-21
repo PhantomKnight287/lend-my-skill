@@ -4,6 +4,15 @@ import { profileImageRouteGenerator } from "@utils/profile";
 import { eraseCookie } from "@helpers/cookie";
 import { useRouter } from "next/router";
 import { assetURLBuilder } from "@utils/url";
+import {
+  IconBrandCashapp,
+  IconLogout,
+  IconPhotoCheck,
+  IconSearch,
+  IconSettings2,
+  IconShoppingCart,
+  IconUserCircle,
+} from "@tabler/icons";
 
 export default function HeaderMenu() {
   const { avatarUrl, username, userType, profileCompleted } = useUser();
@@ -24,10 +33,34 @@ export default function HeaderMenu() {
           />
         </Menu.Target>
         <Menu.Dropdown>
+          {userType === "Client" ? (
+            <Menu.Item
+              color="green"
+              onClick={() => {
+                push("/create/job-post");
+              }}
+              icon={<IconBrandCashapp size={20} />}
+            >
+              Post a Job Request
+            </Menu.Item>
+          ) : (
+            <>
+              {userType === "Freelancer" ? (
+                <Menu.Item
+                  color="green"
+                  onClick={() => push(`/create/service`)}
+                  icon={<IconBrandCashapp size={20} />}
+                >
+                  Post a Service
+                </Menu.Item>
+              ) : null}
+            </>
+          )}
           <Menu.Item
             onClick={() => {
               push(`/profile/${username}`);
             }}
+            icon={<IconUserCircle size={20} />}
           >
             Profile
           </Menu.Item>
@@ -35,34 +68,23 @@ export default function HeaderMenu() {
             onClick={() => {
               push(`/search`);
             }}
+            icon={<IconSearch size={20} />}
           >
             Search
           </Menu.Item>
-          {userType === "client" ? (
-            <Menu.Item
-              color="green"
-              onClick={() => {
-                push("/create/job-post");
-              }}
-            >
-              Post a Job Request
-            </Menu.Item>
-          ) : (
-            <>
-              {userType === "freelancer" ? (
-                <Menu.Item
-                  color="green"
-                  onClick={() => push(`/create/service`)}
-                >
-                  Post a Service
-                </Menu.Item>
-              ) : null}
-            </>
-          )}
+          <Menu.Item
+            onClick={() => {
+              push(`/settings`);
+            }}
+            icon={<IconSettings2 size={20} />}
+          >
+            Settings
+          </Menu.Item>
           {profileCompleted ? null : (
             <Menu.Item
               color="yellow"
               onClick={() => push(`/settings?activeTab=complete-profile`)}
+              icon={<IconPhotoCheck size={20} />}
             >
               Complete Profile
             </Menu.Item>
@@ -71,6 +93,7 @@ export default function HeaderMenu() {
             onClick={() => {
               push(`/profile/${username}/orders`);
             }}
+            icon={<IconShoppingCart size={20} />}
           >
             Orders
           </Menu.Item>
@@ -87,6 +110,7 @@ export default function HeaderMenu() {
               });
               push("/auth/login");
             }}
+            icon={<IconLogout size={20} />}
           >
             Logout
           </Menu.Item>

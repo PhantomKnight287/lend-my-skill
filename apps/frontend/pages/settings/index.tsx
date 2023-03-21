@@ -36,6 +36,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Countries } from "~/constants";
 import dynamic from "next/dynamic";
+import { useToggle } from "@mantine/hooks";
 
 const NumberPicker = dynamic(() => import("react-phone-input-2"), {
   ssr: false,
@@ -43,13 +44,13 @@ const NumberPicker = dynamic(() => import("react-phone-input-2"), {
 });
 
 function Settings() {
-  useHydrateUserContext("replace", true, "/auth/login");
+  const updateState = useHydrateUserContext("replace", true, "/auth/login");
   const [activeTab, setActiveTab] = useState("account");
   const { push, query, isReady } = useRouter();
   const { username } = useUser();
   const [profileCompleted, setProfileCompleted] = useState(false);
   const dispatch = useSetUser();
-  const { data, error, refetch, isLoading } = useQuery<{
+  const { data, error, isLoading, refetch } = useQuery<{
     bio: string;
     aboutMe: string;
     country: string;
@@ -57,7 +58,7 @@ function Settings() {
   }>({
     queryKey: ["account"],
     queryFn: async () => {
-      return await fetch(URLBuilder(`/profile/${username}/authenticated`), {
+      return await fetch(URLBuilder(`/profile?settings=true`), {
         headers: {
           authorization: `Bearer ${readCookie("token")}`,
         },
@@ -68,7 +69,6 @@ function Settings() {
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
   });
-
   const formState = useForm({
     initialValues: {
       bio: "",
@@ -85,7 +85,6 @@ function Settings() {
     if (!isLoading) {
       formState.setValues({
         bio: data!.bio,
-        aboutMe: data!.aboutMe,
         country: data!.country,
         avatarUrl: data!.avatarUrl,
       });
@@ -97,6 +96,7 @@ function Settings() {
     initialValues: {
       mobileNumber: "",
       upiId: "",
+      paypalEmail: "",
     },
     validate: {
       upiId: (val) =>
@@ -112,20 +112,21 @@ function Settings() {
     const controller = new AbortController();
     const token = readCookie("token")!;
     axios
-      .get(URLBuilder(`/profile/${username}/completed`), {
+      .get(URLBuilder(`/profile`), {
         headers: {
           authorization: `Bearer ${token}`,
         },
         signal: controller.signal,
       })
       .then((d) => d.data)
-      .then((d) => setProfileCompleted(d.completed))
+      .then((d) => setProfileCompleted(d.profileCompleted))
       .catch(() => null);
     return () => controller.abort();
   }, [isReady]);
 
   const { colorScheme } = useMantineColorScheme();
   const [loading, setLoading] = useState(false);
+  const [paymentInfo, setPaymentInfo] = useToggle(["upi", "paypal"]);
   return (
     <div className="flex flex-row ">
       <MetaTags description="Settings" title="Settings" />
@@ -168,6 +169,7 @@ function Settings() {
                             formState.setFieldValue("imageSelected", true);
                           }
                         }}
+                        accept={"image/*"}
                       >
                         {(props) => (
                           <Avatar
@@ -186,7 +188,7 @@ function Settings() {
                         )}
                       </FileButton>
                       <span
-                        className={clsx("text-md leading-[18px] mt-3", {
+                        className={clsx("text-md leading-[18px] my-3 ", {
                           "text-gray-500": colorScheme === "dark",
                           "text-[#666666]": colorScheme === "light",
                         })}
@@ -208,6 +210,7 @@ function Settings() {
                                   "Something went wrong",
                                 color: "red",
                               });
+                              setLoading(false);
                               return null;
                             });
                             if (urls === null) return;
@@ -219,7 +222,6 @@ function Settings() {
                               URLBuilder("/profile/update"),
                               {
                                 bio: d.bio || undefined,
-                                aboutMe: d.aboutMe || undefined,
                                 country: d.country || undefined,
                                 avatarUrl: url || d.avatarUrl || undefined,
                               },
@@ -238,6 +240,8 @@ function Settings() {
                               });
                               formState.resetDirty();
                               setAvatar(undefined);
+                              updateState();
+                              refetch();
                             })
                             .catch((err) => {
                               showNotification({
@@ -265,7 +269,7 @@ function Settings() {
                               }),
                             }}
                             classNames={{
-                              input: clsx("h-[44px]"),
+                              input: "h-[44px]",
                             }}
                           />
                           <Select
@@ -278,34 +282,24 @@ function Settings() {
                             }}
                             placeholder="Country"
                             {...formState.getInputProps("country")}
+                            classNames={{
+                              input: "h-[44px]",
+                            }}
+                            searchable
                           />
                         </SimpleGrid>
-                        <Textarea
-                          label="About me"
-                          placeholder="About me"
-                          {...formState.getInputProps("aboutMe")}
-                          labelProps={{
-                            className: clsx({
-                              [outfit.className]: true,
-                            }),
-                          }}
-                          autosize
-                        />
+
                         {formState.isDirty() || avatar != undefined ? (
                           <>
                             <Group position="center">
                               <Button
                                 type="submit"
                                 mt="md"
-                                color="black"
-                                className={clsx("", {
-                                  [outfit.className]: true,
-                                  "bg-gray-900 hover:bg-black":
-                                    colorScheme === "light",
-                                  "bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] text-white":
-                                    colorScheme === "dark",
-                                })}
+                                variant="outline"
+                                color={"green"}
+                                className={clsx(outfit.className)}
                                 loading={loading}
+                                radius="lg"
                               >
                                 Update
                               </Button>
@@ -327,7 +321,6 @@ function Settings() {
             >
               {profileCompleted ? (
                 <div>
-                  {/* show a nice message saying profile completed, you can use all features */}
                   <div className="flex flex-col">
                     <Text
                       align="center"
@@ -465,13 +458,19 @@ function Settings() {
                       }
 
                       const urls = data.data.paths;
+                      setLoading(true);
                       axios
                         .post(
                           URLBuilder("/profile/complete"),
                           {
                             mobileNumber: d.mobileNumber,
                             urls,
-                            upiId: d.upiId,
+                            upiId: paymentInfo === "upi" ? d.upiId : undefined,
+                            paypalEmail:
+                              paymentInfo === "paypal"
+                                ? d.paypalEmail
+                                : undefined,
+                            documents: urls,
                           },
                           {
                             headers: {
@@ -491,6 +490,7 @@ function Settings() {
                             },
                             type: "SET_USER",
                           });
+                          setKycDocuments([]);
                         })
                         .catch((err) => {
                           showNotification({
@@ -499,10 +499,11 @@ function Settings() {
                               err?.response?.data?.message ||
                               "Error completing profile",
                           });
-                        });
+                        })
+                        .finally(() => setLoading(false));
                     })}
                   >
-                    <div className="flex flex-col mt-8">
+                    <div className="flex flex-col mt-8 w-full">
                       <Text>
                         Please enter your mobile number
                         <span className="text-red-500">*</span>
@@ -521,26 +522,56 @@ function Settings() {
                         enableSearch
                         inputProps={{
                           required: true,
+                          className:
+                            "text-white bg-gray-900 px-4 py-2 w-full rounded-md",
                         }}
                       />
-                      <TextInput
-                        label="UPI ID"
-                        placeholder="abcd@upi"
-                        required
-                        {...completeProfileState.getInputProps("upiId")}
-                      />
+                      {paymentInfo === "upi" ? (
+                        <>
+                          <TextInput
+                            label="UPI ID"
+                            placeholder="abcd@upi"
+                            required
+                            mt="md"
+                            {...completeProfileState.getInputProps("upiId")}
+                          />
+                          <Text
+                            className="text-md mt-2 text-blue-300"
+                            role="button"
+                            onClick={() => setPaymentInfo()}
+                          >
+                            Switch to Paypal Email
+                          </Text>
+                        </>
+                      ) : (
+                        <>
+                          <TextInput
+                            label="Paypal Email"
+                            placeholder="johndoe@mail.com"
+                            required
+                            mt="md"
+                            {...completeProfileState.getInputProps(
+                              "paypalEmail"
+                            )}
+                          />
+                          <Text
+                            className="text-md mt-2 text-blue-300"
+                            role="button"
+                            onClick={() => setPaymentInfo()}
+                          >
+                            Switch to Upi
+                          </Text>
+                        </>
+                      )}
                       <div className="flex flex-col items-center justify-center">
                         <Button
                           type="submit"
                           mt="md"
-                          color="black"
-                          className={clsx("max-w-fit", {
-                            [outfit.className]: true,
-                            "bg-gray-900 hover:bg-black":
-                              colorScheme === "light",
-                            "bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] text-white":
-                              colorScheme === "dark",
-                          })}
+                          variant="outline"
+                          color={"green"}
+                          className={clsx(outfit.className)}
+                          loading={loading}
+                          radius="lg"
                         >
                           Submit
                         </Button>

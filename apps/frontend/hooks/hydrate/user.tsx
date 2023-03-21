@@ -14,7 +14,8 @@ export default function useHydrateUserContext(
 ) {
   const dispatch = useSetUser();
   const { push, replace, asPath, isReady } = useRouter();
-  async function fetcher(token: string, updateState = false) {
+  async function fetcher(token?: string, updateState = false) {
+    token = readCookie("token") || token;
     const res = await axios
       .get(URLBuilder("/profile"), {
         headers: {
@@ -41,7 +42,7 @@ export default function useHydrateUserContext(
         type: "SET_USER",
         payload: {
           ...res.data,
-          userType: res.data.type,
+          userType: res.data.role,
         },
       });
       if (goTo) {

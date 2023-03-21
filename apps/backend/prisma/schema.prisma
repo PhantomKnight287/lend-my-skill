@@ -1,0 +1,169 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  Freelancer @map("freelancer")
+  Client     @map("client")
+}
+
+model User {
+  id               String   @id @unique @default(cuid())
+  email            String   @unique
+  password         String
+  name             String
+  username         String   @unique
+  country          String   @default("India")
+  verified         Boolean  @default(false)
+  role             Role
+  emailVerified    Boolean  @default(false)
+  profileCompleted Boolean  @default(false)
+  bio              String   @default("")
+  avatarUrl        String   @default("")
+  upiId            String   @default("")
+  paypalEmail      String   @default("")
+  kycCompleted     Boolean  @default(false)
+  phone            String   @default("")
+  kycDocuments     String[]
+
+  services Service[]
+  uploads  Uploads[]
+  reviews  Review[]
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  jobPosts        JobPost[] @relation(name: "jobposts")
+  claimedJobPosts JobPost[] @relation(name: "claimedjobposts")
+}
+
+// This will be helpful to moderate the content and also get rid of it when it is not required
+model Uploads {
+  id        String   @id @unique @default(cuid())
+  url       String
+  type      String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id        String    @id @unique @default(cuid())
+  name      String
+  createdAt DateTime  @default(now())
+  slug      String    @unique
+  services  Service[]
+  JobPost   JobPost[]
+}
+
+model Tags {
+  id        String    @id @unique @default(cuid())
+  name      String
+  createdAt DateTime  @default(now())
+  slug      String    @unique
+  service   Service[]
+  JobPost   JobPost?  @relation(fields: [jobPostId], references: [id])
+  jobPostId String?
+}
+
+model Service {
+  id          String   @id @unique @default(cuid())
+  title       String
+  description String
+  slug        String   @unique
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  bannerImage String
+  images      String[]
+  rating      Int      @default(0)
+  ratedBy     Int      @default(0)
+
+  tags     Tags[]
+  package  Package[]
+  features Feature[]
+  review   Review[]
+  user     User?     @relation(fields: [userId], references: [id])
+  userId   String?
+
+  createdAt DateTime @default(now())
+}
+
+model Package {
+  id           String    @id @unique @default(cuid())
+  name         String
+  price        Int
+  description  String?
+  deliveryDays Int
+  service      Service   @relation(fields: [serviceId], references: [id])
+  features     Feature[]
+  serviceId    String
+
+  createdAt DateTime @default(now())
+}
+
+model Feature {
+  id         String    @id @unique @default(cuid())
+  name       String
+  packages   Package[]
+  includedIn String[]
+  service    Service?  @relation(fields: [serviceId], references: [id])
+  serviceId  String?
+
+  createdAt DateTime @default(now())
+}
+
+model Review {
+  id        String  @id @unique @default(cuid())
+  ratedBy   User    @relation(fields: [userId], references: [id])
+  userId    String
+  rating    Int
+  review    String
+  service   Service @relation(fields: [serviceId], references: [id])
+  serviceId String
+}
+
+model Transactions {
+  id        String            @id @unique @default(cuid())
+  orderId   String?
+  amount    Int
+  type      TransactionType
+  status    TransactionStatus
+  createdAt DateTime          @default(now())
+}
+
+enum TransactionType {
+  UPIVerification
+  Payment
+}
+
+enum TransactionStatus {
+  Created // when orderId is generated
+  Captured // when payment is captured
+  Refunded // when payment is refunded
+  Failed // when payment is failed
+}
+
+model JobPost {
+  id           String    @id @unique @default(cuid())
+  title        String
+  description  String
+  slug         String    @unique
+  category     Category  @relation(fields: [categoryId], references: [id])
+  tags         Tags[]
+  images       String[]
+  budget       Int?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deadline     DateTime?
+  author       User      @relation(fields: [authorId], references: [id], name: "jobposts")
+  authorId     String
+  categoryId   String
+  claimed      Boolean   @default(false)
+  claimedBy    User?     @relation(fields: [freelancerId], references: [id], name: "claimedjobposts")
+  freelancerId String?
+}

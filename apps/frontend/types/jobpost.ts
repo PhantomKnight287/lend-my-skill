@@ -1,16 +1,35 @@
 export interface JobPost {
-  author: Author;
-  budget: number;
-  category: Category;
-  claimed: boolean;
-  claimedBy: Author;
-  createdAt: string;
-  deadline: any;
-  description: string;
-  id: string;
-  images: string[];
-  tags: string[];
   title: string;
+  description: string;
+  tags: {
+    id: string;
+    slug: string;
+    name: string;
+  }[];
+  category: {
+    id: string;
+    slug: string;
+    name: string;
+  };
+  images: string[];
+  deadline: Date;
+  id: string;
+  slug: string;
+  budget: number;
+  createdAt: Date;
+  author: {
+    name: string;
+    verified: boolean;
+    avatarUrl: string;
+    username: string;
+    profileCompleted: boolean;
+  };
+  claimed: boolean;
+  claimedBy: {
+    username: string;
+    name: string;
+    avatarUrl: string;
+  };
 }
 
 export interface Author {

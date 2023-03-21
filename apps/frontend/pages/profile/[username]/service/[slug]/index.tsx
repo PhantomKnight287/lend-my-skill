@@ -5,11 +5,9 @@ import {
   Avatar,
   Badge,
   Button,
-  Chip,
   Divider,
   Image,
   Table,
-  Tabs,
   Text,
   TextInput,
   Tooltip,
@@ -28,7 +26,7 @@ import {
 import Link from "next/link";
 import React, { useRef, useState } from "react";
 import { Service } from "~/types/service";
-import { Carousel } from "@mantine/carousel";
+import { Carousel } from "react-responsive-carousel";
 import useHydrateUserContext from "@hooks/hydrate/user";
 import { MetaTags } from "@components/meta";
 import { IconCheck, IconX } from "@tabler/icons";
@@ -54,7 +52,7 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   });
   const { username } = useUser();
   useHydrateUserContext();
-  useIssueNewAuthToken()
+  useIssueNewAuthToken();
   const { colorScheme } = useMantineColorScheme();
 
   const { push, asPath } = useRouter();
@@ -66,10 +64,8 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
       })}
     >
       <MetaTags
-        title={`@${props.freelancer.username} | ${props.freelancer.name} | Lend My Skill`}
-        description={
-          props.description || `${props.freelancer.name} on Lend My Skill`
-        }
+        title={`@${props.user.username} | ${props.user.name} | Lend My Skill`}
+        description={props.description || `${props.user.name} on Lend My Skill`}
         ogImage={assetURLBuilder(props.bannerImage)}
       />
       <Image
@@ -82,10 +78,10 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
         }}
       />
       <h1 className="text-2xl font-bold text-center">{props.title}</h1>
-      {props.freelancer.profileCompleted ? null : (
+      {props.user.profileCompleted ? null : (
         <div className="mt-2  text-center">
           <span className="text-red-500">
-            {username === props.freelancer.username
+            {username === props.user.username
               ? "Please complete your profile for this post to appear in search results.(only you can see this)"
               : null}
           </span>
@@ -94,17 +90,17 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
       <div className="flex flex-row flex-wrap items-center mt-2 justify-center">
         <Avatar
           src={
-            props.freelancer.avatarUrl
-              ? assetURLBuilder(props.freelancer.avatarUrl)
-              : profileImageRouteGenerator(props.freelancer.username)
+            props.user.avatarUrl
+              ? assetURLBuilder(props.user.avatarUrl)
+              : profileImageRouteGenerator(props.user.username)
           }
           size="md"
           radius="xl"
         />
         <div className="flex flex-col ml-2">
           <h2 className="text-base font-semibold">
-            {props.freelancer.name}
-            {props.freelancer.verified ? (
+            {props.user.name}
+            {props.user.verified ? (
               <Tooltip label="Verified User" withArrow>
                 <Badge
                   color="green"
@@ -125,12 +121,12 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
             })}
           >
             <a
-              href={`/profile/${props.freelancer.username}`}
+              href={`/profile/${props.user.username}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-500 hover:underline"
             >
-              @{props.freelancer.username}
+              @{props.user.username}
             </a>
           </Text>
         </div>
@@ -142,9 +138,9 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
             </Link>
           </Badge>
           <div className="flex flex-row gap-2 items-center justify-center flex-wrap my-4">
-            {props.tags.map((t, index) => (
-              <Badge variant="light" key={index} color="green">
-                <a href={`/search?tag=${t}&tab=services`}>#{t}</a>
+            {props.tags?.map((t) => (
+              <Badge variant="light" key={t.id} color="green">
+                <a href={`/services/tags/${t.slug}`}>#{t.name}</a>
               </Badge>
             ))}
           </div>
@@ -152,31 +148,36 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
         <Divider orientation="horizontal" className={clsx("w-full my-4")} />
         {props.images.length > 0 ? (
           <Carousel
-            slideSize="70%"
-            height={200}
-            slideGap="lg"
-            controlsOffset="xs"
-            withIndicators
-            breakpoints={[
-              { maxWidth: "md", slideSize: "50%" },
-              { maxWidth: "sm", slideSize: "100%", slideGap: 0 },
-            ]}
+            centerMode
+            dynamicHeight
+            emulateTouch
+            useKeyboardArrows
+            showArrows
+            showThumbs={false}
+            swipeable
           >
             {props.images.map((i) => (
-              <Carousel.Slide key={assetURLBuilder(i)}>
-                <Image
-                  src={assetURLBuilder(i)}
-                  alt="Image"
-                  className="cursor-pointer"
-                  classNames={{
-                    image:
-                      "min-w-[140px] min-h-[140px] max-w-full min-h-full  object-contain w-full",
-                  }}
-                  onClick={() => {
-                    window.open(assetURLBuilder(i));
-                  }}
-                />
-              </Carousel.Slide>
+              <div key={assetURLBuilder(i)}>
+                {i.endsWith(".mp4") ? (
+                  <video
+                    src={assetURLBuilder(i)}
+                    className="cursor-pointer my-6"
+                    controls
+                    onClick={() => {
+                      window.open(assetURLBuilder(i));
+                    }}
+                  />
+                ) : (
+                  <Image
+                    src={assetURLBuilder(i)}
+                    alt="Image"
+                    className="cursor-pointer"
+                    onClick={() => {
+                      window.open(assetURLBuilder(i));
+                    }}
+                  />
+                )}
+              </div>
             ))}
           </Carousel>
         ) : null}
@@ -203,7 +204,7 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
         <thead>
           <tr>
             <th>Package</th>
-            {props.Package.map((p) => (
+            {props.package.map((p) => (
               <th key={p.id}>{upperFirst(p.name)}</th>
             ))}
           </tr>
@@ -211,22 +212,21 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
         <tbody>
           <tr>
             <td>Description</td>
-            {props.Package.map((p) => (
+            {props.package.map((p) => (
               <td key={p.id}>{p.description || "Not Provided"}</td>
             ))}
           </tr>
           <tr>
             <td>Delivery</td>
-            {props.Package.map((p) => (
+            {props.package.map((p) => (
               <td key={p.id}>
                 {p.deliveryDays} {p.deliveryDays > 1 ? "Days" : "Day"}
               </td>
             ))}
           </tr>
-          {/* map over the "features" array provided in "Package".features and then check if includedIn has package name, if yes render true else false */}
           <tr>
             <td>Features</td>
-            {props.Package.map((p) => (
+            {props.package.map((p) => (
               <td key={p.id}>
                 {p.features.map((f) => (
                   <div key={f.id}>
@@ -248,7 +248,7 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
           </tr>
           <tr>
             <td>Price</td>
-            {props.Package.map((p) => (
+            {props.package.map((p) => (
               <td key={p.id}>
                 <span className="font-semibold text-[18px]">${p.price}</span>
               </td>
@@ -256,13 +256,13 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
           </tr>
           <tr>
             <td>Actions</td>
-            {props.Package.map((p) => (
+            {props.package.map((p) => (
               <td key={p.id}>
                 <Button
                   variant="default"
                   size="sm"
                   fullWidth
-                  disabled={username === props.freelancer.username}
+                  disabled={username === props.user.username}
                   onClick={() => {
                     openModal({
                       title: "Confirm Payment",
@@ -273,8 +273,7 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                           })}
                         >
                           <Text>
-                            Are you sure you want to hire{" "}
-                            {props.freelancer.name}?{" "}
+                            Are you sure you want to hire {props.user.name}?{" "}
                           </Text>
                           <Text>
                             You will be charged ${p.price} for this package.
@@ -312,7 +311,7 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                                               {
                                                 packageId: p.id,
                                                 sellerUsername:
-                                                  props.freelancer.username,
+                                                  props.user.username,
                                                 discountCode:
                                                   ref.current?.value,
                                               },
@@ -480,7 +479,7 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                                     URLBuilder("/order/create"),
                                     {
                                       packageId: p.id,
-                                      sellerUsername: props.freelancer.username,
+                                      sellerUsername: props.user.username,
                                     },
                                     {
                                       headers: {
@@ -623,6 +622,7 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                       "bg-gray-900 hover:bg-black ": colorScheme === "light",
                       "bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] ":
                         colorScheme === "dark",
+                      "cursor-not-allowed": username === props.user.username,
                     }
                   )}
                 >
@@ -645,12 +645,11 @@ export default Service;
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const data = await (await fetch(URLBuilder("/static/services"))).json();
-  console.log(data);
   return {
     fallback: "blocking",
     paths: data.map((g: any) => ({
       params: {
-        username: g.freelancer.username,
+        username: g.user.username,
         slug: g.slug,
       },
     })),

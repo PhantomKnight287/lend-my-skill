@@ -1,0 +1,37 @@
+# Categories
+
+The routes will be used to fetch or create categories.
+
+## Fetching all categories
+
+`GET /categories`
+
+Response
+
+```json
+[
+  {
+    "name": "Category 1",
+    "id": 1
+  }
+]
+```
+
+The key can be used for react keys.
+
+## Creating a category
+
+`POST /categories/create`
+
+Request
+
+```json
+{
+  "name": "Category 1"
+}
+```
+
+Response
+```
+Category created successfully
+```

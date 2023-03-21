@@ -10,7 +10,7 @@ interface UserContextType {
     name: string;
     username: string;
     avatarUrl?: string;
-    userType?: "client" | "freelancer";
+    userType?: "Client" | "Freelancer";
     profileCompleted?: boolean;
   };
   setUser: (action: {
@@ -47,7 +47,7 @@ export const UserProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
     id: "",
     name: "",
     username: "",
-    userType: "",
+    role: "",
     profileCompleted: false,
   });
   return (
@@ -56,3 +56,5 @@ export const UserProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
     </UserContext.Provider>
   );
 };
+
+UserProvider.displayName = "UserProvider";

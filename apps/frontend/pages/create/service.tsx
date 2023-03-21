@@ -49,13 +49,7 @@ import { useUser } from "@hooks/user";
 import Editor from "@components/editor";
 import { DELIVERY_DAYS } from "~/constants";
 import { createService } from "../../services/services.service";
-
-export const AnswerType= {
-  TEXT: 'TEXT',
-  MULTIPLE_CHOICE: 'MULTIPLE_CHOICE',
-  ATTACHMENT: 'ATTACHMENT'
-};
-
+import { AnswerType } from "~/types/answer";
 
 function CreateService() {
   const formState = useForm<{
@@ -74,6 +68,7 @@ function CreateService() {
       type: keyof typeof AnswerType;
       required: boolean;
     }[];
+    tags: string[];
   }>({
     initialValues: {
       title: "I will ",
@@ -91,10 +86,11 @@ function CreateService() {
       questions: [
         {
           question: "",
-          type:"TEXT",
+          type: "TEXT",
           required: false,
         },
       ],
+      tags: [],
     },
     validateInputOnBlur: true,
     validate: {
@@ -181,7 +177,9 @@ function CreateService() {
         icon: <IconX />,
       });
     }
-    const upload = await uploadFile(bannerImage, token).catch((err) => null);
+    const upload = await uploadFile(bannerImage, token, "bannerImage").catch(
+      (err) => null
+    );
     if (upload === null) {
       setLoadingVisible(false);
       return showNotification({
@@ -194,7 +192,9 @@ function CreateService() {
     const { path: bannerImagePath } = upload.data;
     let imagePaths: string[] = [];
     if (images.length > 0) {
-      const uploads = await uploadFiles(images, token).catch((err) => null);
+      const uploads = await uploadFiles(images, token, "serviceImages").catch(
+        (err) => null
+      );
       if (uploads === null) {
         setLoadingVisible(false);
         return showNotification({
@@ -217,7 +217,7 @@ function CreateService() {
           price: Number(p.price),
         })),
         questions: values.questions!,
-        tags: tags.map((tag) => tag.value),
+        tags: values.tags,
         title: values.title,
         images: imagePaths,
       },
@@ -234,6 +234,22 @@ function CreateService() {
         setLoadingVisible(false);
       });
   };
+
+  const {
+    data: tagsData,
+    isLoading: tagsLoading,
+    refetch: tagsRefetch,
+  } = useQuery<{ id: string; name: string }[]>({
+    queryKey: ["tags"],
+    queryFn: async () => {
+      const res = await axios.get(URLBuilder("/tags"));
+      return res.data;
+    },
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: true,
+  });
+
   return (
     <>
       <MetaTags
@@ -282,6 +298,7 @@ function CreateService() {
                   }),
                 }}
                 completedIcon={<IconCheck />}
+                orientation="horizontal"
               >
                 <Stepper.Step label="Overview" allowStepSelect={active > 0}>
                   <Paper radius={"md"} p="xl" className={clsx("max-w-3xl ")}>
@@ -291,7 +308,7 @@ function CreateService() {
                           required
                           id="title"
                           labelString="Title"
-                          placeholder="Enter the title of your job post"
+                          placeholder="Enter the title of your service"
                           labelProps={{
                             className: clsx({
                               [outfit.className]: true,
@@ -305,7 +322,7 @@ function CreateService() {
                           maxLength={1000}
                           wordsComponent={
                             <span
-                              className={clsx("text-sm ml-auto pr-3 my-2", {
+                              className={clsx("text-sm ml-auto pr-3 my-2 ", {
                                 "text-[#6c757d]":
                                   formState.values.title.length < 20,
                                 "text-[#28a745]":
@@ -374,13 +391,21 @@ function CreateService() {
                                 });
                                 setLoading(false);
                               });
-                              return null
+                            return null;
                           }}
                         />
                       </div>
                       <MultiSelect
                         mt="md"
-                        data={tags}
+                        data={
+                          tagsData
+                            ? tagsData.map((d) => ({
+                                value: d.id,
+                                label: d.name,
+                              }))
+                            : []
+                        }
+                        {...formState.getInputProps("tags")}
                         label="Tags"
                         labelProps={{
                           className: clsx("text-sm font-bold ", {
@@ -394,14 +419,46 @@ function CreateService() {
                         creatable={tags.length < 5}
                         getCreateLabel={(query) => `+ Create ${query}`}
                         onCreate={(query) => {
-                          const item = { value: query, label: query };
-                          setTags((current) => [...current, item]);
-                          return item;
+                          setLoading(true);
+                          axios
+                            .post(
+                              URLBuilder(`/tags/create`),
+                              {
+                                name: query,
+                              },
+                              {
+                                headers: {
+                                  authorization: `Bearer ${readCookie(
+                                    "token"
+                                  )}`,
+                                },
+                              }
+                            )
+                            .then((d) =>
+                              tagsRefetch().then(() => setLoading(false))
+                            )
+                            .catch((err) => {
+                              showNotification({
+                                color: "red",
+                                message:
+                                  err?.response?.data?.message ||
+                                  "An error occured",
+                              });
+                            });
+                          setLoading(false);
+                          return null;
                         }}
                         maxSelectedValues={5}
+                        classNames={{
+                          input: "focus:outline-none",
+                        }}
                       />
                       <Group position="center" mt="xl">
-                        <Button variant="default" disabled>
+                        <Button
+                          variant="default"
+                          disabled
+                          className="cursor-not-allowed"
+                        >
                           Back
                         </Button>
                         <NextButton />
@@ -419,6 +476,10 @@ function CreateService() {
                     >
                       List the features of your Service.
                     </Text>
+                    <span className="text-sm text-[#6c757d]">
+                      You&apos;ll be asked to choose the features that are
+                      included in your service
+                    </span>
                     <div className="mt-5 w-full">
                       {features.map((feature, id) => (
                         <div
@@ -565,7 +626,7 @@ function CreateService() {
                               `packages.${index}.deliveryDays`
                             )}
                             required
-                            data={DELIVERY_DAYS}
+                            data={DELIVERY_DAYS as any}
                             placeholder="Select an Option"
                           />
                           <Text
@@ -678,101 +739,6 @@ function CreateService() {
                     setActive={setActive}
                   />
                 </Stepper.Step>
-                <Stepper.Step label="Requirements">
-                  <Text
-                    align="center"
-                    className={clsx("text-lg font-bold", {
-                      [outfit.className]: true,
-                      "text-black": theme === "light",
-                    })}
-                  >
-                    These questions will be asked to your client before they
-                    hire you.
-                  </Text>
-                  <div className="flex flex-col gap-4 mt-8">
-                    {formState.values.questions?.map((q, i) => (
-                      <div className="flex flex-row items-center justify-center gap-4" key={i} >
-                        <T
-                          placeholder="Question"
-                          required
-                          spellCheck={false}
-                          {...formState.getInputProps(
-                            `questions.${i}.question`
-                          )}
-                        />
-                        <Select
-                          required
-                          label="Type"
-                          data={[
-                            { label: "Text", value: AnswerType.TEXT },
-                            {
-                              label: "Attachments",
-                              value: AnswerType.ATTACHMENT,
-                            },
-                          ]}
-                          {...formState.getInputProps(`questions.${i}.type`)}
-                        />
-                        <Select
-                          label="Required"
-                          placeholder="Is this question required?"
-                          required
-                          data={[
-                            { label: "Yes", value: true },
-                            { label: "No", value: false },
-                          ]}
-                          {...formState.getInputProps(
-                            `questions.${i}.required`
-                          )}
-                        />
-
-                        <Button
-                          onClick={() => {
-                            formState.removeListItem("questions", i);
-                          }}
-                          variant="filled"
-                          className={clsx("bg-red-500 hover:bg-red-500/90")}
-                        >
-                          <IconTrash />
-                        </Button>
-                      </div>
-                    ))}
-                    <Group position="center" className="mt-4">
-                      <Button
-                        onClick={() => {
-                          setActive((o) => o - 1);
-                        }}
-                        variant="filled"
-                        className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
-                      >
-                        Back
-                      </Button>
-
-                      <Button
-                        onClick={() => {
-                          formState.insertListItem("questions", {
-                            question: "",
-                            type: AnswerType.TEXT,
-                          });
-                        }}
-                        variant="filled"
-                        className={clsx(
-                          "bg-purple-600 hover:bg-purple-700 max-w-fit"
-                        )}
-                      >
-                        Add question
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          setActive((o) => o + 1);
-                        }}
-                        variant="filled"
-                        className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
-                      >
-                        Next Step
-                      </Button>
-                    </Group>
-                  </div>
-                </Stepper.Step>
                 <Stepper.Step label={"Assets"}>
                   <Text
                     align="center"
@@ -781,8 +747,8 @@ function CreateService() {
                       "text-black": theme === "light",
                     })}
                   >
-                    Add some images to your service to make it more appealing and
-                    stand out.
+                    Add some images to your service to make it more appealing
+                    and stand out.
                   </Text>
                   <div className="flex flex-row gap-5 flex-wrap">
                     <FileButton
@@ -809,6 +775,7 @@ function CreateService() {
                                 classNames={{
                                   image: "object-cover  rounded-md",
                                 }}
+                                alt="Banner image"
                               />
                               <span
                                 className={clsx("text-sm  cursor-pointer", {
@@ -863,6 +830,7 @@ function CreateService() {
                             classNames={{
                               image: "object-cover  rounded-md",
                             }}
+                            alt="Image"
                           />
                           <div className="absolute top-0 right-0">
                             <Button

@@ -7,8 +7,8 @@ import { useUser } from "@hooks/user";
 import {
   Avatar,
   Badge,
-  Chip,
   Divider,
+  Image,
   SimpleGrid,
   Text,
   Tooltip,
@@ -25,7 +25,7 @@ import {
 } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import { Carousel } from "react-responsive-carousel";
 import { JobPost } from "~/types/jobpost";
 
 const Slug: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
@@ -39,6 +39,7 @@ const Slug: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
       className={clsx("", {
         [outfit.className]: true,
       })}
+      mb="xl"
     >
       <MetaTags
         title={`${props.title} | ${props.author.name} | Lend My Skill`}
@@ -65,13 +66,13 @@ const Slug: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
             </span>
           </div>
         )}
-        {props.claimed ? (
+        {/* {props.claimed ? (
           <div className="mt-2">
             <Tooltip label={`This Post is claimed by ${props.claimedBy.name}`}>
               <Badge color="green">Claimed</Badge>
             </Tooltip>
           </div>
-        ) : null}
+        ) : null} */}
         <div className="flex flex-row flex-wrap items-center mt-2 justify-center">
           <Avatar
             src={
@@ -109,7 +110,7 @@ const Slug: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                 href={`/profile/${props.author.username}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-500 hover:underline"
+                className="text-blue-500 hover:underline  leading-3"
               >
                 @{props.author.username}
               </a>
@@ -119,14 +120,14 @@ const Slug: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
         <div className="flex flex-col items-center justify-center w-full">
           <Divider orientation="horizontal" className={clsx("w-full my-4")} />
           <Badge key={props.category.id}>
-            <Link href={`/category/${props.category.slug}`}>
+            <Link href={`/c/${props.category.slug}`}>
               {props.category.name}
             </Link>
           </Badge>
-          <div className="flex flex-row gap-2 items-center justify-center flex-wrap mt-2">
+          <div className="flex flex-row gap-2  items-center justify-center flex-wrap mt-4">
             {props.tags.map((t, index) => (
               <Badge variant="light" key={index} color="green">
-                <a href={`/search?tag=${t}&tab=posts`}>#{t}</a>
+                <a href={`/t/${t.slug}`}>#{t.name}</a>
               </Badge>
             ))}
           </div>
@@ -138,35 +139,54 @@ const Slug: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
 
         <div className="flex flex-col flex-wrap gap-2 items-center justify-center">
           {props.images.length > 0 ? (
-            <h2 className="text-xl font-semibold">Attached Images</h2>
+            <>
+              <h2 className="text-xl font-semibold">Attached Images</h2>
+              <Carousel
+                centerMode
+                dynamicHeight
+                emulateTouch
+                useKeyboardArrows
+                showArrows
+                showThumbs={false}
+                swipeable
+              >
+                {props.images.map((i) => (
+                  <div key={assetURLBuilder(i)}>
+                    {i.endsWith(".mp4") ? (
+                      <video
+                        src={assetURLBuilder(i)}
+                        className="cursor-pointer my-6"
+                        controls
+                        onClick={() => {
+                          window.open(assetURLBuilder(i));
+                        }}
+                      />
+                    ) : (
+                      <Image
+                        src={assetURLBuilder(i)}
+                        alt="Image"
+                        className="cursor-pointer"
+                        onClick={() => {
+                          window.open(assetURLBuilder(i));
+                        }}
+                      />
+                    )}
+                  </div>
+                ))}
+              </Carousel>
+            </>
           ) : null}
-          <SimpleGrid
-            cols={3}
-            spacing="xs"
-            verticalSpacing="lg"
-            className="h-max"
-            breakpoints={[
-              { minWidth: "sm", cols: 2 },
-              { minWidth: "md", cols: 3 },
-            ]}
-          >
-            {props.images.map((i, index) => (
-              <img
-                key={index}
-                src={assetURLBuilder(i)}
-                alt="Attached Image"
-                className="w-1/2 rounded-md cursor-pointer"
-                onClick={() => window.open(assetURLBuilder(i))}
-              />
-            ))}
-          </SimpleGrid>
-          <Divider orientation="horizontal" className={clsx("w-full my-4")} />
         </div>
-        <h3 className="text-center text-xl font-bold">Quotations</h3>
-        <Quotations
-          slug={query.slug as string}
-          username={query.username as string}
-        />
+        {"quotations" in props ? (
+          <>
+            <Divider orientation="horizontal" className={clsx("w-full my-4")} />
+            <h3 className="text-center text-xl font-bold">Quotations</h3>
+            <Quotations
+              slug={query.slug as string}
+              username={query.username as string}
+            />
+          </>
+        ) : null}
       </div>
     </Container>
   );
@@ -198,7 +218,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<JobPost> = async ({ params }) => {
   const username = params!.username;
   const slug = params!.slug;
-  const data = await fetch(URLBuilder(`/jobpost/${username}/${slug}`));
+  const data = await fetch(URLBuilder(`/job-post/${username}/${slug}`));
   if (!data.ok) {
     return {
       notFound: true,

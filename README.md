@@ -4,10 +4,8 @@
 
 <h1 align="center">
  Lend My Skill <br/><br/>
-  India's First Freelance Platform
+  India's First Open source Freelance Platform
 </h1>
-
-
 
 A Freelance platform designed specially for Indians supporting payment methods like `Rupay Card` and `UPI`.
 
@@ -22,14 +20,11 @@ A Freelance platform designed specially for Indians supporting payment methods l
 - [Contributors](#contributors-)
 - [License](#license)
 
-
-
 # Features
 
 - **Open Source** - This project is completely open source and you can contribute to it.
 
 - **Payment Methods** - We are first in India to support payment methods like `Rupay Card` and `UPI`.
-
 
 # Stack
 
@@ -39,8 +34,8 @@ A Freelance platform designed specially for Indians supporting payment methods l
 | Backend     | ![Nestjs](https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=nestjs&logoColor=white) ![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white) ![Postgresql](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white) ![Supabase](https://img.shields.io/badge/Supabase-181818?style=for-the-badge&logo=supabase&logoColor=white) ![Socketio](https://img.shields.io/badge/Socket.io-010101?&style=for-the-badge&logo=Socket.io&logoColor=white) |
 | Mobile Apps | ![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 
-
 # Flow Chart of Application
+
 This is a rough flowchart of the application, it is not complete and will be updated as the project progresses.
 
 ![Flow Chart](./assets/flowchart.png)
@@ -49,13 +44,11 @@ This is a rough flowchart of the application, it is not complete and will be upd
 
 Thanks for thinking about contributing to this project, please read [Contribution Instructions](/CONTRIBUTING.md). It has all the required instructions to start this project locally. If you encounter some errors please let me know by creating an issue.
 
-
 # Contributors ✨
 
 <a href="https://github.com/phantomknight287/lend-my-skill/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=phantomknight287/lend-my-skill" />
 </a>
-
 
 # License
 

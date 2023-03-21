@@ -1,0 +1,11 @@
+{
+  "index": "Introduction",
+  "authentication": "Authentication",
+  "upload": "Upload",
+  "profile": "Profile",
+  "service": "Service",
+  "jobpost": "Job Post",
+  "categories": "Categories",
+  "tags": "Tags",
+  "static": "Static"
+}
