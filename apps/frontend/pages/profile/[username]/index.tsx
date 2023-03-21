@@ -11,6 +11,7 @@ import {
   Paper,
   Rating,
   Tabs,
+  Title,
   useMantineColorScheme,
 } from "@mantine/core";
 import {
@@ -115,7 +116,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                   ? assetURLBuilder(props.avatarUrl)
                   : profileImageRouteGenerator(props.username)
               }
-              className="rounded-full w-32 h-32 mt-[-90px]"
+              className="rounded-full w-32 h-32 mt-[-90px] border-8 border-[#e0f3ff]"
               draggable={false}
             />
             <div className="flex flex-col items-center justify-center w-full">
@@ -178,10 +179,18 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
           </div>
         </Paper>
       </div>
-      <Container>
+      <Container mb="xl" >
         {props.role === "Freelancer" ? (
-          <ServicesTab username={props.username} />
-        ) : null}
+          <>
+            <Title align="center" className={clsx(outfit.className)} >Services</Title>
+            <ServicesTab username={props.username} />
+          </>
+        ) : (
+          <>
+            <Title align="center" className={clsx(outfit.className)} >Jobs</Title>
+            <JobPosts username={props.username} />
+          </>
+        )}
       </Container>
     </div>
   );
