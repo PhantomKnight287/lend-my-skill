@@ -13,4 +13,8 @@ export class StaticController {
   async getServices() {
     return await this.staticService.getStaticServices();
   }
+  @Get('job-posts')
+  async getJobPosts() {
+    return await this.staticService.getStaticJobPosts();
+  }
 }
