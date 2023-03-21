@@ -1,18 +1,19 @@
 {
   "expo": {
-    "name": "Lend My Skill",
-    "slug": "lms",
+    "name": "mobile",
+    "slug": "mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "lendmyskill",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -23,8 +24,7 @@
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png",
-      "bundler": "metro"
+      "favicon": "./assets/favicon.png"
     }
   }
 }
