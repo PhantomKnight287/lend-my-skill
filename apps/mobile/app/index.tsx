@@ -7,7 +7,10 @@ export default function Page() {
       <View style={styles.main}>
         <Text style={styles.title}>Hello World</Text>
         <Text style={styles.subtitle}>This is the first page of your app.</Text>
-        <Link href={"/test"}>Test</Link>
+        <View style={styles.links}>
+          <Link href={"/test"}>Test</Link>
+          <Link href={"/login"}>Login</Link>
+        </View>
       </View>
     </View>
   );
@@ -26,11 +29,17 @@ const styles = StyleSheet.create({
     marginHorizontal: "auto",
   },
   title: {
-    fontSize: 64,
+    fontSize: 32,
     fontWeight: "bold",
   },
   subtitle: {
-    fontSize: 36,
+    fontSize: 20,
     color: "#38434D",
+  },
+  links: {
+    marginVertical: 20,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
   },
 });
