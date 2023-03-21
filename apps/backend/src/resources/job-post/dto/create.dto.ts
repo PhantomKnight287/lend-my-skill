@@ -22,6 +22,7 @@ export class CreateJobPostDTO {
   price: number;
 
   @IsArray({ each: true })
+  @MaxLength(5)
   tags: string[];
 
   @IsString()
