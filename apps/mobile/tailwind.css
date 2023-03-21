@@ -1,0 +1,17 @@
+.flex {
+  display: flex
+}
+
+.flex-1 {
+  flex: 1 1 0%
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem
+}
+
+.text-blue-600 {
+  --tw-text-opacity: 1;
+  color: rgb(37 99 235 / var(--tw-text-opacity))
+}
