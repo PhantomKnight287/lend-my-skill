@@ -1,7 +1,14 @@
 import {
+  Avatar,
+  Badge,
   Button,
+  Divider,
+  Group,
+  Image,
   LoadingOverlay,
   Paper,
+  SimpleGrid,
+  Text,
   useMantineColorScheme,
 } from "@mantine/core";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -12,7 +19,8 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import clsx from "clsx";
 import Link from "next/link";
-import { outfit } from "@fonts";
+import { outfit, sen } from "@fonts";
+import { IconStar } from "@tabler/icons";
 
 dayjs.extend(relativeTime);
 
@@ -30,28 +38,37 @@ const JobPosts = ({ username }: Props) => {
     isFetchingNextPage,
     isFetching,
   } = useInfiniteQuery<{
-    posts: {
-      id: string;
+    posts: Array<{
       author: {
-        id: string;
-        username: string;
         name: string;
-        country: string;
+        verified: boolean;
         avatarUrl: string;
+        username: string;
       };
-      createdAt: string;
-      description: string;
       budget: number;
+      category: {
+        name: string;
+        slug: string;
+      };
+      deadline: string;
+      description: string;
+      images: Array<any>;
+      slug: string;
       title: string;
-      tags: string[];
-      slug: true;
-    }[];
+      tags: Array<{
+        name: string;
+        slug: string;
+        id: string;
+      }>;
+      createdAt: string;
+      id: string;
+    }>;
     next?: number;
   }>({
     queryKey: ["job-posts", username],
     queryFn: async ({ pageParam = 10 }) => {
       const res = await fetch(
-        URLBuilder(`/jobpost/${username}?take=${pageParam}`)
+        URLBuilder(`/job-post/${username}?take=${pageParam}`)
       );
       return await res.json();
     },
@@ -62,54 +79,77 @@ const JobPosts = ({ username }: Props) => {
     <div className={clsx("container")}>
       <LoadingOverlay visible={isLoading} overlayBlur={2} />
       {data?.pages.map((page, index) => (
-        <Fragment key={index}>
+        <SimpleGrid
+          key={index}
+          cols={3}
+          verticalSpacing="lg"
+          breakpoints={[
+            { maxWidth: 980, cols: 3, spacing: "md" },
+            { maxWidth: 755, cols: 2, spacing: "sm" },
+            { maxWidth: 600, cols: 1, spacing: "sm" },
+          ]}
+        >
           {page.posts?.map((post) => (
-            <div key={post.id} className="flex flex-col">
-              <Paper
-                withBorder
-                radius="md"
-                p="md"
-                my="sm"
-                className={clsx("cursor-pointer")}
-                component={Link}
-                href={`/profile/${username}/post/${post.slug}`}
-              >
-                <div className="flex flex-row ">
-                  <div className="flex flex-row items-center">
-                    <img
-                      src={
-                        post.author.avatarUrl
-                          ? assetURLBuilder(post.author.avatarUrl)
-                          : profileImageRouteGenerator(post.author.username)
-                      }
-                      className="w-10 h-10 rounded-full"
-                      alt="avatar"
-                    />
-                    <div className="flex flex-col ml-2">
-                      <span className="font-bold">{post.title}</span>
-                      <span className="text-gray-500 text-sm">
-                        @{post.author.username}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex flex-row items-center ml-auto">
-                    <span className={clsx("text-gray-500 text-sm ml-4")}>
-                      {dayjs(post.createdAt).fromNow()}
-                    </span>
-                  </div>
+            <Paper key={post.id} withBorder shadow={"md"} radius="md">
+              <Group position="left" mt="md" pl="md">
+                <div>
+                  <Avatar
+                    size="md"
+                    src={
+                      post.author.avatarUrl
+                        ? assetURLBuilder(post.author.avatarUrl)
+                        : profileImageRouteGenerator(post.author.username)
+                    }
+                    radius="xl"
+                  />
                 </div>
-                <div className="flex flex-row mt-2">
-                  <span
-                    className="text-gray-500 text-sm "
-                    style={{ lineClamp: 2 }}
+                <div className="flex flex-col">
+                  <Text size="md" className={clsx(sen.className, "mb-0")}>
+                    {post.author.name}
+                  </Text>
+
+                  <Text
+                    size="xs"
+                    className={clsx(sen.className, "mt-0 leading-3")}
                   >
-                    {post.description}
-                  </span>
+                    @{post.author.username}{" "}
+                  </Text>
                 </div>
-              </Paper>
-            </div>
+              </Group>
+              <Group p="md">
+                <Link
+                  href={`/profile/${username}/post/${post.slug}`}
+                  className="hover:text-white"
+                >
+                  {post.title}
+                </Link>
+              </Group>
+              {post?.tags?.length > 0 ? (
+                <>
+                  <Divider />
+                  <Group position="apart">
+                    <div className="flex flex-col p-2 ">
+                      <Text size="xs" className={clsx(sen.className)}>
+                        {post.tags.map((tag) => (
+                          <Badge
+                            key={tag.id}
+                            className="mx-1 my-1 bg-yellow-400 capitalize "
+                          >
+                            <Link href={`/t/${tag.slug}`}>
+                              <span className="text-black text-xs">
+                                # {tag.name}{" "}
+                              </span>
+                            </Link>
+                          </Badge>
+                        ))}
+                      </Text>
+                    </div>
+                  </Group>
+                </>
+              ) : null}
+            </Paper>
           ))}
-        </Fragment>
+        </SimpleGrid>
       ))}
       <div>
         {isFetchingNextPage ? (
@@ -132,10 +172,11 @@ const JobPosts = ({ username }: Props) => {
         ) : null}
       </div>
       <div>{isFetching && !isFetchingNextPage ? "Fetching..." : null}</div>
-      {data?.pages[0].posts.length === 0 && (
+      {data?.pages?.[0]?.posts?.length === 0 && (
         <div className="flex flex-col items-center justify-center w-[100%] container">
           <p>
-            <span className="font-bold">{username}</span> has not posted any job
+            <span className="font-bold">{username}</span> has not posted any
+            post
             <p className="opacity-0">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum,
               perspiciatis velit. Magni, error reprehenderit quidem provident
