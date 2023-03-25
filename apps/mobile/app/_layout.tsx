@@ -15,6 +15,7 @@ import {
   Outfit_900Black,
   useFonts,
 } from "@expo-google-fonts/outfit";
+import { ThemeProvider } from "@rneui/themed";
 
 preventAutoHideAsync();
 
@@ -40,8 +41,8 @@ export default function Layout() {
   }
   return (
     <SafeAreaProvider>
-      <View onLayout={onLayoutRootView} style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={{ flex: 1 }}>
+      <ThemeProvider>
+        <View onLayout={onLayoutRootView} style={{ flex: 1 }}>
           <SafeAreaHandler>
             <Stack
               screenOptions={{
@@ -49,8 +50,8 @@ export default function Layout() {
               }}
             />
           </SafeAreaHandler>
-        </ScrollView>
-      </View>
+        </View>
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }
