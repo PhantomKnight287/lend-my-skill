@@ -68,7 +68,7 @@ const JobPosts = ({ username }: Props) => {
     queryKey: ["job-posts", username],
     queryFn: async ({ pageParam = 10 }) => {
       const res = await fetch(
-        URLBuilder(`/job-post/${username}?take=${pageParam}`)
+        URLBuilder(`/job-post/user/${username}?take=${pageParam}`)
       );
       return await res.json();
     },
@@ -118,7 +118,7 @@ const JobPosts = ({ username }: Props) => {
               </Group>
               <Group p="md">
                 <Link
-                  href={`/profile/${username}/post/${post.slug}`}
+                  href={`/post/${post.slug}`}
                   className="hover:text-white"
                 >
                   {post.title}
