@@ -9,7 +9,6 @@
 
 A Freelance platform designed specially for Indians supporting payment methods like `Rupay Card` and `UPI`.
 
-> Work on this project is stopped for now, it will be continued once my exams end(23 March).
 
 # Table of Contents
 
@@ -32,8 +31,7 @@ A Freelance platform designed specially for Indians supporting payment methods l
 | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Web         | ![Nextjs](https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white) ![TS](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white) ![Tailwindcss](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)                                                                                                                                                                                                               |
 | Backend     | ![Nestjs](https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=nestjs&logoColor=white) ![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white) ![Postgresql](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white) ![Supabase](https://img.shields.io/badge/Supabase-181818?style=for-the-badge&logo=supabase&logoColor=white) ![Socketio](https://img.shields.io/badge/Socket.io-010101?&style=for-the-badge&logo=Socket.io&logoColor=white) |
-| Mobile Apps | ![React Native](https://img.shields.io/badge/React%20Native-484d5b?style=for-the-badge&logo=React&logoColor=61dafb)                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-
+| Mobile Apps | ![React Native](https://img.shields.io/badge/React%20Native-484d5b?style=for-the-badge&logo=React&logoColor=61dafb)                                                                                                                                                                                                                                                                                                                                                                                                                                
 # Flow Chart of Application
 
 This is a rough flowchart of the application, it is not complete and will be updated as the project progresses.
@@ -41,6 +39,8 @@ This is a rough flowchart of the application, it is not complete and will be upd
 ![Flow Chart](./assets/flowchart.png)
 
 # Contributing
+
+All the new commits are pushed to `development` branch. If you want to contribute to this project, please create a new branch from `development` branch and create a pull request to `development` branch.
 
 Thanks for thinking about contributing to this project, please read [Contribution Instructions](/CONTRIBUTING.md). It has all the required instructions to start this project locally. If you encounter some errors please let me know by creating an issue.
 
