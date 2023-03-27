@@ -43,16 +43,10 @@ export class JobPostService {
     });
     return post;
   }
-  async getJobPost(username: string, slug: string) {
+  async getJobPost(slug: string) {
     const post = await this.p.jobPost.findFirst({
       where: {
         slug,
-        author: {
-          username: {
-            equals: username,
-            mode: 'insensitive',
-          },
-        },
       },
       select: {
         author: {
@@ -142,8 +136,65 @@ export class JobPostService {
         createdAt: true,
         id: true,
       },
+      take: toTake,
+      skip: toTake > 10 ? toTake - 10 : undefined,
+      orderBy: [
+        {
+          createdAt: 'desc',
+        },
+      ],
     });
     if (!posts) throw new HttpException('No posts found for this user.', 404);
+    if (posts.length === 10) {
+      return {
+        posts,
+        next: toTake + 10,
+      };
+    }
+    return { posts };
+  }
+  async getAllJobPosts(take?: string) {
+    const toTake = Number.isNaN(Number(take)) ? 10 : Number(take);
+    const posts = await this.p.jobPost.findMany({
+      select: {
+        author: {
+          select: {
+            name: true,
+            verified: true,
+            avatarUrl: true,
+            username: true,
+          },
+        },
+        budget: true,
+        category: {
+          select: {
+            name: true,
+            slug: true,
+          },
+        },
+        deadline: true,
+        description: true,
+        images: true,
+        slug: true,
+        title: true,
+        tags: {
+          select: {
+            name: true,
+            id: true,
+            slug: true,
+          },
+        },
+        createdAt: true,
+        id: true,
+      },
+      take: toTake,
+      skip: toTake > 10 ? toTake - 10 : undefined,
+      orderBy: [
+        {
+          createdAt: 'desc',
+        },
+      ],
+    });
     if (posts.length === 10) {
       return {
         posts,
