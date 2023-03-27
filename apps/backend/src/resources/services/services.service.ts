@@ -184,4 +184,68 @@ export class ServicesService {
       services: data,
     };
   }
+  async getAllServices(take?: string) {
+    const toTake = Number.isNaN(parseInt(take)) ? 10 : parseInt(take);
+
+    const services = await this.p.service.findMany({
+      select: {
+        category: {
+          select: {
+            name: true,
+            slug: true,
+          },
+        },
+        id: true,
+        slug: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            country: true,
+            avatarUrl: true,
+            verified: true,
+          },
+        },
+        title: true,
+        createdAt: true,
+        description: true,
+        bannerImage: true,
+        package: {
+          select: {
+            price: true,
+          },
+          take: 1,
+          orderBy: [
+            {
+              price: 'asc',
+            },
+          ],
+        },
+        rating: true,
+        tags: {
+          select: {
+            name: true,
+            id: true,
+            slug: true,
+          },
+        },
+        ratedBy: true,
+      },
+      take: toTake,
+      skip: toTake > 10 ? toTake - 10 : undefined,
+      orderBy: [
+        {
+          createdAt: 'desc',
+        },
+      ],
+    });
+    if (services.length === 10) {
+      return {
+        services,
+        next: toTake + 10,
+      };
+    }
+    return { services };
+  }
 }
