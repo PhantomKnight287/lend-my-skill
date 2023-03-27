@@ -81,7 +81,7 @@ The url where you backend is hosted. Set it to `https://localhost:5000` during d
 - `API_URL`
 > The url of the backend. Set this to `http://10.0.2.2:5000` for emulators
 
-> **Info**
+> **Note**
 > You'll need `pnpm` and `yarn` to run commands in this repo. To activate `pnpm` and `yarn` you can use [Corepack](https://github.com/nodejs/corepack#-corepack)
 
 ## Installing Modules
