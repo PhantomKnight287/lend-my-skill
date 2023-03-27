@@ -23,11 +23,9 @@ jobs:
       - name: Setup Pnpm
         run: corepack enable
 
-      - name: Install Dependencies
-        run: pnpm i
+      - name: Run scripts
+        run: sh scripts/ci.sh
 
-      - name: Run Lint
-        run: sh scripts/lint.sh
 
 
   build_docker_images:
