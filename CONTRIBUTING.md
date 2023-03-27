@@ -1,4 +1,4 @@
-# Welcome to Lend My Skill's  Contribuion Guide
+# Welcome to Lend My Skill's  Contribution Guide
 Thanks for investing your precious time to contribute to this repository.
 
 Please read our [Code of Conduct](/CODE_OF_CONDUCT.md) to keep our community approachable and respectable.
