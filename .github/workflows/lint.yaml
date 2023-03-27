@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - development
     paths:
       - "apps/frontend/**"
       - "apps/backend/**"
@@ -31,7 +32,8 @@ jobs:
         run: pnpm i
 
       - name: Run Lint
-        run: pnpm lint
+        run: sh scripts/lint.sh
+
 
   build_docker_images:
     needs:
