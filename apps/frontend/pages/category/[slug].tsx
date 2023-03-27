@@ -130,7 +130,7 @@ const ContentRelatedToCategory: NextPage<
                         my="sm"
                         className={clsx("cursor-pointer")}
                         component={Link}
-                        href={`/profile/${post.author.username}/post/${post.slug}`}
+                        href={`/post/${post.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >

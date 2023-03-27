@@ -225,7 +225,7 @@ function CreateService() {
     )
       .then((d) => d.data)
       .then((d) => {
-        push(`/profile/${username}/service/${d.slug}`);
+        push(`/service/${d.slug}`);
       })
       .catch((err) => {
         console.log(err.response);
