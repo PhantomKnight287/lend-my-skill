@@ -15,6 +15,7 @@ import { AuthService } from './resources/auth/auth.service';
 import { UserMiddleware } from './resources/auth/middleware/auth/auth.middleware';
 import { UpiModule } from './resources/upi/upi.module';
 import { JobPostModule } from './resources/job-post/job-post.module';
+import { SearchModule } from './resources/search/search.module';
 
 @Module({
   controllers: [AppController],
@@ -38,6 +39,7 @@ import { JobPostModule } from './resources/job-post/job-post.module';
     ServicesModule,
     UpiModule,
     JobPostModule,
+    SearchModule,
   ],
   exports: [PrismaService],
 })
