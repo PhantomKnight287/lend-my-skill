@@ -657,10 +657,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps<Service> = async ({ params }) => {
-  const username = params!.username;
   const slug = params!.slug;
 
-  const data = await fetch(URLBuilder(`/services/${username}/${slug}`));
+  const data = await fetch(URLBuilder(`/services/${slug}`));
   if (!data.ok) {
     return {
       notFound: true,
