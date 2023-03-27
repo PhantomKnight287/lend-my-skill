@@ -28,9 +28,9 @@ Response
 }
 ```
 
-## Get Job Post using username and slug
+## Get Job Post using slug
 
-`GET /job-post/:username/:slug`
+`GET /job-post/:slug`
 
 Response
 
@@ -74,7 +74,65 @@ Response
 
 ## Get Job posts of a user using username
 
-`GET /job-post/:username`
+`GET /job-post/user/:username`
+
+Query Params
+
+- `take` - number of services to fetch(optional, defaults to 10)
+
+Response:
+
+```json
+{
+  "posts": [
+    {
+      "title": "title",
+      "description": "description",
+      "tags": [
+        {
+          "id": "id",
+          "slug": "slug",
+          "name": "name"
+        }
+      ],
+      "category": {
+        "id": "string",
+        "slug": "string",
+        "name": "string"
+      },
+      "images": ["string"],
+      "deadline": "Date",
+      "id": "string",
+      "slug": "string",
+      "budget": "number",
+      "createdAt": "Date",
+      "author": {
+        "name": "string",
+        "verified": "boolean",
+        "avatarUrl": "string",
+        "username": "string",
+        "profileCompleted": "boolean"
+      },
+      "claimed": "boolean",
+      "claimedBy": {
+        "username": "string",
+        "name": "string",
+        "avatarUrl": "string"
+      } // null if claimed is false
+    }
+  ],
+  "next": 10 // will not be present if there are no more posts
+}
+```
+
+## Getting all job posts
+
+`GET /job-post`
+
+Query Params
+
+- `take` - number of services to fetch(optional, defaults to 10)
+
 
 Response:
 
