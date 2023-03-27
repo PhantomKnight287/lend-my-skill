@@ -136,7 +136,7 @@ function CreateJobPost() {
           message: "Job Post Created Successfully",
           color: "green",
         });
-        return push(`/profile/${username}/post/${d.slug}`);
+        return push(`/post/${d.slug}`);
       })
       .catch((err) => {
         showNotification({

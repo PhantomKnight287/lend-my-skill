@@ -13,18 +13,20 @@ export class JobPostController {
     return await this.jobPostService.createJobPost(data, user.id);
   }
 
-  @Get(':username/:slug')
-  async getJobPost(
-    @Param('username') username: string,
-    @Param('slug') slug: string,
-  ) {
-    return await this.jobPostService.getJobPost(username, slug);
+  @Get(':slug')
+  async getJobPost(@Param('slug') slug: string) {
+    return await this.jobPostService.getJobPost(slug);
   }
-  @Get(':username')
+  @Get('user/:username')
   async getJobPostsByUsername(
     @Param('username') username: string,
     @Query('take') take?: string,
   ) {
     return await this.jobPostService.getJobPostsByUsername(username, take);
+  }
+
+  @Get()
+  async getAllJobPosts(@Query('take') take?: string) {
+    return await this.jobPostService.getAllJobPosts(take);
   }
 }

@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { assetURLBuilder } from "@utils/url";
 import {
   IconBrandCashapp,
+  IconHome,
   IconLogout,
   IconPhotoCheck,
   IconSearch,
@@ -33,6 +34,14 @@ export default function HeaderMenu() {
           />
         </Menu.Target>
         <Menu.Dropdown>
+          <Menu.Item
+            onClick={() => {
+              push("/dashboard");
+            }}
+            icon={<IconHome size={20} />}
+          >
+            Home
+          </Menu.Item>
           {userType === "Client" ? (
             <Menu.Item
               color="green"

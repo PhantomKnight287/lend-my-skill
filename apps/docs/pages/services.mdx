@@ -41,11 +41,9 @@ Response
 }
 ```
 
-This slug can be used as `/profile/<logged in user's username>/services/<slug>`
+## Fetching a service using its slug
 
-## Fetching a service using its slug and user's username
-
-`GET /services/<username>/slug>`
+`GET /services/<slug>`
 
 Response
 
@@ -198,13 +196,63 @@ Response
 
 ## Fetching Services using username
 
-`GET /services/:username`
+`GET /services/user/:username`
 
 Query Params
 
 - `take` - number of services to fetch(optional, defaults to 10)
 
 Response Body
+
+```json
+{
+  "services": [
+    {
+      "category": {
+        "name": "nodejs",
+        "slug": "nodejs-eYhPK3-4bH"
+      },
+      "id": "clf54kb090002ewisyp1fpb05",
+      "slug": "i-will-just-make-any-site-for-you-uwu-64SU3HZEBL",
+      "user": {
+        "username": "phantomknight287",
+        "avatarUrl": "images/clf40vl0t0000ewroucp805xe-173d5448-7508-49c6-9131-d74ea8f9b7d7-1678544261104-30fa3134-c144-40a0-a9a5-4238adf8fdc0-74ypssi41rma1.jpg",
+        "name": "Gurpal Singh"
+      },
+      "title": "I will just make any site for you UwU",
+      "createdAt": "2023-03-12T08:43:34.996Z",
+      "description": "<p>Hello this is a nice and cool description </p><p><strong>Hey</strong></p><p>asdasdadsdasdasdasdasdasdasdasdasdasdas</p>",
+      "bannerImage": "bannerImage/clf40vl0t0000ewroucp805xe-1683e9e3-4f64-4ef8-9544-c30c46a17942-1678609171952-e81a6aa4-233f-49f6-8c16-ea2e19547e26-1662617834869-.png",
+      "package": [
+        {
+          "price": 100
+        }
+      ],
+      "rating": 0,
+      "tags": [
+        {
+          "name": "Tag 1",
+          "id": "id",
+          "slug": "tag-1-rme3da-4bH"
+        }
+      ],
+      "ratedBy": 0
+    }
+  ],
+
+  "next": 15 // this field won't be present if there are no more services to fetch
+}
+```
+
+## Fetching All services
+
+`GET /services`
+
+Query Params
+
+- `take` - number of services to fetch(optional, defaults to 10)
+
+Response
 
 ```json
 {

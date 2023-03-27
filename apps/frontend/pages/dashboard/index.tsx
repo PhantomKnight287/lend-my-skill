@@ -45,7 +45,7 @@ const Dashboard = () => {
   } = useInfiniteQuery<Posts>({
     queryKey: ["jobposts"],
     queryFn: async ({ pageParam = 10 }) => {
-      const data = await fetch(URLBuilder(`/jobpost?take=${pageParam}`));
+      const data = await fetch(URLBuilder(`/job-post?take=${pageParam}`));
       if (!data.ok)
         throw new Error(
           (await data.json())["message"] || "Something went wrong"
@@ -94,8 +94,8 @@ const Dashboard = () => {
       />
       <div
         className={clsx("flex gap-3 flex-wrap w-full", {
-          "flex-col": userType === "client",
-          "flex-col-reverse": userType === "freelancer",
+          "flex-col": userType === "Client",
+          "flex-col-reverse": userType === "Freelancer",
         })}
       >
         <div className="w-full px-8 py-4">
@@ -104,6 +104,7 @@ const Dashboard = () => {
               [outfit.className]: true,
             })}
             align="left"
+            mb="xl"
           >
             Services
           </Title>
@@ -124,11 +125,7 @@ const Dashboard = () => {
           ) : null}
           <div
             className={clsx(
-              "flex flex-row gap-3 flex-nowrap px-2 py-3",
-              styles.scroll,
-              {
-                "overflow-x-scroll": services?.pages?.[0].services.length !== 0,
-              }
+              "flex flex-row gap-3 flex-nowrap px-2 py-3 overflow-x-scroll",
             )}
             ref={servicesContainer}
           >
@@ -153,7 +150,7 @@ const Dashboard = () => {
                       description={service.description}
                       image={service.bannerImage}
                       title={service.title}
-                      author={service.freelancer}
+                      author={service.user}
                       slug={service.slug}
                       type="service"
                       resolveImageUrl
@@ -170,6 +167,7 @@ const Dashboard = () => {
               [outfit.className]: true,
             })}
             align="left"
+            mb="xl"
           >
             Job Posts
           </Title>
@@ -219,9 +217,11 @@ const Dashboard = () => {
                       title={post.title}
                       author={post.author}
                       slug={post.slug}
-                      type="post"
+                      type="job"
                       resolveImageUrl={false}
-                      badgeLabel={post.budget ? `$ ${post.budget}` : undefined}
+                      badgeLabel={
+                        post.budget ? `$ ${post.budget}` : `No Budget`
+                      }
                     />
                   </div>
                 ))

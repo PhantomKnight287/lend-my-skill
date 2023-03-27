@@ -17,7 +17,6 @@ Running the app
 npm i
 ```
 
-Since this app uses `tailwind-rn`, you will need to run two commands, one to generate the styles and other to run the app.
+### Setting up env variable
 
-1. `npm run dev:tailwind`
-2. `npm start`
+create a `.env` file, you can use `.env.example` as a reference.

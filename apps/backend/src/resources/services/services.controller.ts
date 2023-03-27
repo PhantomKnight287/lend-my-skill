@@ -12,7 +12,7 @@ export class ServicesController {
     return this.servicesService.createService(body, body.user.id);
   }
 
-  @Get(':username/:slug')
+  @Get(':slug')
   async getService(
     @Param('username') username: string,
     @Param('slug') slug: string,
@@ -20,11 +20,15 @@ export class ServicesController {
     return this.servicesService.getService(slug, username);
   }
 
-  @Get(':username')
+  @Get('user/:username')
   async getServices(
     @Param('username') username: string,
     @Query('take') take?: string,
   ) {
     return this.servicesService.getServices(username, take);
+  }
+  @Get()
+  async getAllServices(@Query('take') take?: string) {
+    return this.servicesService.getAllServices(take);
   }
 }

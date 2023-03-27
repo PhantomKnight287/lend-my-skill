@@ -22,7 +22,7 @@ interface Props {
   buttonTitle?: string;
   author: Posts["posts"][0]["author"];
   slug: string;
-  type: "service" | "post";
+  type: "service" | "job";
   resolveImageUrl: boolean;
   badgeLabel?: string;
 }
@@ -38,14 +38,13 @@ export function PostCard({
   resolveImageUrl = true,
   badgeLabel,
 }: Props) {
-  const { colorScheme } = useMantineColorScheme();
   return (
     <Card
       shadow="sm"
       p="lg"
       radius="md"
       withBorder
-      className={"max-w-sm min-h-[21rem] mx-1"}
+      className={"max-w-[350px]  min-w-[300px] h-full min-h-[21rem] mx-1"}
     >
       <Card.Section>
         <Image
@@ -55,8 +54,13 @@ export function PostCard({
         />
       </Card.Section>
 
-      <Group position="apart" mt="md" mb="xs">
-        <Text weight={500} lineClamp={2}>
+      <Group
+        position="apart"
+        mt="md"
+        mb="xs"
+        className="flex flex-col items-start justify-center"
+      >
+        <Text weight={500} lineClamp={1}>
           {title}
         </Text>
         {badgeLabel ? <Badge variant="light">{badgeLabel}</Badge> : null}
@@ -69,21 +73,17 @@ export function PostCard({
         dangerouslySetInnerHTML={sanitize(description, undefined)}
       />
 
-      <Link
-        href={`/profile/${author?.username}/${type}/${slug}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <Link href={`/${type}/${slug}`} target="_blank" rel="noopener noreferrer">
         <Button
           fullWidth
           mt="md"
           radius="md"
-          className={clsx("transition-all duration-[110ms] hover:scale-105", {
-            [outfit.className]: true,
-            "bg-gray-900 hover:bg-black": colorScheme === "light",
-            "bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] text-white":
-              colorScheme === "dark",
-          })}
+          className={clsx(
+            "transition-all duration-[110ms] hover:scale-105 hover:bg-purple-700 bg-purple-500",
+            {
+              [outfit.className]: true,
+            }
+          )}
         >
           {buttonTitle || "View Details"}
         </Button>

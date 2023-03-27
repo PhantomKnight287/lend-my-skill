@@ -154,7 +154,7 @@ const OrderPage = () => {
                 <td>Package Selected</td>
                 <td>
                   <Link
-                    href={`/profile/${order.package.service.freelancer.username}/service/${order.package.service.slug}#packages-offered`}
+                    href={`/service/${order.package.service.slug}#packages-offered`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-500 hover:text-blue-700 hover:underline"
@@ -176,7 +176,7 @@ const OrderPage = () => {
           </Table>
           <Group position={"center"}>
             <Link
-              href={`/profile/${order.package.service.freelancer.username}/service/${order.package.service.slug}#packages-offered`}
+              href={`/service/${order.package.service.slug}#packages-offered`}
             >
               <Button
                 variant="outline"

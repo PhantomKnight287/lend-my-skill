@@ -40,20 +40,27 @@ export interface Package {
 export interface AllServicesResponse {
   services: {
     id: string;
-    createdAt: Date;
-    description: string;
-    title: string;
-    tags: string[];
-    category: Category;
-    freelancer: {
+    user: {
+      id: string;
       name: string;
       username: string;
       country: string;
       avatarUrl: string;
-      id: string;
+      verified?: boolean | undefined;
     };
-    bannerImage: string;
+    createdAt: string;
+    title: string;
+    tags: { name: string; id: string; slug: string }[];
     slug: string;
+    description: string;
+    package: [
+      {
+        price: number;
+      }
+    ];
+    rating: number;
+    bannerImage: string;
+    ratedBy: number;
   }[];
   next?: number;
 }

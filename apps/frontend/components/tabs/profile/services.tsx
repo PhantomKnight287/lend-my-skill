@@ -74,7 +74,7 @@ const ServicesTab = ({ username }: Props) => {
     queryKey: ["services", username],
     queryFn: async ({ pageParam = 10 }) => {
       const res = await fetch(
-        URLBuilder(`/services/${username}?take=${pageParam}`)
+        URLBuilder(`/services/user/${username}?take=${pageParam}`)
       );
       return await res.json();
     },
@@ -133,7 +133,7 @@ const ServicesTab = ({ username }: Props) => {
               </Group>
               <Group mt="sm" mb="xs" p="md">
                 <Link
-                  href={`/profile/${username}/service/${service.slug}`}
+                  href={`/service/${service.slug}`}
                   className="hover:text-white"
                 >
                   {service.title}
