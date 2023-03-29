@@ -42,9 +42,9 @@ const Slug: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
       mb="xl"
     >
       <MetaTags
-        title={`${props.title} | ${props.author.name} | Lend My Skill`}
+        title={`${props.title} | ${props.user.name} | Lend My Skill`}
         description={
-          props.description || `${props.author.name} on Lend My Skill`
+          props.description || `${props.user.name} on Lend My Skill`
         }
       />
       <div className="flex flex-col items-center justify-center">
@@ -57,10 +57,10 @@ const Slug: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
             </Badge>
           </Tooltip>
         ) : null}
-        {props.author.profileCompleted ? null : (
+        {props.user.profileCompleted ? null : (
           <div className="mt-2">
             <span className="text-red-500">
-              {username === props.author.username
+              {username === props.user.username
                 ? "Please complete your profile for this post to appear in search results.(only you can see this)"
                 : null}
             </span>
@@ -76,17 +76,17 @@ const Slug: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
         <div className="flex flex-row flex-wrap items-center mt-2 justify-center">
           <Avatar
             src={
-              props.author.avatarUrl
-                ? assetURLBuilder(props.author.avatarUrl)
-                : profileImageRouteGenerator(props.author.username)
+              props.user.avatarUrl
+                ? assetURLBuilder(props.user.avatarUrl)
+                : profileImageRouteGenerator(props.user.username)
             }
             size="md"
             radius="xl"
           />
           <div className="flex flex-col ml-2">
             <h2 className="text-base font-semibold">
-              {props.author.name}
-              {props.author.verified ? (
+              {props.user.name}
+              {props.user.verified ? (
                 <Tooltip label="Verified User" withArrow>
                   <Badge
                     color="green"
@@ -107,12 +107,12 @@ const Slug: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
               })}
             >
               <a
-                href={`/profile/${props.author.username}`}
+                href={`/profile/${props.user.username}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-500 hover:underline  leading-3"
               >
-                @{props.author.username}
+                @{props.user.username}
               </a>
             </Text>
           </div>
@@ -204,9 +204,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
   return {
     paths: (await res.json()).map(
-      (p: { slug: string; author: { username: string } }) => ({
+      (p: { slug: string; user: { username: string } }) => ({
         params: {
-          username: p.author.username,
+          username: p.user.username,
           slug: p.slug,
         },
       })
