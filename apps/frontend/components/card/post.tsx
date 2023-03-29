@@ -20,7 +20,7 @@ interface Props {
   image: string;
   price?: number;
   buttonTitle?: string;
-  author: Posts["posts"][0]["author"];
+  author?: Posts["posts"][0]["author"];
   slug: string;
   type: "service" | "job";
   resolveImageUrl: boolean;
@@ -28,7 +28,6 @@ interface Props {
 }
 
 export function PostCard({
-  author,
   description,
   image,
   slug,
