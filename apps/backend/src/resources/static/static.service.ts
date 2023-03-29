@@ -28,7 +28,7 @@ export class StaticService {
     return await this.p.jobPost.findMany({
       select: {
         slug: true,
-        author: {
+        user: {
           select: {
             username: true,
           },
