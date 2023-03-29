@@ -160,8 +160,8 @@ model JobPost {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   deadline     DateTime?
-  author       User      @relation(fields: [authorId], references: [id], name: "jobposts")
-  authorId     String
+  user         User      @relation(fields: [userId], references: [id], name: "jobposts")
+  userId       String
   categoryId   String
   claimed      Boolean   @default(false)
   claimedBy    User?     @relation(fields: [freelancerId], references: [id], name: "claimedjobposts")
