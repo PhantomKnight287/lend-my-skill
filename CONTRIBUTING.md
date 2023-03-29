@@ -101,6 +101,4 @@ Example:
 `[mobile] link login screen to backend`
 `[misc] fix broken image in readme`
 
-> **Warning**
-> Please **DO NOT** commit all files in 1 commit. Please make separate commit for each file. Failing to do this will make your pull request unable to be merged.
 
