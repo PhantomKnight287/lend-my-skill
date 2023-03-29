@@ -2,366 +2,205 @@ import { PostCard } from "@components/card/post";
 import { Container } from "@components/container";
 import { MetaTags } from "@components/meta";
 import { outfit } from "@fonts";
-import useHydrateUserContext from "@hooks/hydrate/user";
-import useIssueNewAuthToken from "@hooks/jwt";
-import { Button, Select, SimpleGrid, Tabs, TextInput } from "@mantine/core";
+import {
+  Button,
+  Group,
+  Input,
+  Loader,
+  Select,
+  SimpleGrid,
+  Text,
+  TextInput,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { IconCategory, IconSearch } from "@tabler/icons";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useIntersection } from "@mantine/hooks";
+import { IconSearch } from "@tabler/icons";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { URLBuilder } from "@utils/url";
+import axios from "axios";
 import clsx from "clsx";
-import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import Link from "next/link";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { JobPost } from "~/types/jobpost";
+import { Service } from "~/types/service";
 
-const Search = () => {
-  useHydrateUserContext();
-  useIssueNewAuthToken();
-  const { query, isReady, push } = useRouter();
-  const formState = useForm({
-    initialValues: {
-      search: "",
-      category: "",
-      type: "",
-    },
+interface FormState {
+  query: string;
+  type: "Job" | "Service";
+}
+
+function Search() {
+  const [query, setQuery] = useState<string>("");
+  const [type, setType] = useState<FormState["type"]>("Job");
+
+  const { data, isFetching, hasNextPage, fetchNextPage, refetch } =
+    useInfiniteQuery<{
+      services: Service[];
+      next?: number;
+      jobs: JobPost[];
+    }>({
+      queryKey: ["search", type, query],
+      enabled: false,
+      getNextPageParam: (l, _) => l?.next,
+      queryFn: async ({ pageParam = 10, signal }) => {
+        const data = await axios
+          .get(URLBuilder(`/search?take=${pageParam}&type=${type}&q=${query}`))
+          .catch((err) => {
+            console.log(err.response.data);
+            return null;
+          });
+        if (!data) return null;
+        return data.data;
+      },
+    });
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { entry, ref } = useIntersection({
+    root: containerRef.current,
+    threshold: 0.5,
   });
 
   useEffect(() => {
-    if (!isReady) return;
+    if (entry?.isIntersecting && hasNextPage) fetchNextPage();
+  }, [entry?.isIntersecting]);
 
-    formState.setFieldValue("search", query.search as string);
-    formState.setFieldValue("type", query.type as string);
-    formState.setFieldValue("category", query.category as string);
-    formState.resetDirty();
-  }, [isReady]);
-
-  const {
-    data: categories,
-    isLoading: categoriesLoading,
-    error: categoriesError,
-  } = useQuery<{ id: string; name: string }[]>({
-    queryKey: ["categories"],
-    queryFn: async () => {
-      const res = await fetch(URLBuilder("/categories"));
-      if (!res.ok) throw new Error((await res.json()).message);
-      return await res.json();
-    },
-  });
-  const {
-    data: querySearchResults,
-    isLoading: querySearchResultsLoading,
-    error: querySearchResultsError,
-    isFetching: querySearchResultsFetching,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    refetch: refetchQuerySearchResults,
-  } = useInfiniteQuery<{
-    data: any;
-    next?: number;
-    type: "services" | "jobposts";
-  }>({
-    queryKey: ["search", query.search, query.type],
-    queryFn: async ({ pageParam = 10 }) => {
-      const res = await fetch(
-        URLBuilder(
-          `/search/${formState.values.category}/${formState.values.type}?take=${pageParam}`
-        )
-      );
-      if (!res.ok) throw new Error((await res.json()).message);
-      return await res.json();
-    },
-    getNextPageParam: (lastPage) => lastPage.next,
-    enabled: formState.values.category ? query.tab === "category" : false,
-  });
-  console.log(formState.values);
-
-  const {
-    data: searchResults,
-    isLoading: searchResultsLoading,
-    error: searchResultsError,
-    isFetching: searchResultsFetching,
-    refetch: refetchSearchResults,
-  } = useInfiniteQuery<{
-    data: any;
-    next?: number;
-    type: "services" | "jobposts";
-  }>({
-    queryKey: ["search", query.search, query.type],
-    queryFn: async ({ pageParam = 10 }) => {
-      const res = await fetch(
-        URLBuilder(
-          `/search?query=${formState.values.search}&type=${formState.values.type}&take=${pageParam}`
-        )
-      );
-      if (!res.ok) throw new Error((await res.json()).message);
-      return await res.json();
-    },
-    getNextPageParam: (lastPage) => lastPage.next,
-    enabled: formState.values.search ? query.tab === "query" : false,
-  });
   return (
-    <Container>
+    <Container className="mb-20">
       <MetaTags
-        title="Search | Lend My Skill"
-        description="Search for Talents or Jobs on Lend My Skill"
+        description="Search for Jobs or Services on Lend My Skill"
+        title="Search"
       />
-      <Tabs
-        defaultValue={(query.tab as string) || "query"}
-        onTabChange={(e) => {
-          push({
-            pathname: "/search",
-            query: {
-              ...query,
-              tab: e,
-            },
-          });
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          refetch();
         }}
       >
-        <Tabs.List grow>
-          <Tabs.Tab value="query" icon={<IconSearch size={20} />}>
-            Search Using Terms
-          </Tabs.Tab>
-          <Tabs.Tab value="category" icon={<IconCategory size={20} />}>
-            Search Using Categories
-          </Tabs.Tab>
-        </Tabs.List>
-        <Tabs.Panel value="query" pt="xl">
-          <div className="flex flex-col justify-center items-center">
-            <form
-              onSubmit={formState.onSubmit((d) => {
-                refetchSearchResults();
-              })}
+        <Group position="center">
+          <TextInput
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+            }}
+            required
+            label="Search For"
+            placeholder="react"
+          />
+          <Select
+            data={["Job", "Service"]}
+            defaultValue={type}
+            label="Select Type"
+            required
+            onChange={(e) => {
+              if (e) {
+                setType(e as FormState["type"]);
+              }
+            }}
+          />
+        </Group>
+        <div className="flex flex-col items-center mt-5 mb-10 justify-center">
+          <Button
+            type="submit"
+            leftIcon={<IconSearch size={20} />}
+            className={clsx(
+              "transition-all duration-[110ms] hover:scale-105 hover:bg-purple-700 bg-purple-500",
+              outfit.className
+            )}
+          >
+            Search
+          </Button>
+        </div>
+      </form>
+      <div ref={containerRef}>
+        {isFetching ? (
+          <div className="flex flex-col items-center justify-center my-6">
+            <Loader variant="oval" color="green" />
+          </div>
+        ) : (
+          <>
+            {data?.pages?.map((page, i) => (
+              <Fragment key={i}>
+                {type === "Job"
+                  ? page.jobs?.map((j) => (
+                      <SimpleGrid
+                        key={j.id}
+                        cols={3}
+                        verticalSpacing="lg"
+                        breakpoints={[
+                          { maxWidth: 980, cols: 3, spacing: "md" },
+                          { maxWidth: 755, cols: 2, spacing: "sm" },
+                          { maxWidth: 600, cols: 1, spacing: "sm" },
+                        ]}
+                      >
+                        <PostCard
+                          description={j.description}
+                          image={
+                            "https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
+                          }
+                          title={j.title}
+                          slug={j.slug}
+                          type="job"
+                          resolveImageUrl={false}
+                          badgeLabel={j.budget ? `$ ${j.budget}` : `No Budget`}
+                        />
+                      </SimpleGrid>
+                    ))
+                  : page.services?.map((s) => (
+                      <SimpleGrid
+                        key={s.id}
+                        cols={3}
+                        verticalSpacing="lg"
+                        breakpoints={[
+                          { maxWidth: 980, cols: 3, spacing: "md" },
+                          { maxWidth: 755, cols: 2, spacing: "sm" },
+                          { maxWidth: 600, cols: 1, spacing: "sm" },
+                        ]}
+                      >
+                        <PostCard
+                          description={s.description}
+                          image={s.bannerImage}
+                          title={s.title}
+                          slug={s.slug}
+                          type="service"
+                          resolveImageUrl={true}
+                        />
+                      </SimpleGrid>
+                    ))}
+              </Fragment>
+            ))}
+          </>
+        )}
+        {(data?.pages?.[0]?.jobs || data?.pages?.[0]?.services)?.length ===
+        0 ? (
+          <div className="mt-20 flex flex-col items-center justify-center">
+            <Text className={clsx(outfit.className, "text-center")}>
+              No Search Results Found
+            </Text>
+            <Text
               className={clsx(
-                "w-full flex flex-row gap-3 items-center justify-center flex-wrap"
+                outfit.className,
+                "text-center",
+                "text-2xl font-bold",
+                "mt-10"
               )}
             >
-              <div className="flex flex-row gap-3 items-center justify-center flex-wrap">
-                <TextInput
-                  label="Search"
-                  placeholder="Search for talents or jobs"
-                  name="search"
-                  required
-                  {...formState.getInputProps("search")}
-                />
-                <Select
-                  data={[
-                    {
-                      value: "services",
-                      label: "Talents",
-                    },
-                    {
-                      value: "jobposts",
-                      label: "Jobs",
-                    },
-                  ]}
-                  {...formState.getInputProps("type")}
-                  required
-                  label="Type"
-                  placeholder="Select type"
-                  defaultValue={(query.type as string) || "services"}
-                />
-                <Button
-                  type="submit"
-                  variant="outline"
-                  className={clsx("mt-auto", {
-                    [outfit.className]: true,
-                  })}
-                >
-                  Search
-                </Button>
-              </div>
-            </form>
-            {searchResultsLoading ? null : (
-              <div className="flex flex-col gap-3 items-center justify-center flex-wrap">
-                {querySearchResults?.pages.map((page, index) => (
-                  <div
-                    key={index}
-                    className="flex flex-col gap-3 items-center justify-center mt-4 flex-wrap"
-                  >
-                    <SimpleGrid cols={3} spacing={"xl"} verticalSpacing="xl">
-                      {page.data.map((item: any) => (
-                        <div
-                          className="flex flex-col gap-3 items-center justify-center flex-wrap"
-                          key={item.id}
-                        >
-                          {page.type === "services" ? (
-                            <PostCard
-                              title={item.title}
-                              description={item.description}
-                              price={item.price}
-                              image={item.bannerImage}
-                              author={item.freelancer || item.author}
-                              resolveImageUrl
-                              slug={item.slug}
-                              type="service"
-                            />
-                          ) : (
-                            <PostCard
-                              key={item.id}
-                              title={item.title}
-                              description={item.description}
-                              price={item.price}
-                              image={
-                                "https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
-                              }
-                              author={item.author || item.freelancer}
-                              resolveImageUrl={false}
-                              slug={item.slug}
-                              type="post"
-                            />
-                          )}
-                        </div>
-                      ))}
-                    </SimpleGrid>
-                  </div>
-                ))}
-                <div className="flex flex-row gap-3 items-center mt-8 justify-center flex-wrap">
-                  <Button
-                    onClick={() => fetchNextPage()}
-                    disabled={!hasNextPage}
-                    variant="outline"
-                    mt="xl"
-                    className={clsx("mt-auto", {
-                      [outfit.className]: true,
-                    })}
-                  >
-                    {isFetchingNextPage
-                      ? "Loading more..."
-                      : hasNextPage
-                      ? "Load More"
-                      : "Nothing more to load"}
-                  </Button>
-                </div>
-              </div>
-            )}
+              Looking for Something Else?
+            </Text>
+            <div className="flex flex-row flex-wrap mt-5 gap-10 items-center justify-center">
+              <Link
+                href="/search/category"
+                className="underline text-blue-500 "
+              >
+                Search Using Category
+              </Link>
+              <Link href="/search/tags" className="underline text-blue-500 ">
+                Search Using Tags
+              </Link>
+            </div>
           </div>
-        </Tabs.Panel>
-        <Tabs.Panel value="category" pt="xl">
-          <div className="flex flex-col justify-center items-center">
-            <form
-              onSubmit={formState.onSubmit((d) => {
-                refetchQuerySearchResults();
-              })}
-              className={clsx(
-                "w-full flex flex-row gap-3 items-center justify-center flex-wrap"
-              )}
-            >
-              <div className="flex flex-row gap-3 items-center justify-center flex-wrap">
-                {/* show loading when categories are fetched and then show a select menu */}
-                {categoriesLoading ? (
-                  <div className="flex flex-row gap-3 items-center justify-center flex-wrap">
-                    <div className="w-40 h-10 bg-gray-200 animate-pulse"></div>
-                    <div className="w-40 h-10 bg-gray-200 animate-pulse"></div>
-                  </div>
-                ) : (
-                  <Select
-                    data={categories!.map((category) => ({
-                      value: category.id,
-                      label: category.name,
-                    }))}
-                    required
-                    {...formState.getInputProps("category")}
-                    label="Category"
-                    placeholder="Select category"
-                    defaultValue={(query.category as string) || undefined}
-                  />
-                )}
-                <Select
-                  data={[
-                    {
-                      value: "services",
-                      label: "Talents",
-                    },
-                    {
-                      value: "jobposts",
-                      label: "Jobs",
-                    },
-                  ]}
-                  required
-                  {...formState.getInputProps("type")}
-                  label="Type"
-                  placeholder="Select type"
-                  defaultValue={(query.type as string) || "services"}
-                />
-                <Button
-                  type="submit"
-                  variant="outline"
-                  className={clsx("mt-auto", {
-                    [outfit.className]: true,
-                  })}
-                >
-                  Search
-                </Button>
-              </div>
-            </form>
-            {querySearchResultsLoading ? null : (
-              <div className="flex flex-col gap-3 items-center justify-center flex-wrap">
-                {querySearchResults?.pages.map((page, index) => (
-                  <div
-                    className="flex flex-col gap-3 items-center justify-center mt-4 flex-wrap"
-                    key={index}
-                  >
-                    <SimpleGrid cols={3} spacing={"xl"} verticalSpacing="xl">
-                      {page.data.map((item: any) => (
-                        <div
-                          className="flex flex-col gap-3 items-center justify-center flex-wrap"
-                          key={item.id}
-                        >
-                          {page.type === "services" ? (
-                            <PostCard
-                              title={item.title}
-                              description={item.description}
-                              price={item.price}
-                              image={item.bannerImage}
-                              author={item.freelancer || item.author}
-                              resolveImageUrl
-                              slug={item.slug}
-                              type="service"
-                            />
-                          ) : (
-                            <PostCard
-                              key={item.id}
-                              title={item.title}
-                              description={item.description}
-                              price={item.price}
-                              image={
-                                "https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
-                              }
-                              author={item.author || item.freelancer}
-                              resolveImageUrl={false}
-                              slug={item.slug}
-                              type="post"
-                            />
-                          )}
-                        </div>
-                      ))}
-                    </SimpleGrid>
-                  </div>
-                ))}
-                <div className="flex flex-row gap-3 items-center mt-8 justify-center flex-wrap">
-                  <Button
-                    onClick={() => fetchNextPage()}
-                    disabled={!hasNextPage}
-                    variant="outline"
-                    mt="xl"
-                    className={clsx("mt-auto", {
-                      [outfit.className]: true,
-                    })}
-                  >
-                    {isFetchingNextPage
-                      ? "Loading more..."
-                      : hasNextPage
-                      ? "Load More"
-                      : "Nothing more to load"}
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-        </Tabs.Panel>
-      </Tabs>
+        ) : null}
+      </div>
     </Container>
   );
-};
+}
 
 export default Search;
