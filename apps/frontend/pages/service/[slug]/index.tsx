@@ -137,13 +137,15 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
               {props.category.name}
             </Link>
           </Badge>
-          <div className="flex flex-row gap-2 items-center justify-center flex-wrap my-4">
-            {props.tags?.map((t) => (
-              <Badge variant="light" key={t.id} color="green">
-                <a href={`/services/tags/${t.slug}`}>#{t.name}</a>
-              </Badge>
-            ))}
-          </div>
+          {props.tags?.length > 0 ? (
+            <div className="flex flex-row gap-2 items-center justify-center flex-wrap my-4">
+              {props.tags?.map((t) => (
+                <Badge variant="light" key={t.id} color="green">
+                  <a href={`/services/tags/${t.slug}`}>#{t.name}</a>
+                </Badge>
+              ))}
+            </div>
+          ) : null}
         </div>
         <Divider orientation="horizontal" className={clsx("w-full my-4")} />
         {props.images.length > 0 ? (
