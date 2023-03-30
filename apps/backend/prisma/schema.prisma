@@ -58,7 +58,7 @@ model Category {
   createdAt DateTime  @default(now())
   slug      String    @unique
   services  Service[]
-  JobPost   JobPost[]
+  jobPost   JobPost[]
 }
 
 model Tags {
@@ -67,7 +67,7 @@ model Tags {
   createdAt DateTime  @default(now())
   slug      String    @unique
   service   Service[]
-  JobPost   JobPost?  @relation(fields: [jobPostId], references: [id])
+  jobPost   JobPost?  @relation(fields: [jobPostId], references: [id])
   jobPostId String?
 }
 
