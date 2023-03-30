@@ -36,4 +36,9 @@ export class StaticService {
       },
     });
   }
+  async getStaticCategories() {
+    return await this.p.category.findMany({
+      select: { slug: true },
+    });
+  }
 }
