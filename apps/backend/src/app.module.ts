@@ -64,9 +64,14 @@ export class AppModule implements NestModule {
         },
         {
           method: RequestMethod.GET,
+          path: 'job-post',
+        },
+        {
+          method: RequestMethod.GET,
           path: 'profile/:username',
         },
         'search/(.*)',
+        'search',
         'services/:slug',
         'services/user/:username',
         {
@@ -76,6 +81,8 @@ export class AppModule implements NestModule {
         'static/(.*)',
         'upload/(.*)',
         'upi/(.*)',
+        'categories',
+        'tags',
       )
       .forRoutes('*');
   }
