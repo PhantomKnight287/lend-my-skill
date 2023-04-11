@@ -35,10 +35,12 @@ model User {
   uploads  Uploads[]
   reviews  Review[]
 
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  jobPosts        JobPost[] @relation(name: "jobposts")
-  claimedJobPosts JobPost[] @relation(name: "claimedjobposts")
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  jobPosts            JobPost[]      @relation(name: "jobposts")
+  claimedJobPosts     JobPost[]      @relation(name: "claimedjobposts")
+  transactionsCreated Transactions[] @relation(name: "createdby")
+  transactionsPaidTo  Transactions[] @relation(name: "paidto")
 }
 
 // This will be helpful to moderate the content and also get rid of it when it is not required
@@ -128,12 +130,16 @@ model Review {
 }
 
 model Transactions {
-  id        String            @id @unique @default(cuid())
-  orderId   String?
-  amount    Int
-  type      TransactionType
-  status    TransactionStatus
-  createdAt DateTime          @default(now())
+  id              String            @id @unique @default(cuid())
+  orderId         String?
+  amount          Int
+  type            TransactionType
+  status          TransactionStatus
+  createdAt       DateTime          @default(now())
+  createdBy       User              @relation(fields: [createdByUserId], references: [id], name: "createdby")
+  createdByUserId String
+  paidTo          User?             @relation(fields: [paidToUserId], references: [id], name: "paidto")
+  paidToUserId    String?
 }
 
 enum TransactionType {
