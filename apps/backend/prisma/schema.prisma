@@ -35,10 +35,12 @@ model User {
   uploads  Uploads[]
   reviews  Review[]
 
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  jobPosts        JobPost[] @relation(name: "jobposts")
-  claimedJobPosts JobPost[] @relation(name: "claimedjobposts")
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  jobPosts            JobPost[]      @relation(name: "jobposts")
+  claimedJobPosts     JobPost[]      @relation(name: "claimedjobposts")
+  transactionsCreated Transactions[] @relation(name: "createdby")
+  transactionsPaidTo  Transactions[] @relation(name: "paidto")
 }
 
 // This will be helpful to moderate the content and also get rid of it when it is not required
@@ -58,7 +60,7 @@ model Category {
   createdAt DateTime  @default(now())
   slug      String    @unique
   services  Service[]
-  JobPost   JobPost[]
+  jobPost   JobPost[]
 }
 
 model Tags {
@@ -67,7 +69,7 @@ model Tags {
   createdAt DateTime  @default(now())
   slug      String    @unique
   service   Service[]
-  JobPost   JobPost?  @relation(fields: [jobPostId], references: [id])
+  jobPost   JobPost?  @relation(fields: [jobPostId], references: [id])
   jobPostId String?
 }
 
@@ -128,12 +130,16 @@ model Review {
 }
 
 model Transactions {
-  id        String            @id @unique @default(cuid())
-  orderId   String?
-  amount    Int
-  type      TransactionType
-  status    TransactionStatus
-  createdAt DateTime          @default(now())
+  id              String            @id @unique @default(cuid())
+  orderId         String?
+  amount          Int
+  type            TransactionType
+  status          TransactionStatus
+  createdAt       DateTime          @default(now())
+  createdBy       User              @relation(fields: [createdByUserId], references: [id], name: "createdby")
+  createdByUserId String
+  paidTo          User?             @relation(fields: [paidToUserId], references: [id], name: "paidto")
+  paidToUserId    String?
 }
 
 enum TransactionType {
@@ -160,10 +166,24 @@ model JobPost {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   deadline     DateTime?
-  author       User      @relation(fields: [authorId], references: [id], name: "jobposts")
-  authorId     String
+  user         User      @relation(fields: [userId], references: [id], name: "jobposts")
+  userId       String
   categoryId   String
   claimed      Boolean   @default(false)
   claimedBy    User?     @relation(fields: [freelancerId], references: [id], name: "claimedjobposts")
   freelancerId String?
+}
+
+model CouponCode {
+  id        String       @id @unique @default(cuid())
+  code      String       @unique
+  discount  Float
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  type      DiscountType
+}
+
+enum DiscountType {
+  Percentage
+  Flat
 }

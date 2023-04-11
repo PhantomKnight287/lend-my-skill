@@ -17,7 +17,7 @@ export interface JobPost {
   slug: string;
   budget: number;
   createdAt: Date;
-  author: {
+  user: {
     name: string;
     verified: boolean;
     avatarUrl: string;

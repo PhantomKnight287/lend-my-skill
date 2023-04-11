@@ -19,7 +19,7 @@ import {
   fetchChatMessages,
   fetchChatMessagesCount,
 } from "@services/chats.service";
-import { IconCheck, IconFile, IconPlus, IconX } from "@tabler/icons";
+import { IconCheck, IconFile, IconPlus, IconX } from "@tabler/icons-react";
 import { profileImageRouteGenerator } from "@utils/profile";
 import { assetURLBuilder, URLBuilder } from "@utils/url";
 import { useRouter } from "next/router";

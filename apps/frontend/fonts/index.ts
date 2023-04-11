@@ -1,4 +1,4 @@
-import { Inter, Outfit, Sen, Space_Grotesk } from "@next/font/google";
+import { Inter, Outfit, Sen, Space_Grotesk } from "next/font/google";
 
 export const inter = Inter({
   weight: ["400", "500", "600", "700"],

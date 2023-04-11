@@ -20,7 +20,7 @@ import {
   IconCake,
   IconMapPin,
   IconPencil,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import { profileImageRouteGenerator } from "@utils/profile";
 import { assetURLBuilder, URLBuilder } from "@utils/url";
 import axios from "axios";

@@ -112,7 +112,6 @@ export class ServicesService {
         },
       },
     });
-    console.log(service);
     if (!service)
       throw new HttpException('No Service Found.', HttpStatus.NOT_FOUND);
     return service;

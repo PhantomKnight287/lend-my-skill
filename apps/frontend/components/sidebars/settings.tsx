@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Navbar, createStyles } from "@mantine/core";
-import { IconFingerprint, IconUsers } from "@tabler/icons";
+import { IconFingerprint, IconUsers } from "@tabler/icons-react";
 import { useRouter } from "next/router";
 import { useUser } from "@hooks/user";
 

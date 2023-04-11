@@ -9,7 +9,7 @@ import {
   IconBrandCashapp,
   IconBrandGithub,
   IconPremiumRights,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import { useUser } from "@hooks/user";
 
 const Features: Array<{

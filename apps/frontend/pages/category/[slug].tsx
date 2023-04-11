@@ -37,8 +37,6 @@ const ContentRelatedToCategory: NextPage<
   const {
     data,
     status,
-    isLoading,
-    refetch,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -46,7 +44,7 @@ const ContentRelatedToCategory: NextPage<
     queryKey: ["category", props.id, props.name],
     queryFn: async ({ pageParam = 10 }) => {
       const data = await fetch(
-        URLBuilder(`/categories/${props.id}/job-posts?take=${pageParam}`)
+        URLBuilder(`/categories/${props.id}/jobs?take=${pageParam}`)
       );
       if (!data.ok) {
         throw new Error("Error fetching data");
@@ -97,24 +95,28 @@ const ContentRelatedToCategory: NextPage<
           color="green"
           className="cursor-pointer"
           onClick={() => {
-            push(`/category/${query.slug}?tab=job-posts`);
+            push(`/category/${query.slug}?tab=jobs`);
           }}
         >
           {props.jobs} Job {props.jobs > 1 ? "Posts" : "Post"}
         </Badge>
       </div>
       <Tabs
-        defaultValue={(query.tab as string) || "job-posts"}
+        defaultValue={(query.tab as string) || "jobs"}
         onTabChange={(d) => {
           if (d) push(`/category/${query.slug}?tab=${d}`);
         }}
+        className="mt-10"
       >
         <Tabs.List grow>
-          <Tabs.Tab value="job-posts">Job Posts</Tabs.Tab>
+        <Tabs.Tab value="services">Services</Tabs.Tab>
+          <Tabs.Tab value="jobs">Jobs</Tabs.Tab>
         </Tabs.List>
-        <Tabs.Panel value="job-posts">
+        <Tabs.Panel value="jobs">
           {status === "loading" ? (
-            <Loader />
+            <div className="flex flex-col mt-20 items-center justify-center">
+              <Loader />
+            </div>
           ) : status === "error" ? (
             <div>Error</div>
           ) : (

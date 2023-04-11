@@ -111,12 +111,9 @@ const Dashboard = () => {
           {services?.pages?.[0].services.length === 0 ? (
             <>
               <Title
-                className={clsx(
-                  "bg-gray-100 text-gray-500 text-2xl py-10 rounded-lg my-4",
-                  {
-                    [outfit.className]: true,
-                  }
-                )}
+                className={clsx("text-2xl py-10 rounded-lg my-4", {
+                  [outfit.className]: true,
+                })}
                 align="center"
               >
                 No Services Found
@@ -125,7 +122,7 @@ const Dashboard = () => {
           ) : null}
           <div
             className={clsx(
-              "flex flex-row gap-3 flex-nowrap px-2 py-3 overflow-x-scroll",
+              "flex flex-row gap-3 flex-nowrap px-2 py-3 overflow-x-scroll"
             )}
             ref={servicesContainer}
           >
@@ -174,12 +171,9 @@ const Dashboard = () => {
           {jobposts?.pages[0].posts.length === 0 ? (
             <>
               <Title
-                className={clsx(
-                  "bg-gray-100 text-gray-500 text-2xl py-10 rounded-lg my-4",
-                  {
-                    [outfit.className]: true,
-                  }
-                )}
+                className={clsx("text-2xl py-10 rounded-lg my-4", {
+                  [outfit.className]: true,
+                })}
                 align="center"
               >
                 No Job Posts Found

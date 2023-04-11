@@ -20,7 +20,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import clsx from "clsx";
 import Link from "next/link";
 import { outfit, sen } from "@fonts";
-import { IconStar } from "@tabler/icons";
+import { IconStar } from "@tabler/icons-react";
 
 dayjs.extend(relativeTime);
 

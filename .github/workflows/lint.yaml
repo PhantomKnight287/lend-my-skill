@@ -4,11 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "apps/frontend/**"
-      - "apps/backend/**"
-      - "package.json"
-      - "pnpm**"
 
 jobs:
   linter:
@@ -27,11 +22,10 @@ jobs:
       - name: Setup Pnpm
         run: corepack enable
 
-      - name: Install Dependencies
-        run: pnpm i
+      - name: Run scripts
+        run: sh scripts/ci.sh
 
-      - name: Run Lint
-        run: pnpm lint
+
 
   build_docker_images:
     needs:

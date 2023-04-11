@@ -28,12 +28,17 @@ export class StaticService {
     return await this.p.jobPost.findMany({
       select: {
         slug: true,
-        author: {
+        user: {
           select: {
             username: true,
           },
         },
       },
+    });
+  }
+  async getStaticCategories() {
+    return await this.p.category.findMany({
+      select: { slug: true },
     });
   }
 }

@@ -22,7 +22,7 @@ export class JobPostService {
         description,
         slug: stringToSlug(title, 10),
         title,
-        author: {
+        user: {
           connect: { id: userId },
         },
         category: {
@@ -49,7 +49,7 @@ export class JobPostService {
         slug,
       },
       select: {
-        author: {
+        user: {
           select: {
             name: true,
             verified: true,
@@ -98,7 +98,7 @@ export class JobPostService {
     const toTake = Number.isNaN(Number(take)) ? 10 : Number(take);
     const posts = await this.p.jobPost.findMany({
       where: {
-        author: {
+        user: {
           username: {
             equals: username,
             mode: 'insensitive',
@@ -106,7 +106,7 @@ export class JobPostService {
         },
       },
       select: {
-        author: {
+        user: {
           select: {
             name: true,
             verified: true,
@@ -157,7 +157,7 @@ export class JobPostService {
     const toTake = Number.isNaN(Number(take)) ? 10 : Number(take);
     const posts = await this.p.jobPost.findMany({
       select: {
-        author: {
+        user: {
           select: {
             name: true,
             verified: true,
