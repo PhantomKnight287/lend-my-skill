@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './services/prisma/prisma.service';
@@ -43,4 +48,35 @@ import { SearchModule } from './resources/search/search.module';
   ],
   exports: [PrismaService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(UserMiddleware)
+      .exclude(
+        'auth/(.*)',
+        {
+          method: RequestMethod.GET,
+          path: 'categories/(.*) ',
+        },
+        {
+          method: RequestMethod.GET,
+          path: 'job-post/(.*)',
+        },
+        {
+          method: RequestMethod.GET,
+          path: 'profile/:username',
+        },
+        'search/(.*)',
+        'services/:slug',
+        'services/user/:username',
+        {
+          path: 'services',
+          method: RequestMethod.GET,
+        },
+        'static/(.*)',
+        'upload/(.*)',
+        'upi/(.*)',
+      )
+      .forRoutes('*');
+  }
+}
