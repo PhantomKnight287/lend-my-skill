@@ -9,6 +9,7 @@
 
 A Freelance platform designed specially for Indians supporting payment methods like `Rupay Card` and `UPI`.
 
+> The work is currently paused, will be continued after few meetings. 
 
 # Table of Contents
 
