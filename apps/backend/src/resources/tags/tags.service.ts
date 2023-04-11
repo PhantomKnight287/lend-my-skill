@@ -7,7 +7,9 @@ export class TagsService {
   constructor(protected p: PrismaService) {}
 
   async fetchAll() {
-    return await this.p.tags.findMany({ select: { id: true, name: true } });
+    return await this.p.tags.findMany({
+      select: { id: true, name: true, slug: true },
+    });
   }
 
   async create(name: string) {
