@@ -23,16 +23,16 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { JobPost } from "~/types/jobpost";
 import { Service } from "~/types/service";
 
-function SearchUsingCategory() {
+function SearchUsingTag() {
   const [query, setQuery] = useState<string>("");
   const [type, setType] = useState<"Job" | "Service">("Job");
-  const [category, setCategory] = useState<string>("");
-  const { data: categories, isFetching: categoriesFetching } = useQuery<
+  const [tag, setTag] = useState<string>("");
+  const { data: tags, isFetching: tagsFetching } = useQuery<
     { id: string; name: string; slug: string }[]
   >({
-    queryKey: ["categories"],
+    queryKey: ["tags"],
     queryFn: async () => {
-      const res = await axios.get(URLBuilder("/categories")).catch((err) => {
+      const res = await axios.get(URLBuilder("/tags")).catch((err) => {
         console.log(err.response.data);
         return null;
       });
@@ -47,14 +47,14 @@ function SearchUsingCategory() {
       next?: number;
       jobs: JobPost[];
     }>({
-      queryKey: ["search", type, query, category],
+      queryKey: ["search", type, query, tag],
       enabled: false,
       getNextPageParam: (l, _) => l?.next,
       queryFn: async ({ pageParam = 10, signal }) => {
         const data = await axios
           .get(
             URLBuilder(
-              `/search/category/${category}?take=${pageParam}&type=${type}&q=${query}`
+              `/search/tag/${tag}?take=${pageParam}&type=${type}&q=${query}`
             ),
             { signal }
           )
@@ -79,10 +79,10 @@ function SearchUsingCategory() {
     <>
       <MetaTags
         title="Search"
-        description="Seach for Jobs and Services using Category"
+        description="Seach for Jobs and Services using Tags"
       />
       <Container>
-        {categoriesFetching ? (
+        {tagsFetching ? (
           <div className="flex flex-col items-center justify-center">
             <Loader variant="oval" color="green" />
           </div>
@@ -114,19 +114,19 @@ function SearchUsingCategory() {
                   }
                 }}
               />
-              {categories ? (
+              {tags ? (
                 <Select
-                  data={categories.map((d) => ({
+                  data={tags.map((d) => ({
                     label: d.name,
                     value: d.slug,
                   }))}
                   searchable
-                  defaultValue={category}
-                  label="Select Category"
+                  defaultValue={tag}
+                  label="Select Tag"
                   required
                   onChange={(e) => {
                     if (e) {
-                      setCategory(e);
+                      setTag(e);
                     }
                   }}
                 />
@@ -224,14 +224,8 @@ function SearchUsingCategory() {
                 Looking for Something Else?
               </Text>
               <div className="flex flex-row flex-wrap mt-5 gap-10 items-center justify-center">
-                <Link
-                  href="/search/category"
-                  className="underline text-blue-500 "
-                >
+                <Link href="/search/tag" className="underline text-blue-500 ">
                   Search Using Category
-                </Link>
-                <Link href="/search/tags" className="underline text-blue-500 ">
-                  Search Using Tags
                 </Link>
               </div>
             </div>
@@ -242,4 +236,4 @@ function SearchUsingCategory() {
   );
 }
 
-export default SearchUsingCategory;
+export default SearchUsingTag;

@@ -37,7 +37,7 @@ import {
   IconTrash,
   IconUpload,
   IconX,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import { uploadFile, uploadFiles } from "@helpers/upload";
 import { readCookie } from "@helpers/cookie";
 import { showNotification } from "@mantine/notifications";

@@ -2,6 +2,7 @@ import { PostCard } from "@components/card/post";
 import { Container } from "@components/container";
 import { MetaTags } from "@components/meta";
 import { outfit } from "@fonts";
+import useHydrateUserContext from "@hooks/hydrate/user";
 import {
   Button,
   Group,
@@ -14,7 +15,7 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useIntersection } from "@mantine/hooks";
-import { IconSearch } from "@tabler/icons";
+import { IconSearch } from "@tabler/icons-react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { URLBuilder } from "@utils/url";
 import axios from "axios";
@@ -32,7 +33,7 @@ interface FormState {
 function Search() {
   const [query, setQuery] = useState<string>("");
   const [type, setType] = useState<FormState["type"]>("Job");
-
+  useHydrateUserContext();
   const { data, isFetching, hasNextPage, fetchNextPage, refetch } =
     useInfiniteQuery<{
       services: Service[];

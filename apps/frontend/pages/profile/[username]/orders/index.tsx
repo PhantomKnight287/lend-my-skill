@@ -13,7 +13,7 @@ import {
   SimpleGrid,
   Tooltip,
 } from "@mantine/core";
-import { IconCheck } from "@tabler/icons";
+import { IconCheck } from "@tabler/icons-react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { profileImageRouteGenerator } from "@utils/profile";
 import { assetURLBuilder, URLBuilder } from "@utils/url";

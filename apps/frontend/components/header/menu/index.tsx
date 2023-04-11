@@ -13,7 +13,7 @@ import {
   IconSettings2,
   IconShoppingCart,
   IconUserCircle,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 
 export default function HeaderMenu() {
   const { avatarUrl, username, userType, profileCompleted } = useUser();

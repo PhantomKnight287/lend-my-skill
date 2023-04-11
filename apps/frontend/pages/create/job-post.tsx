@@ -21,7 +21,7 @@ import clsx from "clsx";
 import React, { useState } from "react";
 import { DatePicker } from "@mantine/dates";
 import useHydrateUserContext from "@hooks/hydrate/user";
-import { IconCross, IconX } from "@tabler/icons";
+import { IconCross, IconFileText, IconX } from "@tabler/icons-react";
 import { uploadFiles } from "@helpers/upload";
 import { readCookie } from "@helpers/cookie";
 import { showNotification } from "@mantine/notifications";
@@ -136,7 +136,7 @@ function CreateJobPost() {
           message: "Job Post Created Successfully",
           color: "green",
         });
-        return push(`/post/${d.slug}`);
+        return push(`/job/${d.slug}`);
       })
       .catch((err) => {
         showNotification({
@@ -256,27 +256,94 @@ function CreateJobPost() {
                                 <div className="flex flex-row flex-wrap gap-2 m-2">
                                   {files.map((image) => (
                                     <div className="relative" key={image.name}>
-                                      <Image
-                                        src={URL.createObjectURL(image)}
-                                        alt="image"
-                                        width={100}
-                                        height={100}
-                                        className={clsx("rounded-md")}
-                                      />
-                                      <div
-                                        className={clsx(
-                                          "absolute top-0 right-0 bg-[#e53935] rounded-full cursor-pointer"
-                                        )}
-                                        onClick={() => {
-                                          setFiles((prev) =>
-                                            prev.filter(
-                                              (prevImage) => prevImage !== image
-                                            )
-                                          );
-                                        }}
-                                      >
-                                        <IconX className={clsx("text-white")} />
-                                      </div>
+                                      {image.type.split("/")[0] === "image" ? (
+                                        <>
+                                          <Image
+                                            src={URL.createObjectURL(image)}
+                                            alt="image"
+                                            width={100}
+                                            height={100}
+                                            className={clsx("rounded-md")}
+                                          />
+                                          <div
+                                            className={clsx(
+                                              "absolute top-0 right-0 bg-[#e53935] rounded-full cursor-pointer"
+                                            )}
+                                            onClick={() => {
+                                              setFiles((prev) =>
+                                                prev.filter(
+                                                  (prevImage) =>
+                                                    prevImage !== image
+                                                )
+                                              );
+                                            }}
+                                          >
+                                            <IconX
+                                              className={clsx("text-white")}
+                                            />
+                                          </div>
+                                        </>
+                                      ) : (
+                                        <>
+                                          {image.type.split("/")[0] ===
+                                          "video" ? (
+                                            <>
+                                              <video
+                                                src={URL.createObjectURL(image)}
+                                                width={100}
+                                                height={100}
+                                                controls
+                                                className={clsx("rounded-md")}
+                                              />
+                                              <div
+                                                className={clsx(
+                                                  "absolute top-0 right-0 bg-[#e53935] rounded-full cursor-pointer"
+                                                )}
+                                                onClick={() => {
+                                                  setFiles((prev) =>
+                                                    prev.filter(
+                                                      (prevImage) =>
+                                                        prevImage !== image
+                                                    )
+                                                  );
+                                                }}
+                                              >
+                                                <IconX
+                                                  className={clsx("text-white")}
+                                                />
+                                              </div>
+                                            </>
+                                          ) : (
+                                            <div className="flex flex-col items-center justify-center">
+                                              <IconFileText
+                                                className={clsx(
+                                                  "text-[#6c757d] text-4xl"
+                                                )}
+                                              />
+                                              <span className="text-[#6c757d] text-sm">
+                                                {image.name}
+                                              </span>
+                                              <div
+                                                className={clsx(
+                                                  "absolute top-0 right-0 bg-[#e53935] rounded-full cursor-pointer"
+                                                )}
+                                                onClick={() => {
+                                                  setFiles((prev) =>
+                                                    prev.filter(
+                                                      (prevImage) =>
+                                                        prevImage !== image
+                                                    )
+                                                  );
+                                                }}
+                                              >
+                                                <IconX
+                                                  className={clsx("text-white")}
+                                                />
+                                              </div>
+                                            </div>
+                                          )}
+                                        </>
+                                      )}
                                     </div>
                                   ))}
                                 </div>
@@ -288,7 +355,20 @@ function CreateJobPost() {
                       <FileButton
                         onChange={(d) => {
                           if (!d) return;
-                          setFiles((prev) => [...prev, ...d]);
+                          const filesToSet: File[] = [];
+                          // max size: 10mb
+                          const maxSize = 10 * 1024 * 1024;
+                          d.forEach((f) => {
+                            if (f.size > maxSize) {
+                              showNotification({
+                                variant: "error",
+                                message: ` ${f.name}'s size is too big. Maximum size is 10mb`,
+                              });
+                            } else {
+                              filesToSet.push(f);
+                            }
+                          });
+                          setFiles((prev) => [...prev, ...filesToSet]);
                         }}
                         accept="image*"
                         multiple

@@ -96,7 +96,9 @@ export default function NothingFoundBackground() {
           </Text>
           <Group position="center">
             <Link href={id ? "/dashboard" : "/"}>
-              <Button size="md">Take me back to home page</Button>
+              <Button size="md"
+                className="transition-all duration-[110ms] hover:scale-105 hover:bg-purple-700 bg-purple-500"
+              >Take me back to home page</Button>
             </Link>
           </Group>
         </div>

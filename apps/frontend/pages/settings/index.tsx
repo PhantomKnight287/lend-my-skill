@@ -26,7 +26,7 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
-import { IconUpload, IconUsers, IconX } from "@tabler/icons";
+import { IconUpload, IconUsers, IconX } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { profileImageRouteGenerator } from "@utils/profile";
 import { assetURLBuilder, URLBuilder } from "@utils/url";

@@ -1,4 +1,4 @@
-import { IconBrandGithub, IconBrandTwitter } from "@tabler/icons";
+import { IconBrandGithub, IconBrandTwitter } from "@tabler/icons-react";
 import { useMemo } from "react";
 
 interface Props {

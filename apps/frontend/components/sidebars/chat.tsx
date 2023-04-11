@@ -1,7 +1,7 @@
 import { outfit } from "@fonts";
 import { useUser } from "@hooks/user";
 import { Avatar, Badge, Text, Tooltip } from "@mantine/core";
-import { IconCheck } from "@tabler/icons";
+import { IconCheck } from "@tabler/icons-react";
 import { profileImageRouteGenerator } from "@utils/profile";
 import { assetURLBuilder } from "@utils/url";
 import clsx from "clsx";

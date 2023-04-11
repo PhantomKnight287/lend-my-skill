@@ -13,7 +13,7 @@ import {
   Text,
   Tooltip,
 } from "@mantine/core";
-import { IconCheck } from "@tabler/icons";
+import { IconCheck } from "@tabler/icons-react";
 import { profileImageRouteGenerator } from "@utils/profile";
 import { assetURLBuilder, URLBuilder } from "@utils/url";
 import clsx from "clsx";
@@ -218,7 +218,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<JobPost> = async ({ params }) => {
   const username = params!.username;
   const slug = params!.slug;
-  const data = await fetch(URLBuilder(`/job-post/${username}/${slug}`));
+  const data = await fetch(URLBuilder(`/job-post/${slug}`));
   if (!data.ok) {
     return {
       notFound: true,
