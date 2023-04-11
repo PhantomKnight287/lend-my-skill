@@ -173,3 +173,17 @@ model JobPost {
   claimedBy    User?     @relation(fields: [freelancerId], references: [id], name: "claimedjobposts")
   freelancerId String?
 }
+
+model CouponCode {
+  id        String       @id @unique @default(cuid())
+  code      String       @unique
+  discount  Float
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  type      DiscountType
+}
+
+enum DiscountType {
+  Percentage
+  Flat
+}
