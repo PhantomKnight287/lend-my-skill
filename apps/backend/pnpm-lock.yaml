@@ -7,6 +7,9 @@ dependencies:
   '@nestjs/core':
     specifier: ^9.0.0
     version: 9.0.0(@nestjs/common@9.0.0)(@nestjs/platform-express@9.0.0)(reflect-metadata@0.1.13)(rxjs@7.2.0)
+  '@nestjs/mapped-types':
+    specifier: '*'
+    version: 0.0.1(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)
   '@nestjs/platform-express':
     specifier: ^9.0.0
     version: 9.0.0(@nestjs/common@9.0.0)(@nestjs/core@9.0.0)
@@ -905,6 +908,18 @@ packages:
       uuid: 8.3.2
     transitivePeerDependencies:
       - encoding
+
+  /@nestjs/mapped-types@0.0.1(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13):
+    resolution: {integrity: sha512-4G4Ui7Sj0UqXiZsUFk/6cPD3K7uZEFSElzkOftaJ3/lXW+HUi1/vfWXabF53qrzO1enTRQDxt1plDbP6SsqXEg==}
+    peerDependencies:
+      class-transformer: ^0.2.3
+      class-validator: ^0.11.1
+      reflect-metadata: ^0.1.12
+    dependencies:
+      class-transformer: 0.5.1
+      class-validator: 0.14.0
+      reflect-metadata: 0.1.13
+    dev: false
 
   /@nestjs/platform-express@9.0.0(@nestjs/common@9.0.0)(@nestjs/core@9.0.0):
     resolution: {integrity: sha512-5W5KeYHKKQe4/H7DcPViIObC9nO74P8wnLZUpk4HCUUuFZIzPpUu9v+RAg7c/jGrbdyjfg3VKODCUKFo6PBfmg==}
