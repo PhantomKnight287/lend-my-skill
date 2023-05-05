@@ -17,7 +17,7 @@ async function bootstrap() {
       stopAtFirstError: true,
     }),
   );
-  // using this we make make breaking changes to the code with different api version and not break the existing code
+  // using this we can make breaking changes to the code with different api version and not break the existing code
   app.enableVersioning({
     type: VersioningType.URI,
   });
