@@ -33,7 +33,7 @@ async function bootstrap() {
     defaultVersion: '1',
   });
   await app.listen(PORT);
-
+  (globalThis.fetch as any) = require('node-fetch');
   console.log(`Application is running on: http://localhost:${PORT}`);
 }
 bootstrap();
