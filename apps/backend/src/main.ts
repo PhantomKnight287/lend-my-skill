@@ -1,28 +1,39 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import morgan from 'morgan';
 import './constants';
-import { PrismaService } from './services/prisma/prisma.service';
-import * as morgan from 'morgan';
+import { PORT } from './constants';
 import helmet from 'helmet';
+import { PrismaService } from './services/prisma/prisma.service';
+import '@total-typescript/ts-reset';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: false,
+    logger:
+      process.env.NODE_ENV === 'development'
+        ? ['debug', 'error', 'warn', 'log', 'verbose']
+        : ['debug', 'error', 'warn'],
   });
-  app.enableCors();
-  app.use(morgan('dev'), helmet());
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      stopAtFirstError: true,
+  app.use(morgan('dev'));
+  app.use(helmet());
+  app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        'default-src': ["'self'"],
+        'connect-src': ["'self'", 'blob:', 'wss:', 'websocket.domain'],
+      },
     }),
   );
-  // using this we can make breaking changes to the code with different api version and not break the existing code
+  app.enableCors();
+  app.get(PrismaService).enableShutdownHooks(app);
+  app.useGlobalPipes(new ValidationPipe());
   app.enableVersioning({
     type: VersioningType.URI,
+    defaultVersion: '1',
   });
-  await app.listen(process.env.PORT || 5000);
-  await app.get(PrismaService).enableShutdownHooks(app);
-  console.log(`🚀 Launched at http://localhost:${process.env.PORT || 5000}`);
+  await app.listen(PORT);
+
+  console.log(`Application is running on: http://localhost:${PORT}`);
 }
 bootstrap();

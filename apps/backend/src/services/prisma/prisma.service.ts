@@ -5,10 +5,13 @@ import { PrismaClient } from '@prisma/client';
 export class PrismaService extends PrismaClient implements OnModuleInit {
   constructor() {
     super({
+      log:
+        (process.env.NODE_ENV === 'development') === true
+          ? ['error', 'info', 'query', 'warn']
+          : ['error', 'info'],
       errorFormat: 'pretty',
     });
   }
-
   async onModuleInit() {
     await this.$connect();
   }

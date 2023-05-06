@@ -1,22 +1,34 @@
-/* eslint-disable @typescript-eslint/no-namespace */
-import { z } from 'zod';
-import 'dotenv/config';
+import { config } from 'dotenv';
 
-const EnvSchema = z.object({
-  PORT: z.string({}).default('5000'),
-  DATABASE_URL: z.string({
-    required_error: 'DATABASE_URL must be added to .env file',
-  }),
-});
+config();
 
-export const Env = EnvSchema.safeParse(process.env);
-if (Env.success === false) {
-  throw new Error(Env.error.errors[0].message);
+export const PORT = process.env.PORT || 5000;
+export const SIGN_SECRET = process.env.JWT_SECRET;
+export const SUPABASE_URL = process.env.SUPABASE_URL;
+export const SUPABASE_KEY = process.env.SUPABASE_KEY;
+export const RAZORPAY_KEY = process.env.RAZORPAY_KEY;
+export const RAZORPAY_SECRET = process.env.RAZORPAY_SECRET;
+export const RAZORPAY_WEBHOOK_SECRET = process.env.RAZORPAY_WEBHOOK_SECRET;
+
+if (!SIGN_SECRET) {
+  throw new Error('JWT_SECRET must be defined');
 }
 
-declare global {
-  namespace NodeJS {
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface ProcessEnv extends z.infer<typeof EnvSchema> {}
-  }
+
+if (!SUPABASE_URL) {
+  throw new Error('SUPABASE_URL must be defined');
+}
+if (!SUPABASE_KEY) {
+  throw new Error('SUPABASE_KEY must be defined');
+}
+
+if (!RAZORPAY_KEY) {
+  throw new Error('RAZORPAY_KEY must be defined');
+}
+if (!RAZORPAY_SECRET) {
+  throw new Error('RAZORPAY_SECRET must be defined');
+}
+
+if (!RAZORPAY_WEBHOOK_SECRET) {
+  throw new Error('RAZORPAY_WEBHOOK_SECRET must be defined');
 }
