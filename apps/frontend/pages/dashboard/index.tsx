@@ -98,7 +98,11 @@ const Dashboard = () => {
           "flex-col-reverse": userType === "Freelancer",
         })}
       >
-        <div className="w-full px-8 py-4">
+        <div
+          className={clsx("w-full px-8 py-4", {
+            hidden: userType !== "Client",
+          })}
+        >
           <Title
             className={clsx("", {
               [outfit.className]: true,
@@ -145,7 +149,7 @@ const Dashboard = () => {
                   >
                     <PostCard
                       description={service.description}
-                      image={service.bannerImage}
+                      images={service.images}
                       title={service.title}
                       author={service.user}
                       slug={service.slug}
@@ -158,7 +162,11 @@ const Dashboard = () => {
             )}
           </div>
         </div>
-        <div className="w-full px-8 py-4">
+        <div
+          className={clsx("w-full px-8 py-4", {
+            hidden: userType !== "Freelancer",
+          })}
+        >
           <Title
             className={clsx("", {
               [outfit.className]: true,
@@ -205,9 +213,7 @@ const Dashboard = () => {
                   >
                     <PostCard
                       description={post.description}
-                      image={
-                        "https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
-                      }
+                      images={post.images}
                       title={post.title}
                       author={post.author}
                       slug={post.slug}
