@@ -27,7 +27,7 @@ export class UploadController {
           cb(null, `${Date.now()}-${randomUUID()}-${file.originalname}`),
       }),
       limits: {
-        fileSize: 10 * 1024 * 1024,
+        fileSize: 50 * 1024 * 1024,
       },
     }),
   )
@@ -48,7 +48,7 @@ export class UploadController {
           cb(null, `${Date.now()}-${randomUUID()}-${file.originalname}`),
       }),
       limits: {
-        fileSize: 10 * 1024 * 1024,
+        fileSize: 50 * 1024 * 1024,
       },
     }),
   )
