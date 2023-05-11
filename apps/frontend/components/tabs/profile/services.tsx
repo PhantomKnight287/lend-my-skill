@@ -25,12 +25,36 @@ import { IconStar } from "@tabler/icons-react";
 dayjs.extend(relativeTime);
 
 const defaultOptions = {
-  allowedTags: ["b", "i", "em", "strong", "a"],
+  allowedTags: [
+    "b",
+    "i",
+    "em",
+    "strong",
+    "a",
+    "ul",
+    "li",
+    "ol",
+    "p",
+    "br",
+    "blockquote",
+    "u",
+    "span",
+    "s",
+    "hr",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "del"
+  ],
   allowedAttributes: {
     a: ["href"],
   },
   allowedIframeHostnames: ["www.youtube.com"],
-};
+  disallowedTagsMode: "recursiveEscape",
+} satisfies sanitizeHtml.IOptions;
 
 export const sanitize = (dirty: string, options: IOptions | undefined) => ({
   __html: sanitizeHtml(dirty, { ...defaultOptions, ...options }),
@@ -210,7 +234,7 @@ const ServicesTab = ({ username }: Props) => {
       <div>{isFetching && !isFetchingNextPage ? "Fetching..." : null}</div>
       {data?.pages?.[0]?.services?.length === 0 && (
         <div className="flex flex-col items-center justify-center w-[100%] container">
-          <p>
+          <p className="text-center">
             <span className="font-bold">{username}</span> has not posted any
             service
             <p className="opacity-0">

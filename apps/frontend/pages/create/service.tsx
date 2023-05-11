@@ -505,7 +505,9 @@ function CreateService() {
                           />
                           <Button
                             variant="filled"
-                            className="bg-[#e53935] hover:bg-[#d32f2f]"
+                            className={clsx("bg-[#e53935] hover:bg-[#d32f2f]", {
+                              hidden: id === 0,
+                            })}
                             onClick={() => {
                               formState.removeListItem("features", id);
                             }}
