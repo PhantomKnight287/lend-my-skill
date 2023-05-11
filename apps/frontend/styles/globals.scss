@@ -15,3 +15,10 @@
   background: rgba(255, 255, 255, 0.31);
   -webkit-backdrop-filter: blur(11.6px);
 }
+
+ul{
+  list-style-type: unset;
+}
+ol{
+  list-style-type: decimal;
+}
