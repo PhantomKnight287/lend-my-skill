@@ -21,6 +21,7 @@ import { UserMiddleware } from './resources/auth/middleware/auth/auth.middleware
 import { UpiModule } from './resources/upi/upi.module';
 import { JobPostModule } from './resources/job-post/job-post.module';
 import { SearchModule } from './resources/search/search.module';
+import { PackageModule } from './resources/package/package.module';
 
 @Module({
   controllers: [AppController],
@@ -45,6 +46,7 @@ import { SearchModule } from './resources/search/search.module';
     UpiModule,
     JobPostModule,
     SearchModule,
+    PackageModule,
   ],
   exports: [PrismaService],
 })
@@ -84,6 +86,7 @@ export class AppModule implements NestModule {
         '/v1/categories',
         '/v1/tags',
         '/v1',
+        '/v1/package/(.*)',
       )
       .forRoutes('*');
   }

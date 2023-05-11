@@ -144,7 +144,6 @@ export class JobPostService {
         },
       ],
     });
-    if (!posts) throw new HttpException('No posts found for this user.', 404);
     if (posts.length === 10) {
       return {
         posts,

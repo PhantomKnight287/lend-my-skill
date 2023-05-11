@@ -98,7 +98,7 @@ export class CategoriesService {
             title: true,
             createdAt: true,
             description: true,
-            bannerImage: true,
+            images: true,
             package: {
               select: {
                 price: true,
