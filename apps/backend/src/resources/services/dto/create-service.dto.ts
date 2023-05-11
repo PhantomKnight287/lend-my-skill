@@ -33,9 +33,6 @@ export class CreateServiceDTO {
   @IsString()
   category: string;
 
-  @IsString()
-  bannerImage: string;
-
   @IsString({ each: true })
   images: string[];
 
