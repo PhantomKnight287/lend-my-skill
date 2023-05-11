@@ -117,10 +117,7 @@ const JobPosts = ({ username }: Props) => {
                 </div>
               </Group>
               <Group p="md">
-                <Link
-                  href={`/post/${post.slug}`}
-                  className="hover:text-white"
-                >
+                <Link href={`/post/${post.slug}`} className="hover:text-white">
                   {post.title}
                 </Link>
               </Group>
@@ -174,7 +171,7 @@ const JobPosts = ({ username }: Props) => {
       <div>{isFetching && !isFetchingNextPage ? "Fetching..." : null}</div>
       {data?.pages?.[0]?.posts?.length === 0 && (
         <div className="flex flex-col items-center justify-center w-[100%] container">
-          <p>
+          <p className="text-center">
             <span className="font-bold">{username}</span> has not posted any
             post
             <p className="opacity-0">

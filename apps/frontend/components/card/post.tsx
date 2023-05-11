@@ -7,17 +7,17 @@ import {
   Badge,
   Button,
   Group,
-  useMantineColorScheme,
 } from "@mantine/core";
 import { assetURLBuilder } from "@utils/url";
 import clsx from "clsx";
 import Link from "next/link";
+import { Carousel } from "react-responsive-carousel";
 import { Posts } from "~/types/jobpost";
 
 interface Props {
   title: string;
   description: string;
-  image: string;
+  images: string[];
   price?: number;
   buttonTitle?: string;
   author?: Posts["posts"][0]["author"];
@@ -29,7 +29,7 @@ interface Props {
 
 export function PostCard({
   description,
-  image,
+  images,
   slug,
   title,
   type,
@@ -46,11 +46,17 @@ export function PostCard({
       className={"max-w-[350px]  min-w-[300px] h-full min-h-[21rem] mx-1"}
     >
       <Card.Section>
-        <Image
-          src={resolveImageUrl ? assetURLBuilder(image) : image}
-          height={160}
-          alt="Banner Image"
-        />
+        <Carousel>
+          {images.map((image, index) => (
+            <Image
+              key={index}
+              src={resolveImageUrl ? assetURLBuilder(image) : image}
+              alt={title}
+              height={300}
+              className="object-cover"
+            />
+          ))}
+        </Carousel>
       </Card.Section>
 
       <Group
