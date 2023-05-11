@@ -55,12 +55,13 @@ model Uploads {
 }
 
 model Category {
-  id        String    @id @unique @default(cuid())
-  name      String
-  createdAt DateTime  @default(now())
-  slug      String    @unique
-  services  Service[]
-  jobPost   JobPost[]
+  id          String    @id @unique @default(cuid())
+  name        String
+  createdAt   DateTime  @default(now())
+  slug        String    @unique
+  services    Service[]
+  jobPost     JobPost[]
+  description String?
 }
 
 model Tags {
@@ -80,7 +81,6 @@ model Service {
   slug        String   @unique
   category    Category @relation(fields: [categoryId], references: [id])
   categoryId  String
-  bannerImage String
   images      String[]
   rating      Int      @default(0)
   ratedBy     Int      @default(0)
