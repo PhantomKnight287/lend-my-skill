@@ -59,8 +59,8 @@ export interface AllServicesResponse {
       }
     ];
     rating: number;
-    bannerImage: string;
     ratedBy: number;
+    images: string[];
   }[];
   next?: number;
 }

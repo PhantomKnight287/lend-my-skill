@@ -81,6 +81,7 @@ export interface Posts {
     title: string;
     tags: string[];
     slug: string;
+    images: string[];
   }[];
   next?: number;
 }
