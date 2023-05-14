@@ -64,7 +64,7 @@ export function Header() {
             <Link
               href="/auth/register"
               className={clsx(
-                "p-3 font-medium rounded-3xl py-2 text-white bg-gray-900  px-4  "
+                "p-3 font-medium rounded-3xl py-2 text-black bg-primary  px-4  "
               )}
             >
               Signup

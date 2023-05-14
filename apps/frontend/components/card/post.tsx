@@ -84,7 +84,7 @@ export function PostCard({
           mt="md"
           radius="md"
           className={clsx(
-            "transition-all duration-[110ms] hover:scale-105 hover:bg-purple-700 bg-purple-500",
+            "transition-all duration-[110ms] hover:scale-105 bg-primary hover:bg-primary/90",
             {
               [outfit.className]: true,
             }
