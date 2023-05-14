@@ -1,26 +1,11 @@
 import { MetaTags } from "@components/meta";
-import LinkedAccounts from "@components/profiles";
 import ServicesTab from "@components/tabs/profile/services";
 import JobPosts from "@components/tabs/profile/job-posts";
 import { outfit, sen } from "@fonts";
 import { readCookie } from "@helpers/cookie";
 import useHydrateUserContext from "@hooks/hydrate/user";
-import {
-  Avatar,
-  Divider,
-  Paper,
-  Rating,
-  Tabs,
-  Title,
-  useMantineColorScheme,
-} from "@mantine/core";
-import {
-  IconBrandGithub,
-  IconBrandTwitter,
-  IconCake,
-  IconMapPin,
-  IconPencil,
-} from "@tabler/icons-react";
+import { Avatar, Paper, Title } from "@mantine/core";
+import { IconCake, IconMapPin, IconPencil } from "@tabler/icons-react";
 import { profileImageRouteGenerator } from "@utils/profile";
 import { assetURLBuilder, URLBuilder } from "@utils/url";
 import axios from "axios";
@@ -32,39 +17,9 @@ import {
   NextPage,
 } from "next";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import Reviews from "@components/tabs/profile/reviews";
 import dayjs from "dayjs";
-import { r } from "@helpers/date";
 import { Container } from "@components/container";
-
-type Client = {
-  id: string;
-  name: string;
-  username: string;
-  email: string;
-  password: string;
-  country: string;
-  aboutMe: string | null;
-  githubId: string | null;
-  linkedinUsername: string | null;
-  twitterUsername: string | null;
-  facebookUsername: string | null;
-  instagramUsername: string | null;
-  kycDocuments: string[];
-  kycCompleted: boolean;
-  phoneNumber: string | null;
-  profileCompleted: boolean;
-  avatarUrl: string | null;
-  bio: string | null;
-  paypalEmail: string | null;
-  upiId: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  verified: boolean;
-  emailVerified: boolean;
-};
 
 const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   props
@@ -99,7 +54,6 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
         description={props.bio || `${props.name} on Lend My Skill`}
       />
       <div className="flex flex-row items-center justify-evenly flex-wrap">
-        <div className="w-full h-52 bg-[#e0f3ff]"></div>
         <Paper
           withBorder
           p="xl"
@@ -107,7 +61,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
           style={{
             flex: 0.3,
           }}
-          className="lg:min-w-[50%] mt-[-50px]"
+          className="lg:min-w-[50%] mt-[100px]"
         >
           <div className="flex flex-col items-center justify-center">
             <Avatar
@@ -123,7 +77,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
               <div className="flex flex-row mt-8">
                 <h1
                   className={clsx(
-                    "text-3xl font-bold text-white",
+                    "text-3xl font-bold text-black",
                     outfit.className
                   )}
                 >
@@ -148,7 +102,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
               </div>
               <span
                 className={clsx(
-                  "text-[13px] leading-[18px] mt-1 hover:underline text-gray-400"
+                  "text-[13px] leading-[18px] mt-1 hover:underline text-black/80"
                 )}
               >
                 @{props.username}
@@ -179,15 +133,19 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
           </div>
         </Paper>
       </div>
-      <Container mb="xl" >
+      <Container mb="xl">
         {props.role === "Freelancer" ? (
           <>
-            <Title align="center" className={clsx(outfit.className)} >Services</Title>
+            <Title align="center" className={clsx(outfit.className)}>
+              Services
+            </Title>
             <ServicesTab username={props.username} />
           </>
         ) : (
           <>
-            <Title align="center" className={clsx(outfit.className)} >Jobs</Title>
+            <Title align="center" className={clsx(outfit.className)}>
+              Jobs
+            </Title>
             <JobPosts username={props.username} />
           </>
         )}
