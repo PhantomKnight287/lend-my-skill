@@ -10,6 +10,8 @@ export interface Service {
   slug: string;
   title: string;
   tags: { name: string; slug: string; id: string }[];
+  totalRating: string;
+  totalReviews: number;
 }
 
 export interface Category {
