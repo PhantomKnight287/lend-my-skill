@@ -202,7 +202,7 @@ function CreateJobPost() {
                           }}
                           {...formState.getInputProps("title")}
                           classNames={{
-                            input: clsx("border-0 text-base", {}),
+                            input: clsx("border-0 text-base bg-secondary", {}),
                           }}
                           minLength={20}
                           maxLength={1000}
@@ -234,7 +234,7 @@ function CreateJobPost() {
                           }}
                           {...formState.getInputProps("description")}
                           classNames={{
-                            input: clsx("border-0 text-base", {}),
+                            input: clsx("border-0 text-base bg-secondary", {}),
                           }}
                           minLength={20}
                           maxLength={1000}
@@ -361,7 +361,6 @@ function CreateJobPost() {
                           d.forEach((f) => {
                             if (f.size > maxSize) {
                               showNotification({
-                                variant: "error",
                                 message: ` ${f.name}'s size is too big. Maximum size is 10mb`,
                               });
                             } else {
@@ -370,7 +369,7 @@ function CreateJobPost() {
                           });
                           setFiles((prev) => [...prev, ...filesToSet]);
                         }}
-                        accept="image*"
+                        accept="image/*"
                         multiple
                       >
                         {(props) => (
@@ -378,7 +377,7 @@ function CreateJobPost() {
                             disabled={files.length >= 5}
                             {...props}
                             className={clsx(
-                              "bg-[#1e88e5] hover:bg-[#1976d2] mt-4",
+                              "bg-accent text-black disabled:bg-accent/50 hover:bg-accent/75 mt-4",
                               {
                                 [outfit.className]: true,
                               }
@@ -464,8 +463,14 @@ function CreateJobPost() {
                         labelProps={{
                           className: clsx("text-sm font-bold ", {
                             [outfit.className]: true,
-                            "": theme === "light",
                           }),
+                        }}
+                        styles={{
+                          input: {
+                            "&:focus-visible": {
+                              outline: "none",
+                            },
+                          },
                         }}
                         placeholder="Enter tags"
                         searchable
@@ -511,7 +516,9 @@ function CreateJobPost() {
                         <Button
                           onClick={() => setActive(1)}
                           variant="filled"
-                          className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
+                          className={clsx(
+                            "bg-accent hover:bg-accent/90 disabled:bg-accent/50 text-black"
+                          )}
                         >
                           Next step
                         </Button>
@@ -576,7 +583,9 @@ function CreateJobPost() {
                           type={"submit"}
                           variant="filled"
                           loading={loading}
-                          className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
+                          className={clsx(
+                            "bg-accent hover:bg-accent/90 disabled:bg-accent/50 text-black"
+                          )}
                         >
                           Post
                         </Button>
