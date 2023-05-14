@@ -92,74 +92,32 @@ export function Hero(props: { hideDashboardButton?: boolean }) {
         Get Your Work Done By Skilled Freelancers.
       </p>
       <div
-        className={clsx("flex flex-row justify-between w-full items-center ", {
+        className={clsx("flex flex-row justify-center w-full items-center ", {
           hidden: username && !props.hideDashboardButton,
         })}
       >
         <div
           className={clsx(
-            "mt-2 mb-4 flex items-center justify-center rounded-md bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[2px] duration-[125ms] transition-all hover:scale-110 w-fit ml-auto mr-5"
+            "mt-2 mb-4 flex items-center justify-center rounded-md p-[2px] duration-[125ms] transition-all hover:scale-110 w-fit"
           )}
           data-aos="zoom-in"
         >
-          <Link href="/auth/register" passHref>
-            <Button
-              variant="filled"
-              className={clsx("", {
-                "bg-[#201e1e] hover:bg-gray-900 ": colorScheme === "light",
-                "bg-[#201e1e]  text-white": colorScheme === "dark",
-              })}
-              color="dark"
-            >
-              Get Started <IconArrowRight className="m-0 p-0 ml-2" />
-            </Button>
-          </Link>
-        </div>
-        <div
-          className={clsx(
-            "mt-2 mb-4 flex items-center justify-center rounded-md bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[2px] duration-[125ms] transition-all hover:scale-110 w-fit mr-auto ml-5"
-          )}
-          data-aos="zoom-in"
-        >
-          <Link href="/about" passHref>
-            <Button
-              variant="filled"
-              className={clsx("", {
-                "bg-[#201e1e] hover:bg-gray-900 ": colorScheme === "light",
-                "bg-[#201e1e]  text-white": colorScheme === "dark",
-              })}
-              color="dark"
-            >
-              How It Works?
-            </Button>
-          </Link>
-        </div>
-      </div>
-      <div
-        className={clsx("flex flex-row justify-between w-full items-center ", {
-          hidden: props.hideDashboardButton ? true : !username,
-        })}
-      >
-        <div
-          className={clsx(
-            "mt-2 mb-4 flex items-center justify-center rounded-md bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[2px] duration-[125ms] transition-all hover:scale-110 w-fit  mx-auto"
-          )}
-          data-aos="zoom-in"
-        >
-          <Link href="/dashboard" passHref>
-            <Button
-              variant="filled"
-              className={clsx("", {
-                "bg-[#201e1e] hover:bg-gray-900 ": colorScheme === "light",
-                "bg-[#201e1e]  text-white": colorScheme === "dark",
-              })}
-              color="dark"
+          {username ? (
+            <Link href="/dashboard"
+            className="flex flex-row bg-primary p-2 rounded-md px-4 font-medium"
             >
               Take Me to Dashboard <IconArrowRight className="m-0 p-0 ml-2" />
-            </Button>
-          </Link>
+            </Link>
+          ) : (
+            <Link href="/auth/register"
+            className="flex flex-row bg-primary p-2 rounded-md px-4 font-medium"
+            >
+              Get Started <IconArrowRight className="m-0 p-0 ml-2" />
+            </Link>
+          )}
         </div>
       </div>
+
       <div className="container py-16 md:py-28 gap-6 flex flex-row flex-wrap items-center  justify-center shadow-2xl  shadow-[##281335]">
         {Features.map((f) => (
           <Feature icon={null} {...f} key={f.title} />
@@ -177,12 +135,12 @@ type FeatureProps = {
 
 function Feature({ description, title, icon }: FeatureProps) {
   return (
-    <div className={clsx("p-4 md:w-1/3 flex ", styles.glass)}>
-      <div className="w-12 h-12 inline-flex items-center justify-center rounded-full bg-gray-800 text-indigo-400 mb-4 flex-shrink-0">
+    <div className={clsx("p-4 md:w-1/3 flex bg-white ", styles.glass)}>
+      <div className="w-12 h-12 inline-flex items-center justify-center rounded-full bg-gray-300 text-indigo-400 mb-4 flex-shrink-0">
         {icon}
       </div>
       <div className="flex-grow pl-6">
-        <h2 className="text-white text-lg title-font font-medium mb-2">
+        <h2 className="text-black text-lg title-font font-medium mb-2">
           {title}
         </h2>
         <p className="leading-relaxed text-base max-w-sm">{description}</p>
