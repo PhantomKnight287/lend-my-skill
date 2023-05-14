@@ -13,10 +13,11 @@ import {
   Text,
   Tooltip,
 } from "@mantine/core";
-import { IconCheck } from "@tabler/icons-react";
+import { IconCheck, IconPoint, IconPointFilled } from "@tabler/icons-react";
 import { profileImageRouteGenerator } from "@utils/profile";
 import { assetURLBuilder, URLBuilder } from "@utils/url";
 import clsx from "clsx";
+import Carousel from "framer-motion-carousel";
 import {
   GetStaticPaths,
   GetStaticProps,
@@ -25,7 +26,6 @@ import {
 } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Carousel } from "react-responsive-carousel";
 import { JobPost } from "~/types/jobpost";
 
 const Slug: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
@@ -43,9 +43,7 @@ const Slug: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
     >
       <MetaTags
         title={`${props.title} | ${props.user.name} | Lend My Skill`}
-        description={
-          props.description || `${props.user.name} on Lend My Skill`
-        }
+        description={props.description || `${props.user.name} on Lend My Skill`}
       />
       <div className="flex flex-col items-center justify-center">
         <h1 className="text-4xl font-bold">{props.title}</h1>
@@ -137,46 +135,62 @@ const Slug: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
 
         <Divider orientation="horizontal" className={clsx("w-full my-4")} />
 
-        <div className="flex flex-col flex-wrap gap-2 items-center justify-center">
-          {props.images.length > 0 ? (
-            <>
-              <h2 className="text-xl font-semibold">Attached Images</h2>
-              <Carousel
-                centerMode
-                dynamicHeight
-                emulateTouch
-                useKeyboardArrows
-                showArrows
-                showThumbs={false}
-                swipeable
-              >
-                {props.images.map((i) => (
-                  <div key={assetURLBuilder(i)}>
-                    {i.endsWith(".mp4") ? (
-                      <video
-                        src={assetURLBuilder(i)}
-                        className="cursor-pointer my-6"
-                        controls
-                        onClick={() => {
-                          window.open(assetURLBuilder(i));
-                        }}
-                      />
-                    ) : (
-                      <Image
-                        src={assetURLBuilder(i)}
-                        alt="Image"
-                        className="cursor-pointer"
-                        onClick={() => {
-                          window.open(assetURLBuilder(i));
-                        }}
-                      />
-                    )}
-                  </div>
-                ))}
-              </Carousel>
-            </>
-          ) : null}
-        </div>
+        {props.images.length > 0 ? (
+          <div className="container max-w-[400px] h-fit">
+            <Carousel
+              autoPlay={false}
+              interval={5000}
+              loop
+              renderDots={({ activeIndex, setActiveIndex }) => (
+                <div className="flex flex-row gap-2 items-center justify-center flex-wrap my-4 absolute bottom-[-15px] right-0 left-0">
+                  {props.images.map((i, index) => (
+                    <button
+                      key={index}
+                      className="cursor-pointer"
+                      onClick={() => setActiveIndex(index)}
+                    >
+                      {index === activeIndex ? (
+                        <IconPointFilled size={20} color="blue" />
+                      ) : (
+                        <IconPoint size={20} color="gray" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            >
+              {props.images.map((i) => (
+                <div
+                  key={assetURLBuilder(i)}
+                  className="max-w-[400px] aspect-square  "
+                >
+                  {i.endsWith(".mp4") ? (
+                    <video
+                      src={assetURLBuilder(i)}
+                      className="cursor-pointer my-6"
+                      controls
+                      onClick={() => {
+                        window.open(assetURLBuilder(i));
+                      }}
+                    />
+                  ) : (
+                    <Image
+                      src={assetURLBuilder(i)}
+                      alt="Image"
+                      className="cursor-pointer  max-w-[400px] aspect-square"
+                      classNames={{
+                        image: "rounded-md max-w-[400px] aspect-square",
+                      }}
+                      onClick={() => {
+                        window.open(assetURLBuilder(i));
+                      }}
+                    />
+                  )}
+                </div>
+              ))}
+            </Carousel>
+          </div>
+        ) : null}
         {"quotations" in props ? (
           <>
             <Divider orientation="horizontal" className={clsx("w-full my-4")} />
