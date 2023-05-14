@@ -98,7 +98,7 @@ export default function NothingFoundBackground() {
             <Link href={"/dashboard"}>
               <Button
                 size="md"
-                className="transition-all duration-[110ms] hover:scale-105 hover:bg-purple-700 bg-purple-500"
+                className="transition-all duration-[110ms] hover:scale-105 hover:bg-primary/90 bg-primary"
               >
                 Take me back to home page
               </Button>

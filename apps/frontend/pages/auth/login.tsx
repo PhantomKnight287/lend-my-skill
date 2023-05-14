@@ -6,14 +6,10 @@ import {
   Text,
   Paper,
   Group,
-  PaperProps,
-  Button,
-  Divider,
-  Checkbox,
   Anchor,
   Stack,
   useMantineColorScheme,
-  Select,
+  Button,
 } from "@mantine/core";
 import { Container } from "@components/container";
 import clsx from "clsx";
@@ -112,19 +108,14 @@ export default function Login() {
         description="Login to Lend Your Skill to world and start earning money"
       />
       <Container className={clsx("mt-20")} size={500} my={40}>
-        <Text
-          size="lg"
-          weight={500}
+        <h1
           className={clsx("text-center text-3xl font-bold mb-4", {
             [outfit.className]: true,
             "text-white": colorScheme === "dark",
           })}
         >
-          Welcome to <br />
-          <span className="text-center bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] bg-clip-text text-transparent">
-            Lend My Skill
-          </span>
-        </Text>
+          Welcome <span className="text-center gradient-text">Back!</span>
+        </h1>
 
         <Paper radius="md" p="xl" withBorder>
           <form onSubmit={form.onSubmit((d) => handleSubmit(d))}>
@@ -145,31 +136,30 @@ export default function Login() {
               />
             </Stack>
 
-            <Group position="apart" mt="xl">
+            <div className="flex flex-col justify-center mt-4">
               <Anchor
                 component={Link}
                 href="/auth/register"
                 type="button"
                 size="xs"
                 className="text-[#3b82f6] hover:underline"
+                mb="md"
               >
                 Do not have an account? Register
               </Anchor>
               <Button
                 type="submit"
-                fullWidth
-                color="black"
-                className={clsx("", {
-                  [outfit.className]: true,
-                  "bg-gray-900 hover:bg-black": colorScheme === "light",
-                  "bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] text-white":
-                    colorScheme === "dark",
-                })}
+                className={clsx(
+                  "bg-primary text-black hover:scale-105 duration-[110ms] transition-all hover:bg-primary/90",
+                  {
+                    [outfit.className]: true,
+                  }
+                )}
                 loading={loading}
               >
                 Login
               </Button>
-            </Group>
+            </div>
           </form>
         </Paper>
       </Container>

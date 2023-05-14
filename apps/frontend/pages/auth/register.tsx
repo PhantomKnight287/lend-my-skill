@@ -118,28 +118,16 @@ export default function Register() {
         description="Register to Lend Your Skill to world and start earning money"
       />
       <Container className={clsx("mt-20")} my={40}>
-        <Text
-          size="lg"
-          weight={500}
-          className={clsx("text-center text-2xl font-bold mb-4", {
+        <h1
+          className={clsx("text-center text-3xl font-bold mb-4", {
             [outfit.className]: true,
             "text-white": colorScheme === "dark",
           })}
         >
-          <span className="text-center bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] bg-clip-text text-transparent">
-            Lend My Skill
-          </span>
-        </Text>
-        <Text
-          className={clsx("text-center text-2xl font-bold mb-4", {
-            [outfit.className]: true,
-            "text-white": colorScheme === "dark",
-          })}
-        >
-          {form.values.role === "Client"
-            ? "Sign Up to Hire Freelancers"
-            : "Sign Up to Start Earning Money"}
-        </Text>
+          Welcome to <br />
+          <span className="gradient-text">Lend My Skill</span>
+        </h1>
+
         <Paper radius="md" p="xl" withBorder className="max-w-[500px] mx-auto">
           <form
             onSubmit={(e) => {
@@ -228,7 +216,7 @@ export default function Register() {
                 fullWidth
                 color="black"
                 className={clsx(
-                  "focus:outline-none text-white bg-purple-700 hover:bg-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 ",
+                  "focus:outline-none bg-primary hover:bg-primary/90 font-medium rounded-lg text-sm px-5  mb-2 text-black",
                   {
                     [outfit.className]: true,
                   }
