@@ -523,7 +523,7 @@ function Settings() {
                         inputProps={{
                           required: true,
                           className:
-                            "text-white bg-gray-900 px-4 py-2 w-full rounded-md",
+                            "text-black bg-secondary px-4 py-2 w-full rounded-md",
                         }}
                       />
                       {paymentInfo === "upi" ? (
@@ -536,7 +536,7 @@ function Settings() {
                             {...completeProfileState.getInputProps("upiId")}
                           />
                           <Text
-                            className="text-md mt-2 text-blue-300"
+                            className="text-md mt-2 text-blue-500"
                             role="button"
                             onClick={() => setPaymentInfo()}
                           >
@@ -555,7 +555,7 @@ function Settings() {
                             )}
                           />
                           <Text
-                            className="text-md mt-2 text-blue-300"
+                            className="text-md mt-2 text-blue-500"
                             role="button"
                             onClick={() => setPaymentInfo()}
                           >
