@@ -131,7 +131,7 @@ export class SearchService {
             },
           ],
         },
-        rating: true,
+
         tags: {
           select: {
             name: true,
@@ -139,7 +139,7 @@ export class SearchService {
             slug: true,
           },
         },
-        ratedBy: true,
+
         images: true,
       },
       take: toTake,
@@ -298,7 +298,7 @@ export class SearchService {
             },
           ],
         },
-        rating: true,
+
         tags: {
           select: {
             name: true,
@@ -306,7 +306,7 @@ export class SearchService {
             slug: true,
           },
         },
-        ratedBy: true,
+
         images: true,
       },
       take: toTake,
@@ -471,7 +471,6 @@ export class SearchService {
             },
           ],
         },
-        rating: true,
         tags: {
           select: {
             name: true,
@@ -480,7 +479,6 @@ export class SearchService {
           },
         },
 
-        ratedBy: true,
         images: true,
       },
       take: toTake,

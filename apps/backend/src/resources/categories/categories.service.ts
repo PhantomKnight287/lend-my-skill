@@ -110,7 +110,6 @@ export class CategoriesService {
                 },
               ],
             },
-            rating: true,
             tags: {
               select: {
                 name: true,
@@ -118,7 +117,6 @@ export class CategoriesService {
                 slug: true,
               },
             },
-            ratedBy: true,
           },
           take: toTake,
           skip: toTake > 10 ? toTake - 10 : undefined,
