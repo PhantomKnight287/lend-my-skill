@@ -21,6 +21,8 @@ import Link from "next/link";
 import { outfit, sen } from "@fonts";
 import sanitizeHtml, { IOptions } from "sanitize-html";
 import { IconStar } from "@tabler/icons-react";
+import { PostCard } from "@components/card/post";
+import { Service } from "~/types/service";
 
 dayjs.extend(relativeTime);
 
@@ -47,7 +49,7 @@ const defaultOptions = {
     "h4",
     "h5",
     "h6",
-    "del"
+    "del",
   ],
   allowedAttributes: {
     a: ["href"],
@@ -72,27 +74,7 @@ const ServicesTab = ({ username }: Props) => {
     isFetchingNextPage,
     isFetching,
   } = useInfiniteQuery<{
-    services: {
-      id: string;
-      user: {
-        username: string;
-        name: string;
-        avatarUrl: string;
-      };
-      createdAt: string;
-      title: string;
-      tags: { name: string; id: string; slug: string }[];
-      slug: true;
-      description: string;
-      package: [
-        {
-          price: number;
-        }
-      ];
-      rating: number;
-      bannerImage: string;
-      ratedBy: number;
-    }[];
+    services: Service[];
     next?: number;
   }>({
     queryKey: ["services", username],
@@ -120,94 +102,16 @@ const ServicesTab = ({ username }: Props) => {
           ]}
         >
           {page.services?.map((service) => (
-            <Paper key={service.id} withBorder shadow={"md"} radius="md">
-              <Image
-                src={assetURLBuilder(service.bannerImage)}
-                width="100%"
-                height={"100%"}
-                alt="Service Banner"
-                classNames={{
-                  image: "rounded-t-md",
-                }}
-              />
-              <Group position="left" mt="md" pl="md">
-                <div>
-                  <Avatar
-                    size="md"
-                    src={
-                      service.user.avatarUrl
-                        ? assetURLBuilder(service.user.avatarUrl)
-                        : profileImageRouteGenerator(service.user.username)
-                    }
-                    radius="xl"
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <Text size="md" className={clsx(sen.className, "mb-0")}>
-                    {service.user.name}
-                  </Text>
-
-                  <Text
-                    size="xs"
-                    className={clsx(sen.className, "mt-0 leading-3")}
-                  >
-                    @{service.user.username}{" "}
-                  </Text>
-                </div>
-              </Group>
-              <Group mt="sm" mb="xs" p="md">
-                <Link
-                  href={`/service/${service.slug}`}
-                  className="hover:text-white"
-                >
-                  {service.title}
-                </Link>
-              </Group>
-              <Divider />
-              <Group position="apart">
-                <div className="flex flex-col">
-                  <Text size="xs" className={clsx(sen.className)}>
-                    {service.tags.map((tag) => (
-                      <Fragment key={tag.id}>
-                        <Link href={`/t/${tag.slug}`}>
-                          <span className="text-gray-500"># {tag.name} </span>
-                        </Link>
-                      </Fragment>
-                    ))}
-                  </Text>
-                </div>
-              </Group>
-              <Divider />
-              <Group position="apart" pt="md" pb={undefined}>
-                <div className="flex flex-row pl-4">
-                  <IconStar color="yellow" fill="yellow" width={15} />
-                  <span className="ml-1">
-                    {service.rating}
-                    <span className="text-sm text-gray-500 ml-1">
-                      ({service.ratedBy})
-                    </span>
-                  </span>
-                </div>
-                <div className="flex flex-col pr-4">
-                  <Text
-                    className={clsx(
-                      outfit.className,
-                      "text-[10px] mb-0 uppercase"
-                    )}
-                  >
-                    Starting At
-                  </Text>
-                  <Text
-                    className={clsx(
-                      sen.className,
-                      "text-lg mt-0 leading-3 mb-2"
-                    )}
-                  >
-                    $ {service.package[0].price}
-                  </Text>
-                </div>
-              </Group>
-            </Paper>
+            <PostCard
+              key={service.id}
+              description={service.description}
+              images={service.images}
+              resolveImageUrl
+              slug={service.slug}
+              title={service.title}
+              type="job"
+              author={service.user}
+            />
           ))}
         </SimpleGrid>
       ))}
