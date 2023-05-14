@@ -1,0 +1,6 @@
+User-Agent: *
+Disallow: /profile/*/orders
+Disallow: /profile/*/order/*/chat
+Disallow: /profile/*/order
+Disallow: /profile/*/order/questions
+Disallow: /service/*/purchase

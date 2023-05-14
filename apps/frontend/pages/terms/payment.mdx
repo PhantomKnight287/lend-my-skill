@@ -1,0 +1,61 @@
+import { Container } from "@mantine/core";
+import styles from "@styles/mdx.module.scss";
+import { MetaTags } from "@components/meta";
+import { clsx } from "clsx";
+import { outfit } from "@fonts";
+
+<MetaTags
+  title="Payment Terms"
+  description="Terms and Conditions related to Payment on Lend My Skill"
+/>
+
+<Container  mb="xl" >
+<div className={clsx({
+    [styles.container]:true,
+    [outfit.className]:true
+})}>
+<h2 className={styles.initialHeading}>Payment Terms & Conditions</h2>
+
+<p className="text-gray-400">Last Updated: January 18, 2023</p>
+
+The following terms (these “Payment Terms”) govern payments you make or receive through www.lendmyskill.com (the “Site”), operated by Lend My Skill.
+
+Lend My Skill are collectively referred here to as “we” or “us”.
+
+Please read these Payment Terms carefully before making or receiving payments through the Site. By making or receiving payments through the Site, you accept and agree, on behalf of yourself or on behalf of your employer or any other entity (if applicable), to be bound and abide by these Payment Terms. These Terms are supplemental to Lend My Skill’s General Terms of Service, as applicable (collectively, the “Terms of Service”).
+
+All Prices shown on Lend My Skill are in `USD`, they will be converted into `INR` at the time of checkout.
+
+<h1 className={styles.heading}>Receiving Payments</h1>
+
+        - Each Project you sell and successfully complete, accredits your account with revenue equal to 90% of the purchase amount.
+
+        - If an Order is cancelled(for any reason), the funds(excluding Payment Gateway Charges) will be returned back to the Buyer&apos;s Account.
+
+        - Buyers are responsible for paying any direct or indirect taxes, including any GST, VAT or income tax, which may apply to them depending on residency, location or otherwise, under provisions of their jurisdiction. Sellers represent and warrant that they comply, and will comply at all times, with their obligations under income tax provisions in their jurisdiction.
+
+<h1 className={styles.heading}>Withdrawl Methods</h1>
+
+        - The Payment will be credited to your UPI address(if you&apos;re from India) or Your Paypal Email(if you&apos;re outside of India).
+
+<h1 className={styles.heading}>Currencies</h1>
+
+All Users are required to provide amount in `USD`. The `USD` will be converted to `INR` at the time of checkout. All payments are processed by [`Razorpay`](https://razorpay.com). You must abide by the terms and conditions of Razorpay.
+
+<h1 className={styles.heading}>Refund</h1>
+We Will Refund Your Money in 3-5 business days(may take more in certain circumstances)
+If:
+
+        - The Seller isn&apos;t replying to your messages from last 5 days.
+        - The Seller gave you incomplete work. *
+
+You should contact our Support Team via Email if Seller isn&apos;t cooperating with you.<br/>
+`*` &rarr; You&apos;ve `24 hours` to contact our Support Team if Seller gave you incomplete work.
+
+<h1 className={styles.heading}>Cancellation</h1>
+
+        - If You(seller) decided to cancel an order. Seller should contact our team with an appropriate reason to cancel the order.<br/>
+        <b>An Order can only be cancelled within next 12 hours when the transaction was inititated from the Seller&apos;s account.</b>
+
+</div>
+</Container>
