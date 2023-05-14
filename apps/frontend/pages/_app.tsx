@@ -23,7 +23,7 @@ const client = new QueryClient();
 export default function App(props: AppProps) {
   const { Component, pageProps } = props as any;
 
-  const colorScheme: ColorScheme = "dark";
+  const colorScheme: ColorScheme = "light";
 
   return (
     <ErrorBoundary>
