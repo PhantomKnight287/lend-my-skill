@@ -1,16 +1,18 @@
 import { Footer } from "@components/footer";
 import { Hero } from "@components/hero";
 import { MetaTags } from "@components/meta";
+import useHydrateUserContext from "@hooks/hydrate/user";
 import type { NextPage } from "next";
 
 const Home: NextPage = () => {
+  useHydrateUserContext();
   return (
     <div>
       <MetaTags
         description="An Open Source Freelance Platform For Everyone."
         title="Lend My Skill"
       />
-      <Hero hideDashboardButton />
+      <Hero  />
 
       <Footer
         links={[
