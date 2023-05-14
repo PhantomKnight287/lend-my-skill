@@ -21,6 +21,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { outfit, sen } from "@fonts";
 import { IconStar } from "@tabler/icons-react";
+import { PostCard } from "@components/card/post";
 
 dayjs.extend(relativeTime);
 
@@ -39,7 +40,7 @@ const JobPosts = ({ username }: Props) => {
     isFetching,
   } = useInfiniteQuery<{
     posts: Array<{
-      author: {
+      user: {
         name: string;
         verified: boolean;
         avatarUrl: string;
@@ -90,61 +91,17 @@ const JobPosts = ({ username }: Props) => {
           ]}
         >
           {page.posts?.map((post) => (
-            <Paper key={post.id} withBorder shadow={"md"} radius="md">
-              <Group position="left" mt="md" pl="md">
-                <div>
-                  <Avatar
-                    size="md"
-                    src={
-                      post.author.avatarUrl
-                        ? assetURLBuilder(post.author.avatarUrl)
-                        : profileImageRouteGenerator(post.author.username)
-                    }
-                    radius="xl"
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <Text size="md" className={clsx(sen.className, "mb-0")}>
-                    {post.author.name}
-                  </Text>
-
-                  <Text
-                    size="xs"
-                    className={clsx(sen.className, "mt-0 leading-3")}
-                  >
-                    @{post.author.username}{" "}
-                  </Text>
-                </div>
-              </Group>
-              <Group p="md">
-                <Link href={`/post/${post.slug}`} className="hover:text-white">
-                  {post.title}
-                </Link>
-              </Group>
-              {post?.tags?.length > 0 ? (
-                <>
-                  <Divider />
-                  <Group position="apart">
-                    <div className="flex flex-col p-2 ">
-                      <Text size="xs" className={clsx(sen.className)}>
-                        {post.tags.map((tag) => (
-                          <Badge
-                            key={tag.id}
-                            className="mx-1 my-1 bg-yellow-400 capitalize "
-                          >
-                            <Link href={`/t/${tag.slug}`}>
-                              <span className="text-black text-xs">
-                                # {tag.name}{" "}
-                              </span>
-                            </Link>
-                          </Badge>
-                        ))}
-                      </Text>
-                    </div>
-                  </Group>
-                </>
-              ) : null}
-            </Paper>
+            <PostCard
+              key={post.id}
+              description={post.description}
+              images={post.images}
+              resolveImageUrl
+              slug={post.slug}
+              title={post.title}
+              type="job"
+              author={post.user}
+              price={post.budget || undefined}
+            />
           ))}
         </SimpleGrid>
       ))}
