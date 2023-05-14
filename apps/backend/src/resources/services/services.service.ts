@@ -159,6 +159,7 @@ export class ServicesService {
             slug: true,
           },
         },
+        images: true,
       },
       take: toTake,
       skip: toTake > 10 ? toTake - 10 : undefined,
