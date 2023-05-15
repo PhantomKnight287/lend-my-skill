@@ -16,6 +16,7 @@ export default function Editor(props: {
   read?: boolean;
   content?: string;
   editorStyles?: CSSProperties;
+  contentStyles?: CSSProperties;
 }) {
   const editor = useEditor({
     extensions: [
@@ -68,7 +69,7 @@ export default function Editor(props: {
           </RichTextEditor.Toolbar>
         ) : null}
 
-        <RichTextEditor.Content />
+        <RichTextEditor.Content style={props.contentStyles} />
       </RichTextEditor>
       {props.read == false ? (
         <Group position="center" className="mt-5">
