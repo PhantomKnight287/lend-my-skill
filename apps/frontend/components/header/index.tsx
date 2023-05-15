@@ -9,8 +9,12 @@ export function Header() {
   const { username } = useUser();
   const { asPath } = useRouter();
   return (
-    <div className="h-[70px] border-0 ">
-      <div className="container md:mx-auto mx-[unset]">
+    <header
+      className={clsx("h-[70px] border-0 ", {
+        "border-b border-gray-200": asPath != "/" && asPath != "/home",
+      })}
+    >
+      <div className="md:mx-auto mx-[unset]">
         <div className="pt-2 w-full flex justify-around items-center">
           <div
             className={clsx({
@@ -79,6 +83,6 @@ export function Header() {
           </div>
         </div>
       </div>
-    </div>
+    </header>
   );
 }
