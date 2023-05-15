@@ -92,9 +92,10 @@ export function Hero(props: { hideDashboardButton?: boolean }) {
         Get Your Work Done By Skilled Freelancers.
       </p>
       <div
-        className={clsx("flex flex-row justify-center w-full items-center ", {
-          hidden: username && !props.hideDashboardButton,
-        })}
+        className={clsx(
+          "flex flex-row justify-center w-full items-center ",
+          {}
+        )}
       >
         <div
           className={clsx(
@@ -103,14 +104,21 @@ export function Hero(props: { hideDashboardButton?: boolean }) {
           data-aos="zoom-in"
         >
           {username ? (
-            <Link href="/dashboard"
-            className="flex flex-row bg-primary p-2 rounded-md px-4 font-medium"
+            <Link
+              href="/dashboard"
+              className={clsx(
+                "flex flex-row bg-primary p-2 rounded-md px-4 font-medium",
+                {
+                  hidden: props.hideDashboardButton,
+                }
+              )}
             >
               Take Me to Dashboard <IconArrowRight className="m-0 p-0 ml-2" />
             </Link>
           ) : (
-            <Link href="/auth/register"
-            className="flex flex-row bg-primary p-2 rounded-md px-4 font-medium"
+            <Link
+              href="/auth/register"
+              className="flex flex-row bg-primary p-2 rounded-md px-4 font-medium"
             >
               Get Started <IconArrowRight className="m-0 p-0 ml-2" />
             </Link>
