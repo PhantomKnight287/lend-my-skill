@@ -41,6 +41,8 @@ model User {
   claimedJobPosts     JobPost[]      @relation(name: "claimedjobposts")
   transactionsCreated Transactions[] @relation(name: "createdby")
   transactionsPaidTo  Transactions[] @relation(name: "paidto")
+  ordersRecieved      Order[]        @relation(name: "ordersRecieved")
+  ordersCreated       Order[]        @relation(name: "ordersCreated")
 }
 
 // This will be helpful to moderate the content and also get rid of it when it is not required
@@ -91,6 +93,7 @@ model Service {
   userId   String?
 
   createdAt DateTime @default(now())
+  orders    Order[]
 }
 
 model Package {
@@ -111,7 +114,7 @@ model Feature {
   name       String
   packages   Package[]
   includedIn String[]
-  service    Service?  @relation(fields: [serviceId], references: [id])
+  service    Service?  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   serviceId  String?
 
   createdAt DateTime @default(now())
@@ -119,11 +122,11 @@ model Feature {
 
 model Review {
   id        String  @id @unique @default(cuid())
-  ratedBy   User    @relation(fields: [userId], references: [id])
+  ratedBy   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   rating    Float
   review    String
-  service   Service @relation(fields: [serviceId], references: [id])
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   serviceId String
 }
 
@@ -184,4 +187,21 @@ model CouponCode {
 enum DiscountType {
   Percentage
   Flat
+}
+
+model Order {
+  id           String     @id @unique @default(cuid())
+  client       User       @relation(fields: [clientId], references: [id], name: "ordersCreated")
+  freelancer   User       @relation(fields: [freelancerId], references: [id], name: "ordersRecieved")
+  clientId     String
+  freelancerId String
+  orderState   OrderState
+  service      Service?   @relation(fields: [serviceId], references: [id])
+  serviceId    String?
+}
+
+enum OrderState {
+  Created
+  Completed
+  Cancelled
 }
