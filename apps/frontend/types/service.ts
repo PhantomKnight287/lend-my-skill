@@ -1,5 +1,4 @@
 export interface Service {
-  bannerImage: string;
   category: Category;
   createdAt: string;
   description: string;
@@ -33,7 +32,7 @@ export interface Freelancer {
 export interface Package {
   deliveryDays: number;
   description: any;
-  features: any[];
+  features: { id: string; name: string; includedIn: string[] }[];
   id: string;
   name: string;
   price: number;
