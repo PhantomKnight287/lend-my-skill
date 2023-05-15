@@ -13,6 +13,10 @@ body {
   background-color: #ffffff !important;
   color: #000814 !important;
 }
+html {
+  scroll-behavior: smooth;
+  scroll-margin: 1rem;
+}
 
 .gradient-text {
   background: linear-gradient(90deg, #ffd60a 0%, #f90686 100%);
