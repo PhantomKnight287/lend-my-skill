@@ -1,17 +1,13 @@
-import { outfit } from "@fonts";
+import { outfit, satoshi } from "@fonts";
 import { useUser } from "@hooks/user";
 import {
   Avatar,
-  Badge,
-  Button,
-  Divider,
   Image,
   Rating,
-  Table,
   Tabs,
   Text,
-  Tooltip,
-  useMantineColorScheme,
+  Container,
+  Button,
 } from "@mantine/core";
 import { profileImageRouteGenerator } from "@utils/profile";
 import { assetURLBuilder, URLBuilder } from "@utils/url";
@@ -24,157 +20,102 @@ import {
 } from "next";
 import Link from "next/link";
 import { Service } from "~/types/service";
-import Carousel from "framer-motion-carousel";
+import { Carousel } from "react-responsive-carousel";
 import useHydrateUserContext from "@hooks/hydrate/user";
 import { MetaTags } from "@components/meta";
-import {
-  IconCheck,
-  IconClockCheck,
-  IconPoint,
-  IconPointFilled,
-  IconX,
-} from "@tabler/icons-react";
-import { sanitize } from "@components/tabs/profile/services";
+import { IconCheck, IconClockCheck, IconX } from "@tabler/icons-react";
 import { upperFirst } from "@mantine/hooks";
-import useIssueNewAuthToken from "@hooks/jwt";
 import Editor from "@components/editor";
+import { useRouter } from "next/router";
 
 const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
-  props
+  service
 ) => {
-  const { username } = useUser();
+  const { username, userType } = useUser();
   useHydrateUserContext();
-  useIssueNewAuthToken();
-  const { colorScheme } = useMantineColorScheme();
-
+  const { push, query, asPath } = useRouter();
   return (
     <div
       className={clsx(
-        "mt-20 mb-10 flex flex-col lg:flex-row lg:flex-wrap p-4 justify-around",
+        "mt-3 mb-10 flex flex-col lg:flex-row lg:flex-wrap px-8 py-6 justify-around",
         {
           [outfit.className]: true,
         }
       )}
     >
       <MetaTags
-        title={`@${props.user.username} | ${props.user.name} | Lend My Skill`}
-        description={props.description || `${props.user.name} on Lend My Skill`}
-        ogImage={assetURLBuilder(props.bannerImage)}
+        title={`@${service.user.username} | ${service.user.name} | Lend My Skill`}
+        description={
+          service.description || `${service.user.name} on Lend My Skill`
+        }
+        ogImage={assetURLBuilder(service.images[0])}
       />
-      <div className="flex-[0.5]">
-        <h1 className="text-2xl font-bold text-center">{props.title}</h1>
-        {props.user.profileCompleted ? null : (
-          <div className="mt-2  text-center">
-            <span className="text-red-500">
-              {username === props.user.username
-                ? "Please complete your profile for this post to appear in search results.(only you can see this)"
-                : null}
-            </span>
-          </div>
-        )}
-        <div className="flex flex-col items-center mt-2 justify-center">
-          <div className="flex flex-row flex-wrap">
+      <Container className="lg:flex-[0.5]">
+        <h1
+          className={clsx(
+            "text-2xl font-bold break-words hyphens-auto",
+            satoshi.className
+          )}
+          lang="en"
+        >
+          {service.title}
+        </h1>
+        <div className="flex flex-row md:justify-start justify-center items-center mt-5 flex-wrap ">
+          <div className="flex flex-row items-center">
             <Avatar
               src={
-                props.user.avatarUrl
-                  ? assetURLBuilder(props.user.avatarUrl)
-                  : profileImageRouteGenerator(props.user.username)
+                service.user.avatarUrl
+                  ? assetURLBuilder(service.user.avatarUrl)
+                  : profileImageRouteGenerator(service.user.username)
               }
               size="md"
               radius="xl"
+              className="mr-2"
             />
-            <div className="flex flex-col ml-2">
-              <h2 className="text-base font-semibold">
-                {props.user.name}
-                {props.user.verified ? (
-                  <Tooltip label="Verified User" withArrow>
-                    <Badge
-                      color="green"
-                      variant="light"
-                      className="rounded-full ml-2"
-                    >
-                      <div className="flex flex-row flex-nowrap items-center justify-center">
-                        <IconCheck />
-                      </div>
-                    </Badge>
-                  </Tooltip>
-                ) : null}
-              </h2>
-              <Text
-                color={"dimmed"}
-                className={clsx("leading-3", {
-                  [outfit.className]: true,
-                })}
+            <Link href={`/@${service.user.username}`}>
+              <h2
+                className={clsx(
+                  "text-base font-bold",
+                  satoshi.className,
+                  "mr-2"
+                )}
               >
-                <a
-                  href={`/profile/${props.user.username}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 text-sm hover:underline"
-                >
-                  @{props.user.username}
-                </a>
-              </Text>
-            </div>
-            <div className="flex flex-row items-center ml-2">
-              <Rating
-                fractions={3}
-                defaultValue={Number(Number(props.totalRating).toFixed(2))}
-              />
-              <Text>
-                {props.totalRating} ({props.totalReviews})
-              </Text>
-            </div>
+                {service.user.name}
+              </h2>
+            </Link>
+            <Link href={`/@${service.user.username}`}>
+              <span
+                className={clsx(
+                  "text-sm font-bold text-gray-500 hidden md:inline",
+                  satoshi.className
+                )}
+              >
+                @{service.user.username}
+              </span>
+            </Link>
           </div>
-
-          <div className="flex flex-col items-center justify-center w-fit p-4">
-            <Divider orientation="horizontal" className={clsx("w-full my-4")} />
-            <Badge key={props.category.id}>
-              <Link href={`/category/${props.category.slug}`}>
-                {props.category.name}
-              </Link>
-            </Badge>
-            {props.tags?.length > 0 ? (
-              <>
-                <div className="flex flex-row gap-2 items-center justify-center flex-wrap my-4">
-                  {props.tags?.map((t) => (
-                    <Badge variant="light" key={t.id} color="green">
-                      <a href={`/services/tags/${t.slug}`}>#{t.name}</a>
-                    </Badge>
-                  ))}
-                </div>
-                <Divider
-                  orientation="horizontal"
-                  className={clsx("w-full my-4")}
-                />
-              </>
-            ) : null}
+          <div className="flex flex-row">
+            <Rating
+              fractions={3}
+              value={Number(service.totalRating) / Number(service.totalReviews)}
+              readOnly
+            />
+            <span>
+              {Number(service.totalRating) / Number(service.totalReviews)} (
+              {service.totalReviews})
+            </span>
           </div>
-          {props.images.length > 0 ? (
+        </div>
+        <div className="flex items-center justify-center mt-8">
+          {service.images.length > 0 ? (
             <div className="container max-w-[400px] h-fit">
               <Carousel
                 autoPlay={false}
                 interval={5000}
-                loop
-                renderDots={({ activeIndex, setActiveIndex }) => (
-                  <div className="flex flex-row gap-2 items-center justify-center flex-wrap my-4 absolute bottom-[-15px] right-0 left-0">
-                    {props.images.map((i, index) => (
-                      <button
-                        key={index}
-                        className="cursor-pointer"
-                        onClick={() => setActiveIndex(index)}
-                      >
-                        {index === activeIndex ? (
-                          <IconPointFilled size={20} color="blue" />
-                        ) : (
-                          <IconPoint size={20} color="gray" />
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                )}
+                infiniteLoop
+                showThumbs={false}
               >
-                {props.images.map((i) => (
+                {service.images.map((i) => (
                   <div
                     key={assetURLBuilder(i)}
                     className="max-w-[400px] aspect-square  "
@@ -206,33 +147,26 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
               </Carousel>
             </div>
           ) : null}
-          <Divider orientation="horizontal" className={clsx("w-full my-4")} />
-          <div className="w-full">
-            <Text
-              className={clsx("font-bold text-2xl text-center mb-4", {
-                [outfit.className]: true,
-              })}
-            >
-              About the service
-            </Text>
-            <Editor
-              onSubmit={() => {}}
-              setActive={() => {}}
-              read
-              content={props.description}
-              editorStyles={{
-                border: "none",
-              }}
-            />
-          </div>
         </div>
-        <Divider
-          orientation="horizontal"
-          className={clsx("w-full my-4 lg:hidden")}
-        />
-      </div>
-      <div className="flex-[0.25] ml-6">
+        <article className="hidden lg:block">
+          <p className="text-lg font-semibold my-4 ">About The Service</p>
+          <Editor
+            onSubmit={() => {}}
+            setActive={() => {}}
+            content={service.description}
+            read
+            editorStyles={{
+              border: "none",
+            }}
+            contentStyles={{
+              fontSize: "1.1rem",
+            }}
+          />
+        </article>
+      </Container>
+      <div className="mt-8 flex-1 lg:sticky top-0 lg:flex-[0.4]">
         <Tabs
+          defaultValue={service.package[0].id}
           unstyled
           styles={(theme) => ({
             tab: {
@@ -241,35 +175,34 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                 theme.colorScheme === "dark"
                   ? theme.colors.dark[6]
                   : theme.white,
-              color:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[0]
-                  : theme.colors.gray[9],
+              color: "black",
               border: `1px solid ${
                 theme.colorScheme === "dark"
                   ? theme.colors.dark[6]
                   : theme.colors.gray[4]
               }`,
-              padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
+              padding: `${theme.spacing.lg}px ${theme.spacing.md}px`,
               cursor: "pointer",
               fontSize: theme.fontSizes.sm,
               display: "flex",
               alignItems: "center",
-
+              fontFamily: satoshi.style.fontFamily,
+              fontWeight: "bolder",
+              width: "100%",
               "&:disabled": {
                 opacity: 0.5,
                 cursor: "not-allowed",
               },
-              "&:first-of-type": {
+
+              "&:not(:first-of-type)": {
                 borderLeft: 0,
               },
-              "&:last-of-type": {
-                borderRight: 0,
-              },
+
               "&[data-active]": {
-                backgroundColor: theme.colors.blue[7],
-                borderColor: theme.colors.blue[7],
-                color: theme.white,
+                borderBottom: "3px solid #fbff05",
+              },
+              "&:not([data-active])": {
+                backgroundColor: "#e5e5e5",
               },
             },
 
@@ -283,17 +216,21 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
               display: "flex",
             },
           })}
-          className="lg:sticky lg:top-20 border-t-0 rounded-md border-[1px] border-[#25262b]"
         >
           <Tabs.List>
-            {props.package.map((p) => (
-              <Tabs.Tab key={p.id} value={p.id} className="w-full p-4">
+            {service.package.map((p) => (
+              <Tabs.Tab key={p.id} value={p.id}>
                 {upperFirst(p.name)}
               </Tabs.Tab>
             ))}
           </Tabs.List>
-          {props.package.map((p) => (
-            <Tabs.Panel key={p.id} value={p.id} p="xs">
+          {service.package.map((p) => (
+            <Tabs.Panel
+              key={p.id}
+              value={p.id}
+              p="xs"
+              className="border-[1px] border-gray-300 rounded-md border-t-0 rounded-t-none"
+            >
               <div className="flex flex-col justify-center">
                 <div className="flex flex-row flex-nowrap justify-between mb-8">
                   <h1 className="text-xl font-bold">{upperFirst(p.name)}</h1>
@@ -323,11 +260,45 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                     )}
                   </div>
                 ))}
+                {service.user.username != username && userType == "Client" ? (
+                  <Link
+                    href={{
+                      pathname: `/service/[slug]/purchase`,
+                      query: {
+                        slug: service.slug,
+                        packageId: p.id,
+                      },
+                    }}
+                    className="flex justify-center"
+                  >
+                    <Button
+                      className="bg-accent text-black hover:bg-accent/90 mt-4 w-[90%]" 
+                      fullWidth
+                    >
+                      Purchase
+                    </Button>
+                  </Link>
+                ) : null}
               </div>
             </Tabs.Panel>
           ))}
         </Tabs>
       </div>
+      <article className="lg:hidden">
+        <p className="text-lg font-semibold my-4 ">About The Service</p>
+        <Editor
+          onSubmit={() => {}}
+          setActive={() => {}}
+          content={service.description}
+          read
+          editorStyles={{
+            border: "none",
+          }}
+          contentStyles={{
+            fontSize: "1.1rem",
+          }}
+        />
+      </article>
     </div>
   );
 };
