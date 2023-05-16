@@ -22,6 +22,10 @@ import { UpiModule } from './resources/upi/upi.module';
 import { JobPostModule } from './resources/job-post/job-post.module';
 import { SearchModule } from './resources/search/search.module';
 import { PackageModule } from './resources/package/package.module';
+import { ConversionService } from './services/conversion/conversion.service';
+import { PurchaseModule } from './resources/purchase/purchase.module';
+import { RazorpayService } from './services/razorpay/razorpay.service';
+import { WebhookModule } from './resources/webhook/webhook.module';
 
 @Module({
   controllers: [AppController],
@@ -30,6 +34,8 @@ import { PackageModule } from './resources/package/package.module';
     PrismaService,
     { provide: APP_GUARD, useClass: ThrottlerGuard },
     AuthService,
+    ConversionService,
+    RazorpayService,
   ],
   imports: [
     ThrottlerModule.forRoot({
@@ -47,8 +53,10 @@ import { PackageModule } from './resources/package/package.module';
     JobPostModule,
     SearchModule,
     PackageModule,
+    PurchaseModule,
+    WebhookModule,
   ],
-  exports: [PrismaService],
+  exports: [PrismaService, RazorpayService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
@@ -87,6 +95,8 @@ export class AppModule implements NestModule {
         '/v1/tags',
         '/v1',
         '/v1/package/(.*)',
+        '/',
+        '/v1/webhook/(.*)',
       )
       .forRoutes('*');
   }
