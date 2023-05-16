@@ -14,6 +14,7 @@ export default function useHydrateUserContext(
 ) {
   const dispatch = useSetUser();
   const { push, replace, asPath, isReady } = useRouter();
+  const { id } = useUser();
   async function fetcher(token?: string, updateState = false) {
     token = readCookie("token") || token;
     const res = await axios
@@ -55,6 +56,7 @@ export default function useHydrateUserContext(
     if (!isReady) return;
     const token = readCookie("token");
     const refreshToken = readCookie("refreshToken");
+    if (id) return;
     if (!token && redirectIfNoAuthToken) {
       action === "push"
         ? push(`${redirectTarget}?to=${asPath}`)
