@@ -24,7 +24,12 @@ export class UploadController {
       storage: diskStorage({
         destination: './public/uploads',
         filename: (_, file, cb) =>
-          cb(null, `${Date.now()}-${randomUUID()}-${file.originalname}`),
+          cb(
+            null,
+            `${Date.now()}-${randomUUID()}-${encodeURIComponent(
+              file.originalname,
+            )}`,
+          ),
       }),
       limits: {
         fileSize: 50 * 1024 * 1024,
@@ -45,7 +50,12 @@ export class UploadController {
       storage: diskStorage({
         destination: './public/uploads',
         filename: (_, file, cb) =>
-          cb(null, `${Date.now()}-${randomUUID()}-${file.originalname}`),
+          cb(
+            null,
+            `${Date.now()}-${randomUUID()}-${encodeURIComponent(
+              file.originalname,
+            )}`,
+          ),
       }),
       limits: {
         fileSize: 50 * 1024 * 1024,
@@ -57,6 +67,7 @@ export class UploadController {
     @UploadedFiles() files: Express.Multer.File[],
     @Query('to') to?: string,
   ) {
+    console.log(files);
     return await this.uploadService.uploadMultipleFiles(files, id, to);
   }
 }

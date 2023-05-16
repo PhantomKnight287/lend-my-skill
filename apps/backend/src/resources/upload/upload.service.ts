@@ -13,7 +13,12 @@ export class UploadService {
     const { data, error } = await client.storage
       .from('images')
       .upload(
-        `${folderName || 'images'}/${id}-${randomUUID()}-${file.filename}`,
+        `${
+          folderName || 'images'
+        }/${id}-${randomUUID()}-${file.filename.replace(
+          /[/\\?%*:|"<>]/g,
+          '-',
+        )}`,
         fileContents,
         {
           contentType: file.mimetype,
@@ -53,7 +58,12 @@ export class UploadService {
       const { data, error } = await client.storage
         .from('images')
         .upload(
-          `${folderName || 'assets'}/${id}-${randomUUID()}-${file.filename}`,
+          `${
+            folderName || 'assets'
+          }/${id}-${randomUUID()}-${file.filename.replace(
+            /[/\\?%*:|"<>]/g,
+            '-',
+          )}`,
           fileContent,
           {
             contentType: file.mimetype,
