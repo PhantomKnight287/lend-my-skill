@@ -218,7 +218,7 @@ const Dashboard = () => {
                       author={post.author}
                       slug={post.slug}
                       type="job"
-                      resolveImageUrl={false}
+                      resolveImageUrl={true}
                       badgeLabel={
                         post.budget ? `$ ${post.budget}` : `No Budget`
                       }
