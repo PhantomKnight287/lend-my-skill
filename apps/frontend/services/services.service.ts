@@ -7,7 +7,6 @@ interface Props {
   description: string;
   category: string;
   tags: string[];
-  bannerImage: string;
   images?: string[];
   packages: {
     name: string;

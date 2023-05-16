@@ -12,6 +12,8 @@ ol {
 body {
   background-color: #ffffff !important;
   color: #000814 !important;
+  scrollbar-width: none;
+  overflow: unset !important;
 }
 html {
   scroll-behavior: smooth;
@@ -26,4 +28,8 @@ html {
 
 *:focus-visible {
   outline: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
