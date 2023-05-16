@@ -1,13 +1,8 @@
+/* eslint-disable react/no-children-prop */
+import { Renderer } from "@components/renderer";
 import { sanitize } from "@components/tabs/profile/services";
 import { outfit } from "@fonts";
-import {
-  Card,
-  Image,
-  Text,
-  Badge,
-  Button,
-  Group,
-} from "@mantine/core";
+import { Card, Image, Text, Badge, Button, Group } from "@mantine/core";
 import { assetURLBuilder } from "@utils/url";
 import clsx from "clsx";
 import Link from "next/link";
@@ -61,7 +56,6 @@ export function PostCard({
 
       <Group
         position="apart"
-        mt="md"
         mb="xs"
         className="flex flex-col items-start justify-center"
       >
@@ -71,12 +65,9 @@ export function PostCard({
         {badgeLabel ? <Badge variant="light">{badgeLabel}</Badge> : null}
       </Group>
 
-      <Text
-        size="sm"
-        color="dimmed"
-        lineClamp={2}
-        dangerouslySetInnerHTML={sanitize(description, undefined)}
-      />
+      {/* <Text size="sm" color="dimmed" lineClamp={2}>
+        <Renderer children={description} removeComponents />
+      </Text> */}
 
       <Link href={`/${type}/${slug}`} target="_blank" rel="noopener noreferrer">
         <Button
