@@ -14,7 +14,7 @@ export function Header() {
         "border-b border-gray-200": asPath != "/" && asPath != "/home",
       })}
     >
-      <div className="md:mx-auto mx-[unset]">
+      <div className="md:mx-auto mx-[unset] lg:container">
         <div className="pt-2 w-full flex justify-around items-center">
           <div
             className={clsx({

@@ -36,7 +36,7 @@ export default function Textarea({
           <span className="text-red-500">*</span>
         </span>
       </label>
-      <div className={clsx("bg-secondary rounded-md flex flex-col", {})}>
+      <div className={clsx("bg-inputs rounded-md flex flex-col", {})}>
         <T
           required
           placeholder="Enter the description of your job post"
