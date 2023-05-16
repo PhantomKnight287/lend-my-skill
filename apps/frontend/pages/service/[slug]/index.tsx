@@ -1,3 +1,4 @@
+/* eslint-disable react/no-children-prop */
 import { outfit, satoshi } from "@fonts";
 import { useUser } from "@hooks/user";
 import {
@@ -23,17 +24,15 @@ import { Service } from "~/types/service";
 import { Carousel } from "react-responsive-carousel";
 import useHydrateUserContext from "@hooks/hydrate/user";
 import { MetaTags } from "@components/meta";
-import { IconCheck, IconClockCheck, IconX } from "@tabler/icons-react";
+import { IconCheck, IconClockCheck } from "@tabler/icons-react";
 import { upperFirst } from "@mantine/hooks";
-import Editor from "@components/editor";
-import { useRouter } from "next/router";
+import { Renderer } from "@components/renderer";
 
 const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   service
 ) => {
   const { username, userType } = useUser();
   useHydrateUserContext();
-  const { push, query, asPath } = useRouter();
   return (
     <div
       className={clsx(
@@ -94,15 +93,18 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
               </span>
             </Link>
           </div>
-          <div className="flex flex-row">
+          <div className="flex flex-row items-center ml-1">
             <Rating
               fractions={3}
               value={Number(service.totalRating) / Number(service.totalReviews)}
               readOnly
             />
             <span>
-              {Number(service.totalRating) / Number(service.totalReviews)} (
-              {service.totalReviews})
+              {service.totalRating === null
+                ? 0
+                : Number(service.totalRating) /
+                  Number(service.totalReviews)}{" "}
+              ({service.totalReviews})
             </span>
           </div>
         </div>
@@ -150,21 +152,10 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
         </div>
         <article className="hidden lg:block">
           <p className="text-lg font-semibold my-4 ">About The Service</p>
-          <Editor
-            onSubmit={() => {}}
-            setActive={() => {}}
-            content={service.description}
-            read
-            editorStyles={{
-              border: "none",
-            }}
-            contentStyles={{
-              fontSize: "1.1rem",
-            }}
-          />
+          <Renderer children={service.description} />
         </article>
       </Container>
-      <div className="mt-8 flex-1 lg:sticky top-0 lg:flex-[0.4]">
+      <div className="mt-8 flex-1 lg:sticky top-10 lg:flex-[0.4] h-screen">
         <Tabs
           defaultValue={service.package[0].id}
           unstyled
@@ -252,12 +243,7 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                         <IconCheck size={13} color="green" />
                         <span>{f.name}</span>
                       </div>
-                    ) : (
-                      <div className="flex flex-row items-center gap-2">
-                        <IconX size={13} color="red" />
-                        <span>{f.name}</span>
-                      </div>
-                    )}
+                    ) : null}
                   </div>
                 ))}
                 {service.user.username != username && userType == "Client" ? (
@@ -272,7 +258,7 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                     className="flex justify-center"
                   >
                     <Button
-                      className="bg-accent text-black hover:bg-accent/90 mt-4 w-[90%]" 
+                      className="bg-accent text-black hover:bg-accent/90 mt-4 w-[90%]"
                       fullWidth
                     >
                       Purchase
@@ -286,18 +272,7 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
       </div>
       <article className="lg:hidden">
         <p className="text-lg font-semibold my-4 ">About The Service</p>
-        <Editor
-          onSubmit={() => {}}
-          setActive={() => {}}
-          content={service.description}
-          read
-          editorStyles={{
-            border: "none",
-          }}
-          contentStyles={{
-            fontSize: "1.1rem",
-          }}
-        />
+        <Renderer children={service.description} />
       </article>
     </div>
   );
