@@ -11,7 +11,6 @@ import { useIntersection } from "@mantine/hooks";
 import { Loader, Title } from "@mantine/core";
 import { Posts } from "~/types/jobpost";
 import { PostCard } from "@components/card/post";
-import styles from "@styles/Dashboard.module.scss";
 
 const Dashboard = () => {
   useHydrateUserContext("replace", true, "/auth/login", true);
@@ -39,9 +38,6 @@ const Dashboard = () => {
     data: jobposts,
     fetchNextPage: fetchMoreJobposts,
     hasNextPage: hasMoreJobposts,
-    isFetchingNextPage: isFetchingMoreJobposts,
-    error: jobpostsError,
-    status: jobpostsFetchingStatus,
   } = useInfiniteQuery<Posts>({
     queryKey: ["jobposts"],
     queryFn: async ({ pageParam = 10 }) => {

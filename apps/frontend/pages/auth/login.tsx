@@ -71,6 +71,7 @@ export default function Login() {
           payload: {
             ...d.user,
             avatarUrl: profileImageRouteGenerator(d.user.username),
+            userType: (d.user as any).role,
           },
         });
         createCookie("token", d.token);
