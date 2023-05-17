@@ -41,7 +41,7 @@ export function PostCard({
       className={"max-w-[350px]  min-w-[300px] h-full min-h-[21rem] mx-1"}
     >
       <Card.Section>
-        <Carousel>
+        <Carousel showThumbs={false}>
           {images.map((image, index) => (
             <Image
               key={index}
@@ -59,7 +59,7 @@ export function PostCard({
         mb="xs"
         className="flex flex-col items-start justify-center"
       >
-        <Text weight={500} lineClamp={1}>
+        <Text weight={500} lineClamp={1} mt={"md"}>
           {title}
         </Text>
         {badgeLabel ? <Badge variant="light">{badgeLabel}</Badge> : null}
