@@ -26,6 +26,7 @@ import { ConversionService } from './services/conversion/conversion.service';
 import { PurchaseModule } from './resources/purchase/purchase.module';
 import { RazorpayService } from './services/razorpay/razorpay.service';
 import { WebhookModule } from './resources/webhook/webhook.module';
+import { OrdersModule } from './resources/orders/orders.module';
 
 @Module({
   controllers: [AppController],
@@ -55,6 +56,7 @@ import { WebhookModule } from './resources/webhook/webhook.module';
     PackageModule,
     PurchaseModule,
     WebhookModule,
+    OrdersModule,
   ],
   exports: [PrismaService, RazorpayService],
 })
