@@ -31,6 +31,7 @@ export class ConversionService {
               },
               update: {
                 rate: data.rates[key],
+                createdAt: new Date(),
               },
               create: {
                 rate: data.rates[key],
