@@ -25,18 +25,18 @@ export function ChatSidebar({ client, freelancer }: ChatSidebarProps) {
   return (
     <div
       className={clsx("flex", {
-        "flex-col": userType === "client",
-        "flex-col-reverse": userType === "freelancer",
+        "flex-col": userType === "Client",
+        "flex-col-reverse": userType === "Freelancer",
       })}
     >
       <>
         <Text>
           <h2 className="text-base font-semibold">
-            {userType === "client" ? "Freelancer" : "You"}
+            {userType === "Client" ? "Freelancer" : "You"}
           </h2>
         </Text>
 
-        <div className="flex flex-row items-center hover:scale-110 transition-all duration-[110ms] border-[1px] p-1 rounded-md mb-2 ">
+        <div className="flex flex-row items-center hover:scale-105 transition-all duration-[110ms] border-[1px] p-1 rounded-md mb-2 ">
           <Avatar
             src={
               freelancer.avatarUrl
@@ -85,10 +85,10 @@ export function ChatSidebar({ client, freelancer }: ChatSidebarProps) {
       <>
         <Text>
           <h2 className="text-base font-semibold">
-            {userType === "client" ? "You" : "Client"}
+            {userType === "Client" ? "You" : "Client"}
           </h2>
         </Text>
-        <div className="flex flex-row items-center hover:scale-110 transition-all duration-[110ms] border-[1px] p-1 rounded-md mb-2">
+        <div className="flex flex-row items-center hover:scale-105 transition-all duration-[110ms] border-[1px] p-1 rounded-md mb-2">
           <Avatar
             src={
               client.avatarUrl
