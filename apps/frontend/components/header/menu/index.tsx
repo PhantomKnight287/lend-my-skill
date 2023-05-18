@@ -42,29 +42,19 @@ export default function HeaderMenu() {
           >
             Home
           </Menu.Item>
-          {userType === "Client" ? (
-            <Menu.Item
-              color="green"
-              onClick={() => {
-                push("/create/job-post");
-              }}
-              icon={<IconBrandCashapp size={20} />}
-            >
-              Post a Job Request
-            </Menu.Item>
-          ) : (
-            <>
-              {userType === "Freelancer" ? (
-                <Menu.Item
-                  color="green"
-                  onClick={() => push(`/create/service`)}
-                  icon={<IconBrandCashapp size={20} />}
-                >
-                  Post a Service
-                </Menu.Item>
-              ) : null}
-            </>
-          )}
+
+          <>
+            {userType === "Freelancer" ? (
+              <Menu.Item
+                color="green"
+                onClick={() => push(`/create/service`)}
+                icon={<IconBrandCashapp size={20} />}
+              >
+                Post a Service
+              </Menu.Item>
+            ) : null}
+          </>
+
           <Menu.Item
             onClick={() => {
               push(`/profile/${username}`);
