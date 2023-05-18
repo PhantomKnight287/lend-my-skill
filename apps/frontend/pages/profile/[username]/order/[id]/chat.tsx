@@ -21,10 +21,10 @@ import {
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect,  useState } from "react";
+import { useEffect, useState } from "react";
 
-type OrderStatus = "PENDING" | "COMPLETED" | "CANCELLED"
-type AnswerType = "TEXT" | "MULTIPLE_CHOICE" | "ATTACHMENT"
+type OrderStatus = "PENDING" | "COMPLETED" | "CANCELLED";
+type AnswerType = "TEXT" | "MULTIPLE_CHOICE" | "ATTACHMENT";
 export type ChatDetails = {
   Chat: {
     id: string;
@@ -67,7 +67,7 @@ const Chat = () => {
     to: "/auth/login",
   });
   const { isReady, query, asPath, replace } = useRouter();
-  const [complete,setCompleted] = useState(false);
+  const [complete, setCompleted] = useState(false);
 
   useEffect(() => {
     if (!isReady) return;
@@ -83,9 +83,9 @@ const Chat = () => {
     fetchChatDetails(
       query.id as string,
       token,
-      d=>{
+      (d) => {
         setchatConfig(d);
-        if(d.status === "COMPLETED"){
+        if (d.status === "COMPLETED") {
           setCompleted(true);
         }
       },
@@ -106,7 +106,6 @@ const Chat = () => {
 
   useEffect(() => {
     if (!chatConfig.id) return;
-    const controller = new AbortController();
     if (!readCookie("token"))
       return void replace({
         pathname: "/auth/login",
@@ -114,23 +113,6 @@ const Chat = () => {
           to: asPath,
         },
       });
-    if (userType === "client") {
-      isChatQuestionsAnswered(
-        chatConfig.Chat.id,
-        readCookie("token")!,
-        setQuestionsAnswered,
-        (err) => {
-          return showNotification({
-            title: "Error",
-            message:
-              (err?.response?.data as any)?.message || "Something went wrong",
-            color: "red",
-          });
-        },
-        controller.signal
-      );
-    }
-    return () => controller.abort();
   }, [chatConfig.id, userType, chatConfig?.Chat?.id, asPath]);
 
   useEffect(() => {
@@ -162,7 +144,7 @@ const Chat = () => {
             Chat With{" "}
             <Link
               href={`/profile/${
-                userType === "client"
+                userType === "Client"
                   ? chatConfig.freelancer.username
                   : chatConfig.client.username
               }`}
@@ -170,7 +152,7 @@ const Chat = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              {userType === "client"
+              {userType === "Client"
                 ? chatConfig.freelancer.name
                 : chatConfig.client.name}
             </Link>

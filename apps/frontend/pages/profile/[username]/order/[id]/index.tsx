@@ -6,7 +6,7 @@ import { r } from "@helpers/date";
 import useHydrateUserContext from "@hooks/hydrate/user";
 import useIssueNewAuthToken from "@hooks/jwt";
 import { useUser } from "@hooks/user";
-import { Button, Group, Loader, Table, Tooltip } from "@mantine/core";
+import { Badge, Button, Group, Loader, Table, Tooltip } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { URLBuilder } from "@utils/url";
 import axios from "axios";
@@ -46,7 +46,7 @@ const OrderPage = () => {
     const controller = new AbortController();
     if (!query.id) return;
     axios
-      .get(URLBuilder(`/order/details/${query.id}`), {
+      .get(URLBuilder(`/orders/detail/${query.id}`), {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -118,43 +118,36 @@ const OrderPage = () => {
                   </Tooltip>
                 </td>
                 <td>
-                  {order.status === "CANCELLED"
-                    ? "Cancelled"
-                    : order.status === "COMPLETED"
-                    ? "Completed"
-                    : "Pending"}
+                  <Badge>{order.orderState}</Badge>
                 </td>
               </tr>
               <tr>
-                <td>
-                  {order.user === "client" ? "You Hired" : "You Got Hired By"}
-                </td>
+                <td>Freelancer</td>
                 <td>
                   <Link
-                    href={`/profile/${
-                      order.user === "freelancer"
-                        ? order.client.username
-                        : order.freelancer.username
-                    }`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:text-blue-700 hover:underline"
+                    className="text-blue-500"
+                    href={`/profile/${order.freelancer.username}`}
                   >
-                    {order.user === "client"
-                      ? order.freelancer.name
-                      : order.client.name}
+                    {order.freelancer.name}
                   </Link>
                 </td>
               </tr>
               <tr>
-                <td>Deadline</td>
-                <td>{r(order.deadline)}</td>
+                <td>Client</td>
+                <td>
+                  <Link
+                    className="text-blue-500"
+                    href={`/profile/${order.client.username}`}
+                  >
+                    {order.client.name}
+                  </Link>
+                </td>
               </tr>
               <tr>
                 <td>Package Selected</td>
                 <td>
                   <Link
-                    href={`/service/${order.package.service.slug}#packages-offered`}
+                    href={`/service/${order.service.slug}#packages-offered`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-500 hover:text-blue-700 hover:underline"
@@ -163,54 +156,18 @@ const OrderPage = () => {
                   </Link>
                 </td>
               </tr>
-              {order.user === "client" ? (
-                <tr>
-                  <td>Amount Paid</td>
-                  <td>
+              <tr>
+                <td>Amount Paid</td>
+                <td>
+                  <Badge color="green" size="lg" >
                     &#x20B9;
-                    {order.amountPaid || order.price}
-                  </td>
-                </tr>
-              ) : null}
+                    {order.transaction.amount / 100}
+                  </Badge>
+                </td>
+              </tr>
             </tbody>
           </Table>
           <Group position={"center"}>
-            <Link
-              href={`/service/${order.package.service.slug}#packages-offered`}
-            >
-              <Button
-                variant="outline"
-                color="blue"
-                className="mt-4"
-                onClick={() => {
-                  showNotification({
-                    message: "Redirecting to Service Page",
-                    color: "blue",
-                    title: "Redirecting",
-                  });
-                }}
-              >
-                View Service
-              </Button>
-            </Link>
-            {order.user === "client" ? (
-              <Link href={`/profile/${order.package.service.freelancer.username}`}>
-                <Button
-                  variant="outline"
-                  color="blue"
-                  className="mt-4"
-                  onClick={() => {
-                    showNotification({
-                      message: "Redirecting to Freelancer Profile",
-                      color: "blue",
-                      title: "Redirecting",
-                    });
-                  }}
-                >
-                  View Freelancer
-                </Button>
-              </Link>
-            ) : null}
             <Link href={`${asPath}/chat`}>
               <Button
                 variant="outline"
