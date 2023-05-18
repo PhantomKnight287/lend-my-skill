@@ -28,6 +28,8 @@ import { RazorpayService } from './services/razorpay/razorpay.service';
 import { WebhookModule } from './resources/webhook/webhook.module';
 import { OrdersModule } from './resources/orders/orders.module';
 import { ChatModule } from './resources/chat/chat.module';
+import { MessagesModule } from './resources/messages/messages.module';
+import { ChatGateway } from './gateways/chat/chat.gateway';
 
 @Module({
   controllers: [AppController],
@@ -38,6 +40,7 @@ import { ChatModule } from './resources/chat/chat.module';
     AuthService,
     ConversionService,
     RazorpayService,
+    ChatGateway,
   ],
   imports: [
     ThrottlerModule.forRoot({
@@ -59,6 +62,7 @@ import { ChatModule } from './resources/chat/chat.module';
     WebhookModule,
     OrdersModule,
     ChatModule,
+    MessagesModule,
   ],
   exports: [PrismaService, RazorpayService],
 })
@@ -101,6 +105,7 @@ export class AppModule implements NestModule {
         '/v1/package/(.*)',
         '/',
         '/v1/webhook/(.*)',
+        '/v1/socket.io/(.*)',
       )
       .forRoutes('*');
   }
