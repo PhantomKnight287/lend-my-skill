@@ -14,19 +14,14 @@ import useIssueNewAuthToken from "@hooks/jwt";
 import { useUser } from "@hooks/user";
 import { LoadingOverlay } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import {
-  fetchChatDetails,
-  isChatQuestionsAnswered,
-} from "@services/chats.service";
+import { fetchChatDetails } from "@services/chats.service";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-type OrderStatus = "PENDING" | "COMPLETED" | "CANCELLED";
-type AnswerType = "TEXT" | "MULTIPLE_CHOICE" | "ATTACHMENT";
 export type ChatDetails = {
-  Chat: {
+  chat: {
     id: string;
   };
   client: {
@@ -44,21 +39,12 @@ export type ChatDetails = {
     verified: boolean;
   };
   id: string;
-  status: OrderStatus;
-};
-
-export type ChatQuestions = {
-  id: string;
-  isRequired: boolean;
-  question: string;
-  answerType: AnswerType;
+  orderState: string;
 };
 
 const Chat = () => {
   const [chatConfig, setchatConfig] = useState<ChatDetails>({} as ChatDetails);
-  const [questionsAnswered, setQuestionsAnswered] = useState<
-    Boolean | undefined
-  >(undefined);
+
   const refetchProfile = useHydrateUserContext();
   useIssueNewAuthToken({
     method: "replace",
@@ -85,7 +71,7 @@ const Chat = () => {
       token,
       (d) => {
         setchatConfig(d);
-        if (d.status === "COMPLETED") {
+        if (d.orderState === "Completed") {
           setCompleted(true);
         }
       },
@@ -113,19 +99,7 @@ const Chat = () => {
           to: asPath,
         },
       });
-  }, [chatConfig.id, userType, chatConfig?.Chat?.id, asPath]);
-
-  useEffect(() => {
-    if (questionsAnswered === undefined) return;
-    if (questionsAnswered === false)
-      return void replace({
-        pathname: asPath.replace("chat", "questions"),
-        query: {
-          to: asPath,
-          chatId: chatConfig.Chat.id,
-        },
-      });
-  }, [questionsAnswered]);
+  }, [chatConfig.id, userType, chatConfig?.chat?.id, asPath]);
 
   return (
     <div
@@ -158,7 +132,7 @@ const Chat = () => {
             </Link>
           </h1>
           <div className="flex flex-row mt-5">
-            <div className="flex-[0.15] border-[1px] rounded-md p-2">
+            <div className="flex-[0.15] border-[1px] rounded-md p-2 sticky top-0 h-max pb-8">
               <ChatSidebar
                 client={chatConfig.client}
                 freelancer={chatConfig.freelancer}
@@ -167,7 +141,7 @@ const Chat = () => {
             <div className="flex-1 border-[1px] rounded-md p-2 ml-1">
               <ChatContainer
                 orderId={query.id as string}
-                chatId={chatConfig.Chat.id}
+                chatId={chatConfig.chat.id}
                 completed={complete}
                 setCompleted={setCompleted}
                 freelancerUsername={chatConfig.freelancer.username}
