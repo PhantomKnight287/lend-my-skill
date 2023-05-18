@@ -25,12 +25,32 @@ export class PurchaseService {
             user: {
               select: {
                 id: true,
+                profileCompleted: true,
+                kycCompleted: true,
               },
             },
           },
         },
       },
     });
+    if (
+      !packageData.service.user.profileCompleted ||
+      !packageData.service.user.kycCompleted
+    ) {
+      throw new HttpException(
+        "The freelancer isn't yet allowed to take orders.",
+        400,
+      );
+    }
+    const client = await this.p.user.findUnique({
+      where: { id: userId },
+    });
+    if (!client.profileCompleted || !client.kycCompleted) {
+      throw new HttpException(
+        "You can't place orders until you complete your profile and KYC.",
+        400,
+      );
+    }
     let discountMode: {
       type: DiscountType;
       value: number;
