@@ -18,9 +18,6 @@ const nextConfig = withMDX({
     buildActivity: true,
     buildActivityPosition: "top-right",
   },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   async redirects() {
     return [
       {

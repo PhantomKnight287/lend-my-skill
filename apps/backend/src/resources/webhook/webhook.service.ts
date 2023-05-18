@@ -69,6 +69,11 @@ export class WebhookService {
             chat: {
               create: {},
             },
+            package: {
+              connect: {
+                id: packageId,
+              },
+            },
           },
         },
       },
