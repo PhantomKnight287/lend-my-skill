@@ -124,6 +124,8 @@ export class ServicesService {
             equals: username,
             mode: 'insensitive',
           },
+          profileCompleted: true,
+          kycCompleted: true,
         },
       },
       select: {
