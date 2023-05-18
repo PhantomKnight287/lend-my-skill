@@ -193,6 +193,12 @@ export class JobPostService {
           createdAt: 'desc',
         },
       ],
+      where: {
+        user: {
+          profileCompleted: true,
+          kycCompleted: true,
+        },
+      },
     });
     if (posts.length === 10) {
       return {
