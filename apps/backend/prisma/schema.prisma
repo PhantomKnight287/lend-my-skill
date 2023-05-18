@@ -78,23 +78,21 @@ model Tags {
 }
 
 model Service {
-  id          String   @id @unique @default(cuid())
+  id          String    @id @unique @default(cuid())
   title       String
   description String
-  slug        String   @unique
-  category    Category @relation(fields: [categoryId], references: [id])
+  slug        String    @unique
+  category    Category  @relation(fields: [categoryId], references: [id])
   categoryId  String
   images      String[]
-
-  tags     Tags[]
-  package  Package[]
-  features Feature[]
-  review   Review[]
-  user     User?     @relation(fields: [userId], references: [id])
-  userId   String?
-
-  createdAt DateTime @default(now())
-  orders    Order[]
+  tags        Tags[]
+  package     Package[]
+  features    Feature[]
+  review      Review[]
+  user        User?     @relation(fields: [userId], references: [id])
+  userId      String?
+  createdAt   DateTime  @default(now())
+  orders      Order[]
 }
 
 model Package {
@@ -106,8 +104,8 @@ model Package {
   service      Service   @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   features     Feature[]
   serviceId    String
-
-  createdAt DateTime @default(now())
+  createdAt    DateTime  @default(now())
+  orders       Order[]
 }
 
 model Feature {
@@ -117,23 +115,23 @@ model Feature {
   includedIn String[]
   service    Service?  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   serviceId  String?
-
-  createdAt DateTime @default(now())
+  createdAt  DateTime  @default(now())
 }
 
 model Review {
-  id        String  @id @unique @default(cuid())
-  ratedBy   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id @unique @default(cuid())
+  ratedBy   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   rating    Float
   review    String
-  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   serviceId String
+  createdAt DateTime @default(now())
 }
 
 model Transactions {
   id              String            @id @unique @default(cuid())
-  order           Order?            @relation(fields: [orderId], references: [id])
+  order           Order?
   amount          Int
   type            TransactionType
   status          TransactionStatus
@@ -142,7 +140,7 @@ model Transactions {
   createdByUserId String
   paidTo          User?             @relation(fields: [paidToUserId], references: [id], name: "paidto")
   paidToUserId    String?
-  orderId         String?
+  orderId         String?           @unique
   gatewayOrderId  String
 }
 
@@ -196,18 +194,22 @@ enum DiscountType {
 }
 
 model Order {
-  id           String         @id @unique @default(cuid())
-  client       User           @relation(fields: [clientId], references: [id], name: "ordersCreated")
-  freelancer   User           @relation(fields: [freelancerId], references: [id], name: "ordersRecieved")
-  clientId     String
-  freelancerId String
-  orderState   OrderState
-  service      Service?       @relation(fields: [serviceId], references: [id])
-  serviceId    String?
-  couponCode   CouponCode?    @relation(fields: [couponCodeId], references: [id])
-  couponCodeId String?
-  Transactions Transactions[]
-  chat         Chat?
+  id            String       @id @unique @default(cuid())
+  client        User         @relation(fields: [clientId], references: [id], name: "ordersCreated")
+  freelancer    User         @relation(fields: [freelancerId], references: [id], name: "ordersRecieved")
+  clientId      String
+  freelancerId  String
+  orderState    OrderState
+  service       Service?     @relation(fields: [serviceId], references: [id])
+  serviceId     String?
+  couponCode    CouponCode?  @relation(fields: [couponCodeId], references: [id])
+  couponCodeId  String?
+  transaction   Transactions @relation(fields: [transactionId], references: [id])
+  transactionId String       @unique
+  chat          Chat?
+  createdAt     DateTime     @default(now())
+  package       Package?     @relation(fields: [packageId], references: [id])
+  packageId     String?
 }
 
 enum OrderState {
