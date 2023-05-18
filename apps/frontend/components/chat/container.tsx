@@ -1,5 +1,6 @@
 import { Message } from "@components/message";
 import { ReviewModal } from "@components/modal/review";
+import { outfit } from "@fonts";
 import { readCookie } from "@helpers/cookie";
 import { r } from "@helpers/date";
 import { uploadFiles } from "@helpers/upload";
@@ -22,9 +23,11 @@ import {
 import { IconCheck, IconFile, IconPlus, IconX } from "@tabler/icons-react";
 import { profileImageRouteGenerator } from "@utils/profile";
 import { assetURLBuilder, URLBuilder } from "@utils/url";
+import clsx from "clsx";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { io as socket, Socket } from "socket.io-client";
+import { API_URL } from "~/constants";
 type MessageType = "BASIC" | "CONFIRM_AND_CANCEL_PROMPT";
 
 interface Props {
@@ -37,9 +40,8 @@ interface Props {
 
 export type message = {
   id: string;
-  attachments: Array<any>;
   content: string;
-  client?: {
+  author: {
     id: string;
     name: string;
     username: string;
@@ -52,7 +54,8 @@ export type message = {
     avatarUrl: any;
   };
   createdAt: string;
-  type: MessageType;
+  type: "Text" | "Prompt";
+  sender: "System" | "Client" | "Freelancer";
 };
 
 const ChatContainer = (prop: Props) => {
@@ -63,7 +66,7 @@ const ChatContainer = (prop: Props) => {
   useEffect(() => {
     if (window) {
       setIo(
-        socket(URLBuilder(""), {
+        socket(API_URL!.replace(/\/v(.*)/, ""), {
           auth: {
             token: readCookie("token")!,
           },
@@ -71,11 +74,13 @@ const ChatContainer = (prop: Props) => {
             orderId: prop.orderId,
             chatId: prop.chatId,
           },
+          path: "/v1/socket.io",
+          transports: ["websocket"],
         })
       );
     }
   }, [prop.chatId, prop.orderId]);
-  const [typing, setTyping] = useState<{ userType?: "freelancer" | "client" }>(
+  const [typing, setTyping] = useState<{ userType?: "Freelancer" | "Client" }>(
     {}
   );
 
@@ -92,7 +97,7 @@ const ChatContainer = (prop: Props) => {
           block: "end",
         });
       });
-      io.on("typing", (d: { userType: "freelancer" | "client" }) => {
+      io.on("typing", (d: { userType: "Freelancer" | "Client" }) => {
         if (timeout) clearTimeout(timeout);
         setTyping(d);
         timeout = setTimeout(() => {
@@ -189,12 +194,16 @@ const ChatContainer = (prop: Props) => {
   }, [count]);
 
   const ref = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [doneModalOpened, setDoneModalOpened] = useState(false);
 
   useEffect(() => {
-    if (ref.current) {
-      ref.current.scrollIntoView({ behavior: "smooth", block: "end" });
-    }
+    ref.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+      inline: "nearest",
+    });
   }, []);
   const { userType } = useUser();
   function acceptHandler() {
@@ -209,378 +218,301 @@ const ChatContainer = (prop: Props) => {
   const [loading, setLoading] = useState(false);
   const [uploadWorkModal, setUploadWorkModal] = useState(false);
   return (
-    <div className="relative">
-      {
-        userType !== "client" && !prop.completed ? null :
-          <Modal
-            centered
-            opened={uploadWorkModal}
-            onClose={() => setUploadWorkModal(false)}
-            title="Upload Work"
-          >
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault();
-                if (attachments.length === 0)
-                  return showNotification({
-                    message: "Please select at least one attachment",
-                    color: "red",
-                  });
-                setLoading(true);
-                const token = readCookie("token")!;
-                const data = await uploadFiles(attachments, token).catch((e) => {
-                  showNotification({
-                    message: e?.response?.data?.message || "Something went wrong",
-                    color: "red",
-                  });
-                  return null;
-                });
-                if (data === null) return setLoading(false);
-                const urls = data.data.paths;
-                io?.emit("message", {
-                  message: urls,
-                  attachment: true,
-                });
-                io?.emit("message", {
-                  message: "Here is my work",
-                  attachment: false,
-                });
-                setLoading(false);
-                setUploadWorkModal(false);
-                setAttachments([]);
-              }}
+    <>
+      <div className="hidden lg:block relative max-h-screen overflow-y-scroll">
+        <div ref={chatContainerRef}>
+          {messages?.length < count && (
+            <Group position="center">
+              {userType == "Freelancer" && !prop.completed ? (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setUploadWorkModal(true);
+                  }}
+                >
+                  Submit Work
+                </Button>
+              ) : null}
+              <Button
+                onClick={() => {
+                  fetchMessages(
+                    "before",
+                    messages?.length + 30,
+                    messages?.length
+                  );
+                }}
+                variant="outline"
+              >
+                Load More
+              </Button>
+              {prop.completed ? null : (
+                <Button
+                  onClick={() => {
+                    setDoneModalOpened((o) => !o);
+                  }}
+                  variant="outline"
+                >
+                  Mark as Done
+                </Button>
+              )}
+              {userType === "Client" && prop.completed === true ? (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setReviewModalOpened((o) => !o);
+                  }}
+                >
+                  Leave a Review
+                </Button>
+              ) : null}
+            </Group>
+          )}
+          {messages.map((m, i) => (
+            <>
+              <Message
+                key={m.id}
+                author={m.author}
+                content={m.content}
+                id={m.id}
+                sender={m.sender}
+                type={m.type}
+                acceptHandler={acceptHandler}
+                rejectHandler={rejectHandler}
+                createdAt={m.createdAt}
+              />
+              {i === messages.length - 1 ? (
+                <>
+                  <div className="w-full h-[10px] mb-[60px]" ref={ref} />
+                  <div className="sticky bottom-0 w-full mt-auto">
+                    <div className="flex flex-row items-center justify-between flex-1 p-2 bg-inputs border-t border-gray-200 rounded-md w-full">
+                      <form
+                        onSubmit={formState.onSubmit((d) => {
+                          io?.emit("message", d);
+                          formState.reset();
+                        })}
+                        className="flex flex-col  items-center justify-between w-full"
+                      >
+                        {typing.userType ? (
+                          <div className="flex flex-row mb-1 text-xs w-full ">
+                            {upperFirst(typing.userType)}
+                            <span className="ml-1"> is typing...</span>
+                          </div>
+                        ) : null}
+                        <div className="flex flex-row w-full items-center">
+                          <IconPlus
+                            className="cursor-pointer mr-2"
+                            onClick={() => setAttachmentModalOpened((o) => !o)}
+                          />
+                          <input
+                            {...formState.getInputProps("message")}
+                            className={clsx(
+                              "w-full bg-inputs border-none outline-none rounded-md p-2 focus:ring-2 focus:ring-blue focus:ring-opacity-50  ",
+                              outfit.className
+                            )}
+                            required
+                            autoFocus
+                            placeholder="Type your message here..."
+                            onChange={(e) => {
+                              formState.setFieldValue(
+                                "message",
+                                e.target.value
+                              );
+                              io?.emit("typing");
+                            }}
+                            disabled={disabled}
+                            ref={inputRef}
+                          />
+                          <input type="hidden" name="send" />
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </>
+              ) : null}
+            </>
+          ))}
+        </div>
+
+        <Modal
+          opened={attachmentModalOpened}
+          onClose={() => setAttachmentModalOpened((o) => !o)}
+          centered
+          closeOnClickOutside={!loading}
+          closeOnEscape={!loading}
+          withCloseButton={!loading}
+        >
+          {attachments.map((a) => (
+            <div
+              className="flex flex-row items-center justify-between"
+              key={a.name}
             >
-              <FileInput multiple label="Select Files(Max 10MB)"
-                onChange={e => {
-                  const validFiles = e.filter(file => file.size < 10000000)
-                  if (validFiles.length < e.length) {
-                    showNotification({
-                      title: "Error",
-                      message: "Some files are too large",
-                      color: "red",
-                    });
-                  }
-                  setAttachments(validFiles)
+              <div className="flex flex-row items-center">
+                <IconFile />
+                <span className="ml-2">{a.name}</span>
+              </div>
+              <IconX
+                className="cursor-pointer"
+                onClick={() => {
+                  setAttachments((o) => o.filter((b) => b !== a));
                 }}
               />
-              <Group mt="md" position="center" >
-                <Button
-                  type="submit"
-                  variant="outline"
-
-                  loading={loading}
-                >
-                  Upload
-                </Button>
-
-              </Group>
-            </form>
-          </Modal>
-      }
-
-      <div className="overflow-y-scroll mb-[50px]">
-        {messages?.length < count && (
-          <Group position="center">
-            {userType == "freelancer" && !prop.completed ? (
+            </div>
+          ))}
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              if (attachments.length === 0)
+                return showNotification({
+                  message: "Please select at least one attachment",
+                  color: "red",
+                });
+              setLoading(true);
+              const token = readCookie("token")!;
+              const data = await uploadFiles(attachments, token).catch((e) => {
+                showNotification({
+                  message: e?.response?.data?.message || "Something went wrong",
+                  color: "red",
+                });
+                return null;
+              });
+              if (data === null) return setLoading(false);
+              const urls = data.data.paths;
+              formState.setFieldValue(
+                "message",
+                `${formState.values.message}\n${urls
+                  .map((u) => `![image.png]${assetURLBuilder(u)}`)
+                  .join("\n")}`
+              );
+              setLoading(false);
+              setAttachmentModalOpened(false);
+            }}
+          >
+            <FileInput
+              label="Upload Attachment"
+              withAsterisk
+              multiple
+              value={attachments}
+              placeholder="Select Attachments"
+              onChange={setAttachments}
+            />
+            <Group position="center" mt="md">
               <Button
+                type="submit"
                 variant="outline"
-                onClick={() => {
-                  setUploadWorkModal(true);
-                }}
+                color="gray"
+                loading={loading}
               >
-                Submit Work
+                Upload
               </Button>
-            ) : null}
-            <Button
-              onClick={() => {
-                fetchMessages(
-                  "before",
-                  messages?.length + 30,
-                  messages?.length
-                );
-              }}
-              variant="outline"
-            >
-              Load More
-            </Button>
-            {prop.completed ? null : (
+            </Group>
+          </form>
+        </Modal>
+        <Modal
+          opened={doneModalOpened}
+          onClose={() => setDoneModalOpened(false)}
+          centered
+          closeOnClickOutside
+          closeOnEscape
+          withCloseButton
+        >
+          <div className="flex flex-col items-center justify-center w-full p-4 space-y-4">
+            <IconCheck className="w-16 h-16 text-green-500" />
+            <h1 className="text-xl font-semibold text-center">
+              Are you sure you want to mark this job as done?
+            </h1>
+            <p className="text-gray-500 text-center">
+              Marking this job as done will require consent of both parties.
+              This chat will be closed.
+            </p>
+            <Group position="center">
               <Button
-                onClick={() => {
-                  setDoneModalOpened((o) => !o);
-                }}
                 variant="outline"
+                color="gray"
+                onClick={() => setDoneModalOpened(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="filled"
+                className="bg-green-500 hover:bg-green-600"
+                onClick={() => {
+                  io?.emit("prompt");
+                }}
               >
                 Mark as Done
               </Button>
-            )}
-            {userType === "client" && prop.completed === true ? (
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setReviewModalOpened((o) => !o);
-                }}
-              >
-                Leave a Review
-              </Button>
-            ) : null}
-          </Group>
-        )}
-        {messages.map((o) => {
-          if (!o.client && !o.freelancer)
-            return (
-              <div className="flex flex-col w-full items-center">
-                {o.content}
-              </div>
-            );
-          if (o.client)
-            return (
-              <Message
-                content={
-                  o.attachments.length === 0 ? (
-                    o.content
-                  ) : (
-                    <>
-                      {o.content}
-                      <div className="flex flex-row flex-wrap gap-3 ml-2">
-                        {o.attachments.map((a) => (
-                          <a
-                            href={assetURLBuilder(a)}
-                            target="_blank"
-                            rel="noreferrer"
-                            key={a.id}
-                          >
-                            <div className="flex flex-col items-center">
-                              <div className="flex flex-row items-center justify-center w-12 h-12 rounded-full bg-gray-200">
-                                <IconFile className="w-6 h-6 text-gray-500" />
-                              </div>
-                              <span className="text-xs text-gray-500 max-w-[30px] l-1">
-                                file
-                              </span>
-                            </div>
-                          </a>
-                        ))}
-                      </div>
-                    </>
-                  )
-                }
-                type={o.type}
-                profileURL={
-                  o.client.avatarUrl
-                    ? assetURLBuilder(o.client.avatarUrl)
-                    : profileImageRouteGenerator(o.client.username)
-                }
-                username={o.client.username}
-                timestamp={r(o.createdAt)}
-                key={o.id}
-                id={o.id}
-                isAttachment={o.attachments.length > 0}
-                acceptHandler={
-                  userType === "freelancer" ? acceptHandler : undefined
-                }
-                rejectHandler={
-                  userType === "freelancer" ? rejectHandler : undefined
-                }
-                completed={prop.completed}
-              />
-            );
-          return (
-            <Message
-              id={o.id}
-              key={o.id}
-              type={o.type}
-              isAttachment={o.attachments.length > 0}
-              completed={prop.completed}
-              content={
-                o.attachments.length === 0 ? (
-                  o.content
-                ) : (
-                  <>
-                    {o.content}
-                    <div className="flex flex-row flex-wrap ml-2 gap-3">
-                      {o.attachments.map((a) => (
-                        <Image
-                          src={assetURLBuilder(a)}
-                          key={a}
-                          alt="Attachment"
-                          width={200}
-                          className="cursor-pointer"
-                          classNames={{
-                            image: "rounded-md",
-                          }}
-                          onClick={() => {
-                            window.open(assetURLBuilder(a));
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </>
-                )
-              }
-              profileURL={
-                o.freelancer!.avatarUrl
-                  ? assetURLBuilder(o.freelancer!.avatarUrl)
-                  : profileImageRouteGenerator(o.freelancer!.username)
-              }
-              username={o.freelancer!.username}
-              timestamp={r(o.createdAt)}
-              acceptHandler={userType === "client" ? acceptHandler : undefined}
-              rejectHandler={userType === "client" ? rejectHandler : undefined}
-            />
-          );
-        })}
-      </div>
-      <div className="" ref={ref} />
-      <div className="sticky bottom-0">
-        <div className="flex flex-row items-center justify-between w-full p-2 bg-white border-t border-gray-200">
-          <form
-            onSubmit={formState.onSubmit((d) => {
-              io?.emit("message", d);
-              formState.reset();
-            })}
-            className="flex flex-col  items-center justify-between w-full"
-          >
-            {typing.userType ? (
-              <div className="flex flex-row mb-1 text-xs text-gray-500 w-full ">
-                {upperFirst(typing.userType)}
-                <span className="ml-1"> is typing...</span>
-              </div>
-            ) : null}
-            <div className="flex flex-row w-full">
-              <IconPlus
-                className="cursor-pointer mr-2"
-                onClick={() => setAttachmentModalOpened((o) => !o)}
-              />
-              <TextInput
-                {...formState.getInputProps("message")}
-                className="w-full"
-                required
-                placeholder="Type your message here..."
-                onChange={(e) => {
-                  formState.setFieldValue("message", e.target.value);
-                  io?.emit("typing");
-                }}
-                disabled={disabled}
-              />
-              <input type="hidden" name="send" />
-            </div>
-          </form>
-        </div>
-      </div>
-      <Modal
-        opened={attachmentModalOpened}
-        onClose={() => setAttachmentModalOpened((o) => !o)}
-        centered
-        closeOnClickOutside={!loading}
-        closeOnEscape={!loading}
-        withCloseButton={!loading}
-      >
-        {attachments.map((a) => (
-          <div
-            className="flex flex-row items-center justify-between"
-            key={a.name}
-          >
-            <div className="flex flex-row items-center">
-              <IconFile />
-              <span className="ml-2">{a.name}</span>
-            </div>
-            <IconX
-              className="cursor-pointer"
-              onClick={() => {
-                setAttachments((o) => o.filter((b) => b !== a));
-              }}
-            />
+            </Group>
           </div>
-        ))}
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            if (attachments.length === 0)
-              return showNotification({
-                message: "Please select at least one attachment",
-                color: "red",
-              });
-            setLoading(true);
-            const token = readCookie("token")!;
-            const data = await uploadFiles(attachments, token).catch((e) => {
-              showNotification({
-                message: e?.response?.data?.message || "Something went wrong",
-                color: "red",
-              });
-              return null;
-            });
-            if (data === null) return setLoading(false);
-            const urls = data.data.paths;
-            io?.emit("message", {
-              message: urls,
-              attachment: true,
-            });
-            setLoading(false);
-            setAttachmentModalOpened(false);
-          }}
+        </Modal>
+        <ReviewModal
+          modalOpen={reviewModalOpened}
+          setModalOpen={setReviewModalOpened}
+          freelancerUsername={prop.freelancerUsername}
+        />
+      </div>
+      {userType !== "Client" && !prop.completed ? null : (
+        <Modal
+          centered
+          opened={uploadWorkModal}
+          onClose={() => setUploadWorkModal(false)}
+          title="Upload Work"
         >
-          <FileInput
-            label="Upload Attachment"
-            withAsterisk
-            multiple
-            value={attachments}
-            placeholder="Select Attachments"
-            onChange={setAttachments}
-          />
-          <Group position="center" mt="md">
-            <Button
-              type="submit"
-              variant="outline"
-              color="gray"
-              loading={loading}
-            >
-              Send
-            </Button>
-          </Group>
-        </form>
-      </Modal>
-      <Modal
-        opened={doneModalOpened}
-        onClose={() => setDoneModalOpened(false)}
-        centered
-        closeOnClickOutside
-        closeOnEscape
-        withCloseButton
-      >
-        <div className="flex flex-col items-center justify-center w-full p-4 space-y-4">
-          <IconCheck className="w-16 h-16 text-green-500" />
-          <h1 className="text-xl font-semibold text-center">
-            Are you sure you want to mark this job as done?
-          </h1>
-          <p className="text-gray-500 text-center">
-            Marking this job as done will require consent of both parties. This
-            chat will be closed.
-          </p>
-          <Group position="center">
-            <Button
-              variant="outline"
-              color="gray"
-              onClick={() => setDoneModalOpened(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="filled"
-              className="bg-green-500 hover:bg-green-600"
-              onClick={() => {
-                io?.emit("prompt");
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              if (attachments.length === 0)
+                return showNotification({
+                  message: "Please select at least one attachment",
+                  color: "red",
+                });
+              setLoading(true);
+              const token = readCookie("token")!;
+              const data = await uploadFiles(attachments, token).catch((e) => {
+                showNotification({
+                  message: e?.response?.data?.message || "Something went wrong",
+                  color: "red",
+                });
+                return null;
+              });
+              if (data === null) return setLoading(false);
+              const urls = data.data.paths;
+              io?.emit("message", {
+                message: urls,
+                attachment: true,
+              });
+              io?.emit("message", {
+                message: "Here is my work",
+                attachment: false,
+              });
+              setLoading(false);
+              setUploadWorkModal(false);
+              setAttachments([]);
+            }}
+          >
+            <FileInput
+              multiple
+              label="Select Files(Max 10MB)"
+              onChange={(e) => {
+                const validFiles = e.filter((file) => file.size < 10000000);
+                if (validFiles.length < e.length) {
+                  showNotification({
+                    title: "Error",
+                    message: "Some files are too large",
+                    color: "red",
+                  });
+                }
+                setAttachments(validFiles);
               }}
-            >
-              Mark as Done
-            </Button>
-          </Group>
-        </div>
-      </Modal>
-      <ReviewModal
-        modalOpen={reviewModalOpened}
-        setModalOpen={setReviewModalOpened}
-        freelancerUsername={prop.freelancerUsername}
-      />
-    </div>
+            />
+            <Group mt="md" position="center">
+              <Button type="submit" variant="outline" loading={loading}>
+                Upload
+              </Button>
+            </Group>
+          </form>
+        </Modal>
+      )}
+    </>
   );
 };
 
