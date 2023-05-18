@@ -155,7 +155,10 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
           <Renderer children={service.description} />
         </article>
       </Container>
-      <div className="mt-8 flex-1 lg:sticky top-10 lg:flex-[0.4] h-screen">
+      <div
+        className="mt-8 flex-1 lg:sticky top-10 lg:flex-[0.4] h-screen"
+        id="packages-offered"
+      >
         <Tabs
           defaultValue={service.package[0].id}
           unstyled

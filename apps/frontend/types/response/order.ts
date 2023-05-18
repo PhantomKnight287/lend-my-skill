@@ -1,22 +1,35 @@
-type OrderStatus = "PENDING" | "COMPLETED" | "CANCELLED"
+type OrderStatus = "PENDING" | "COMPLETED" | "CANCELLED";
 
 export interface Orders {
   orders: Order[];
   next?: number;
 }
 
+// do not believe on this type, please check network tab before using it
 export interface Order {
+  client: {
+    name: string;
+    username: string;
+  };
+  freelancer: {
+    name: string;
+    username: string;
+  };
+  couponCode: {
+    code: string;
+  };
+  orderState: string;
+  transaction: {
+    amount: number;
+  };
   id: string;
-  package: Package;
-  DiscountCode: any;
-  freelancer: Freelancer;
-  client: Client;
-  deadline: string;
-  price: number;
+  package: {
+    name: string;
+  };
+  service: {
+    slug: string;
+  };
   createdAt: string;
-  status: OrderStatus;
-  amountPaid?: number;
-  user: "client" | "freelancer";
 }
 
 export interface Package {

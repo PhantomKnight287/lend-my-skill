@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import { Service } from "~/types/service";
 import useRazorpay from "react-razorpay";
+import { useUser } from "@hooks/user";
 
 function Purchase() {
   const [service, setService] = useState<Service>({} as Service);
@@ -28,6 +29,7 @@ function Purchase() {
   useHydrateUserContext("replace", true, undefined, true);
   const [coupon, setCoupon] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const { username } = useUser();
   const Razorpay = useRazorpay();
   useEffect(() => {
     if (!isReady) return;
@@ -72,7 +74,13 @@ function Purchase() {
           key: process.env.NEXT_PUBLIC_RAZORPAY_KEY!,
           name: "Lend My Skill",
           order_id: data.orderId,
-          handler: console.log,
+          handler() {
+            showNotification({
+              message: "Payment Successful",
+              color: "green",
+            });
+            replace(`/profile/${username}/orders`);
+          },
         });
         r.on("payment.failed", console.log);
         r.open();
