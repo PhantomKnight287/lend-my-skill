@@ -58,6 +58,15 @@
     width: auto;
     height: auto;
     object-fit: contain;
+    max-width: 400px;
+    aspect-ratio: 1/1;
   }
   @apply break-all;
+  video {
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    max-width: 400px;
+    aspect-ratio: 1/1;
+  }
 }
