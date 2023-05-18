@@ -194,22 +194,24 @@ enum DiscountType {
 }
 
 model Order {
-  id            String       @id @unique @default(cuid())
-  client        User         @relation(fields: [clientId], references: [id], name: "ordersCreated")
-  freelancer    User         @relation(fields: [freelancerId], references: [id], name: "ordersRecieved")
-  clientId      String
-  freelancerId  String
-  orderState    OrderState
-  service       Service?     @relation(fields: [serviceId], references: [id])
-  serviceId     String?
-  couponCode    CouponCode?  @relation(fields: [couponCodeId], references: [id])
-  couponCodeId  String?
-  transaction   Transactions @relation(fields: [transactionId], references: [id])
-  transactionId String       @unique
-  chat          Chat?
-  createdAt     DateTime     @default(now())
-  package       Package?     @relation(fields: [packageId], references: [id])
-  packageId     String?
+  id                       String       @id @unique @default(cuid())
+  client                   User         @relation(fields: [clientId], references: [id], name: "ordersCreated")
+  freelancer               User         @relation(fields: [freelancerId], references: [id], name: "ordersRecieved")
+  clientId                 String
+  freelancerId             String
+  orderState               OrderState
+  service                  Service?     @relation(fields: [serviceId], references: [id])
+  serviceId                String?
+  couponCode               CouponCode?  @relation(fields: [couponCodeId], references: [id])
+  couponCodeId             String?
+  transaction              Transactions @relation(fields: [transactionId], references: [id])
+  transactionId            String       @unique
+  chat                     Chat?
+  createdAt                DateTime     @default(now())
+  package                  Package?     @relation(fields: [packageId], references: [id])
+  packageId                String?
+  markedAsDoneByFreelancer Boolean      @default(false)
+  markedAsDoneByClient     Boolean      @default(false)
 }
 
 enum OrderState {
@@ -238,14 +240,22 @@ model Message {
   sender    MessageSender
   content   String
   createdAt DateTime      @default(now())
-  author    User          @relation(fields: [authorId], references: [id])
-  authorId  String
+  author    User?         @relation(fields: [authorId], references: [id])
+  authorId  String?
   chat      Chat?         @relation(fields: [chatId], references: [id])
   chatId    String?
+  type      MessageType
 }
 
 enum MessageSender {
   Client
   Freelancer
   System
+}
+
+enum MessageType {
+  // normal text, supports markdown
+  Text
+  // prompt to mark the order as completed
+  Prompt
 }
