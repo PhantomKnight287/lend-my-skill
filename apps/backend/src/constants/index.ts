@@ -9,11 +9,11 @@ export const SUPABASE_KEY = process.env.SUPABASE_KEY;
 export const RAZORPAY_KEY = process.env.RAZORPAY_KEY;
 export const RAZORPAY_SECRET = process.env.RAZORPAY_SECRET;
 export const RAZORPAY_WEBHOOK_SECRET = process.env.RAZORPAY_WEBHOOK_SECRET;
+export const WEBHOOK_URL = process.env.WEBHOOK_URL;
 
 if (!SIGN_SECRET) {
   throw new Error('JWT_SECRET must be defined');
 }
-
 
 if (!SUPABASE_URL) {
   throw new Error('SUPABASE_URL must be defined');
@@ -32,3 +32,5 @@ if (!RAZORPAY_SECRET) {
 if (!RAZORPAY_WEBHOOK_SECRET) {
   throw new Error('RAZORPAY_WEBHOOK_SECRET must be defined');
 }
+
+if (!WEBHOOK_URL) throw new Error('WEBHOOK_URL must be defined');
