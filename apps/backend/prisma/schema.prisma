@@ -236,15 +236,17 @@ model Chat {
 }
 
 model Message {
-  id        String        @id @unique @default(cuid())
-  sender    MessageSender
-  content   String
-  createdAt DateTime      @default(now())
-  author    User?         @relation(fields: [authorId], references: [id])
-  authorId  String?
-  chat      Chat?         @relation(fields: [chatId], references: [id])
-  chatId    String?
-  type      MessageType
+  id           String        @id @unique @default(cuid())
+  sender       MessageSender
+  content      String
+  createdAt    DateTime      @default(now())
+  author       User?         @relation(fields: [authorId], references: [id])
+  authorId     String?
+  chat         Chat?         @relation(fields: [chatId], references: [id])
+  chatId       String?
+  type         MessageType
+  // this will either be Freelance and Client to show the Buttons based on the sender, the will be null for any other message except the prompt
+  promptSender String?
 }
 
 enum MessageSender {
