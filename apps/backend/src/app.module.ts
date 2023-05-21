@@ -30,6 +30,7 @@ import { OrdersModule } from './resources/orders/orders.module';
 import { ChatModule } from './resources/chat/chat.module';
 import { MessagesModule } from './resources/messages/messages.module';
 import { ChatGateway } from './gateways/chat/chat.gateway';
+import { WebhookService } from './services/webhook/webhook.service';
 
 @Module({
   controllers: [AppController],
@@ -41,6 +42,7 @@ import { ChatGateway } from './gateways/chat/chat.gateway';
     ConversionService,
     RazorpayService,
     ChatGateway,
+    WebhookService,
   ],
   imports: [
     ThrottlerModule.forRoot({
@@ -64,7 +66,7 @@ import { ChatGateway } from './gateways/chat/chat.gateway';
     ChatModule,
     MessagesModule,
   ],
-  exports: [PrismaService, RazorpayService],
+  exports: [PrismaService, RazorpayService, WebhookService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
