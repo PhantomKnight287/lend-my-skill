@@ -112,7 +112,7 @@ const Orders = () => {
                         <td>
                           <Link
                             className="text-blue-500"
-                            href={`/profile/${username}/order/${order.id}`}
+                            href={`/profile/${username}/order/${order.id}/chat`}
                           >
                             {order.id}
                           </Link>
