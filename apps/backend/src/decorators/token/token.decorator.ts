@@ -10,7 +10,7 @@ import { SIGN_SECRET } from 'src/constants';
 
 export interface DecodedJWT extends JwtPayload {
   id: string;
-  userType: 'Client' | 'Freelancer';
+  role: 'Client' | 'Freelancer';
 }
 
 export const Token = createParamDecorator(
