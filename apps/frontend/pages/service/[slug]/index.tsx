@@ -31,7 +31,7 @@ import { Renderer } from "@components/renderer";
 const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   service
 ) => {
-  const { username, userType } = useUser();
+  const { username, role } = useUser();
   useHydrateUserContext();
   return (
     <div
@@ -249,7 +249,7 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                     ) : null}
                   </div>
                 ))}
-                {service.user.username != username && userType == "Client" ? (
+                {service.user.username != username && role == "Client" ? (
                   <Link
                     href={{
                       pathname: `/service/[slug]/purchase`,

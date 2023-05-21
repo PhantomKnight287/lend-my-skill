@@ -88,7 +88,7 @@ const Chat = () => {
     );
     return () => controller.abort();
   }, [isReady, query.id, asPath]);
-  const { userType } = useUser();
+  const { role } = useUser();
 
   useEffect(() => {
     if (!chatConfig.id) return;
@@ -99,7 +99,7 @@ const Chat = () => {
           to: asPath,
         },
       });
-  }, [chatConfig.id, userType, chatConfig?.chat?.id, asPath]);
+  }, [chatConfig.id, role, chatConfig?.chat?.id, asPath]);
 
   return (
     <div
@@ -118,7 +118,7 @@ const Chat = () => {
             Chat With{" "}
             <Link
               href={`/profile/${
-                userType === "Client"
+                role === "Client"
                   ? chatConfig.freelancer.username
                   : chatConfig.client.username
               }`}
@@ -126,7 +126,7 @@ const Chat = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              {userType === "Client"
+              {role === "Client"
                 ? chatConfig.freelancer.name
                 : chatConfig.client.name}
             </Link>

@@ -83,7 +83,6 @@ export default function Register() {
           payload: {
             ...d.user,
             avatarUrl: profileImageRouteGenerator(d.user.username),
-            userType: role as "Client" | "Freelancer",
           },
         });
         createCookie("token", d.token);

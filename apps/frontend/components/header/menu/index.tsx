@@ -16,7 +16,7 @@ import {
 } from "@tabler/icons-react";
 
 export default function HeaderMenu() {
-  const { avatarUrl, username, userType, profileCompleted } = useUser();
+  const { avatarUrl, username, role, profileCompleted } = useUser();
   const dispatch = useSetUser();
   const { push } = useRouter();
   return (
@@ -44,7 +44,7 @@ export default function HeaderMenu() {
           </Menu.Item>
 
           <>
-            {userType === "Freelancer" ? (
+            {role === "Freelancer" ? (
               <Menu.Item
                 color="green"
                 onClick={() => push(`/create/service`)}

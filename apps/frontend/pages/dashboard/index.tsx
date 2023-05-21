@@ -51,7 +51,7 @@ const Dashboard = () => {
     getNextPageParam: (lastPage) => lastPage.next,
   });
 
-  const { userType } = useUser();
+  const { role } = useUser();
 
   const servicesContainer = useRef<HTMLDivElement>(null);
   const jobpostsContainer = useRef<HTMLDivElement>(null);
@@ -77,7 +77,6 @@ const Dashboard = () => {
       fetchMoreJobposts();
     }
   }, [jobpostsEntry?.isIntersecting]);
-
   return (
     <div
       className={clsx("flex mt-8 w-full", {
@@ -90,13 +89,13 @@ const Dashboard = () => {
       />
       <div
         className={clsx("flex gap-3 flex-wrap w-full", {
-          "flex-col": userType === "Client",
-          "flex-col-reverse": userType === "Freelancer",
+          "flex-col": role === "Client",
+          "flex-col-reverse": role === "Freelancer",
         })}
       >
         <div
           className={clsx("w-full px-8 py-4", {
-            hidden: userType !== "Client",
+            hidden: role !== "Client",
           })}
         >
           <Title
@@ -160,7 +159,7 @@ const Dashboard = () => {
         </div>
         <div
           className={clsx("w-full px-8 py-4", {
-            hidden: userType !== "Freelancer",
+            hidden: role !== "Freelancer",
           })}
         >
           <Title
