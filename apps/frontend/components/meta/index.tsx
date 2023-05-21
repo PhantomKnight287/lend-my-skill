@@ -28,7 +28,10 @@ const MetaTags: FC<MetaTagsProps> = ({ description, title, ogImage }) => {
         <meta property="twitter:url" content="https://lendmyskill.com" />
         <meta property="twitter:title" content={title} />
         <meta property="twitter:description" content={description} />
-        <meta property="twitter:image" content={ogImage || "/brand/lms-logo.png"} />
+        <meta
+          property="twitter:image"
+          content={ogImage || "/brand/lms-logo.png"}
+        />
       </>
     </Head>
   );

@@ -7,7 +7,7 @@
   India's First Open source Freelance Platform
 </h1>
 
-A Freelance platform designed specially for Indians supporting payment methods like `Rupay Card` and `UPI`.
+A Freelance platform designed specially for Indians supporting payment methods like `Rupay Card`.
 
 > The work is currently paused, will be continued after few meetings. 
 
@@ -24,7 +24,8 @@ A Freelance platform designed specially for Indians supporting payment methods l
 
 - **Open Source** - This project is completely open source and you can contribute to it.
 
-- **Payment Methods** - We are first in India to support payment methods like `Rupay Card` and `UPI`.
+- **Payment Methods** - We are first in India to support payment methods like `Rupay Card`.
+> UPI will be added soon.
 
 # Stack
 

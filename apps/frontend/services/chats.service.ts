@@ -1,9 +1,7 @@
 import { message } from "@components/chat/container";
 import { URLBuilder } from "@utils/url";
 import axios, { AxiosError, isCancel } from "axios";
-import {
-  ChatDetails,
-} from "../pages/profile/[username]/order/[id]/chat";
+import { ChatDetails } from "../pages/profile/[username]/order/[id]/chat";
 
 export async function fetchChatDetails(
   orderId: string,

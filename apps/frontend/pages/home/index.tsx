@@ -12,7 +12,7 @@ const Home: NextPage = () => {
         description="An Open Source Freelance Platform For Everyone."
         title="Lend My Skill"
       />
-      <Hero  />
+      <Hero />
 
       <Footer
         links={[
