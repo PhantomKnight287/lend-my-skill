@@ -1,23 +1,18 @@
+/* eslint-disable react/no-children-prop */
+import { Renderer } from "@components/renderer";
 import { sanitize } from "@components/tabs/profile/services";
 import { outfit } from "@fonts";
-import {
-  Card,
-  Image,
-  Text,
-  Badge,
-  Button,
-  Group,
-  useMantineColorScheme,
-} from "@mantine/core";
+import { Card, Image, Text, Badge, Button, Group } from "@mantine/core";
 import { assetURLBuilder } from "@utils/url";
 import clsx from "clsx";
 import Link from "next/link";
+import { Carousel } from "react-responsive-carousel";
 import { Posts } from "~/types/jobpost";
 
 interface Props {
   title: string;
   description: string;
-  image: string;
+  images: string[];
   price?: number;
   buttonTitle?: string;
   author?: Posts["posts"][0]["author"];
@@ -29,7 +24,7 @@ interface Props {
 
 export function PostCard({
   description,
-  image,
+  images,
   slug,
   title,
   type,
@@ -46,31 +41,33 @@ export function PostCard({
       className={"max-w-[350px]  min-w-[300px] h-full min-h-[21rem] mx-1"}
     >
       <Card.Section>
-        <Image
-          src={resolveImageUrl ? assetURLBuilder(image) : image}
-          height={160}
-          alt="Banner Image"
-        />
+        <Carousel showThumbs={false}>
+          {images.map((image, index) => (
+            <Image
+              key={index}
+              src={resolveImageUrl ? assetURLBuilder(image) : image}
+              alt={title}
+              height={300}
+              className="object-cover"
+            />
+          ))}
+        </Carousel>
       </Card.Section>
 
       <Group
         position="apart"
-        mt="md"
         mb="xs"
         className="flex flex-col items-start justify-center"
       >
-        <Text weight={500} lineClamp={1}>
+        <Text weight={500} lineClamp={1} mt={"md"}>
           {title}
         </Text>
         {badgeLabel ? <Badge variant="light">{badgeLabel}</Badge> : null}
       </Group>
 
-      <Text
-        size="sm"
-        color="dimmed"
-        lineClamp={2}
-        dangerouslySetInnerHTML={sanitize(description, undefined)}
-      />
+      {/* <Text size="sm" color="dimmed" lineClamp={2}>
+        <Renderer children={description} removeComponents />
+      </Text> */}
 
       <Link href={`/${type}/${slug}`} target="_blank" rel="noopener noreferrer">
         <Button
@@ -78,7 +75,7 @@ export function PostCard({
           mt="md"
           radius="md"
           className={clsx(
-            "transition-all duration-[110ms] hover:scale-105 hover:bg-purple-700 bg-purple-500",
+            "transition-all duration-[110ms] hover:scale-105 bg-primary hover:bg-primary/90",
             {
               [outfit.className]: true,
             }

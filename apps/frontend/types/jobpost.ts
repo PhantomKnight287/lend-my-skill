@@ -69,10 +69,10 @@ export interface Posts {
     id: string;
     createdAt: Date;
     author: {
-      id: string;
+      id?: string;
       name: string;
       username: string;
-      country: string;
+      country?: string;
       avatarUrl: string;
       verified?: boolean;
     };
@@ -81,6 +81,7 @@ export interface Posts {
     title: string;
     tags: string[];
     slug: string;
+    images: string[];
   }[];
   next?: number;
 }

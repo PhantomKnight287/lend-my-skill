@@ -16,15 +16,13 @@ export class CreateUserDto {
 
   @IsString()
   @IsOptional()
-  confirmPassword: string;
-
-  @IsString()
   country: string;
 
   @IsString()
   username: string;
 
   @IsEnum(Role)
+  @IsOptional()
   role: Role;
 
   @IsString()

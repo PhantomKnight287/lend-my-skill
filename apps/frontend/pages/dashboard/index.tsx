@@ -11,7 +11,6 @@ import { useIntersection } from "@mantine/hooks";
 import { Loader, Title } from "@mantine/core";
 import { Posts } from "~/types/jobpost";
 import { PostCard } from "@components/card/post";
-import styles from "@styles/Dashboard.module.scss";
 
 const Dashboard = () => {
   useHydrateUserContext("replace", true, "/auth/login", true);
@@ -39,9 +38,6 @@ const Dashboard = () => {
     data: jobposts,
     fetchNextPage: fetchMoreJobposts,
     hasNextPage: hasMoreJobposts,
-    isFetchingNextPage: isFetchingMoreJobposts,
-    error: jobpostsError,
-    status: jobpostsFetchingStatus,
   } = useInfiniteQuery<Posts>({
     queryKey: ["jobposts"],
     queryFn: async ({ pageParam = 10 }) => {
@@ -55,7 +51,7 @@ const Dashboard = () => {
     getNextPageParam: (lastPage) => lastPage.next,
   });
 
-  const { userType } = useUser();
+  const { role } = useUser();
 
   const servicesContainer = useRef<HTMLDivElement>(null);
   const jobpostsContainer = useRef<HTMLDivElement>(null);
@@ -81,7 +77,6 @@ const Dashboard = () => {
       fetchMoreJobposts();
     }
   }, [jobpostsEntry?.isIntersecting]);
-
   return (
     <div
       className={clsx("flex mt-8 w-full", {
@@ -94,11 +89,15 @@ const Dashboard = () => {
       />
       <div
         className={clsx("flex gap-3 flex-wrap w-full", {
-          "flex-col": userType === "Client",
-          "flex-col-reverse": userType === "Freelancer",
+          "flex-col": role === "Client",
+          "flex-col-reverse": role === "Freelancer",
         })}
       >
-        <div className="w-full px-8 py-4">
+        <div
+          className={clsx("w-full px-8 py-4", {
+            hidden: role !== "Client",
+          })}
+        >
           <Title
             className={clsx("", {
               [outfit.className]: true,
@@ -145,7 +144,7 @@ const Dashboard = () => {
                   >
                     <PostCard
                       description={service.description}
-                      image={service.bannerImage}
+                      images={service.images}
                       title={service.title}
                       author={service.user}
                       slug={service.slug}
@@ -158,7 +157,11 @@ const Dashboard = () => {
             )}
           </div>
         </div>
-        <div className="w-full px-8 py-4">
+        <div
+          className={clsx("w-full px-8 py-4", {
+            hidden: role !== "Freelancer",
+          })}
+        >
           <Title
             className={clsx("", {
               [outfit.className]: true,
@@ -205,14 +208,12 @@ const Dashboard = () => {
                   >
                     <PostCard
                       description={post.description}
-                      image={
-                        "https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
-                      }
+                      images={post.images}
                       title={post.title}
                       author={post.author}
                       slug={post.slug}
                       type="job"
-                      resolveImageUrl={false}
+                      resolveImageUrl={true}
                       badgeLabel={
                         post.budget ? `$ ${post.budget}` : `No Budget`
                       }

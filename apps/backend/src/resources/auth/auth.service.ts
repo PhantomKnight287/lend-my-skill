@@ -6,12 +6,13 @@ import { SIGN_SECRET } from 'src/constants';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-auth.dto';
 import { LoginUserDto } from './dto/login.dto';
+import { WebhookService } from 'src/services/webhook/webhook.service';
 
 type UserPayload = Pick<User, 'id' | 'role'>;
 
 @Injectable()
 export class AuthService {
-  constructor(protected p: PrismaService) {}
+  constructor(protected p: PrismaService, protected w: WebhookService) {}
 
   async create(c: CreateUserDto): Promise<{
     token: string;
@@ -23,8 +24,7 @@ export class AuthService {
       profileCompleted: boolean;
     };
   }> {
-    const { email, password, country, confirmPassword, username, role, name } =
-      c;
+    const { email, password, country, username, role, name } = c;
     const oldUser = await this.p.user.findFirst({
       where: {
         OR: [
@@ -39,16 +39,14 @@ export class AuthService {
     });
     if (oldUser)
       throw new HttpException('Email or Username already in use.', 409);
-    if (password !== confirmPassword)
-      throw new HttpException('Passwords do not match.', 400);
     const user = await this.p.user.create({
       data: {
         email,
         name,
         password: await hash(password, 10),
         username,
-        country,
-        role,
+        country: country,
+        role: role || 'Freelancer',
       },
     });
     const token = sign(
@@ -58,6 +56,15 @@ export class AuthService {
       },
       SIGN_SECRET,
     );
+    await this.w.sendWebhook({
+      content: 'New User Registered',
+      embeds: [
+        {
+          title: 'New User Registered',
+          description: `A User named \`${user.name}\` registered under \`${user.username}\` username as \`${user.role}\``,
+        },
+      ],
+    });
     return {
       token,
       user: {

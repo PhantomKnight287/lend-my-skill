@@ -8,20 +8,11 @@ export class ServicesService {
   constructor(protected p: PrismaService) {}
 
   async createService(data: CreateServiceDTO, id: string) {
-    const {
-      bannerImage,
-      category,
-      description,
-      features,
-      images,
-      packages,
-      tags,
-      title,
-    } = data;
+    const { category, description, features, images, packages, tags, title } =
+      data;
 
     const service = await this.p.service.create({
       data: {
-        bannerImage,
         slug: stringToSlug(title, 10),
         category: {
           connect: {
@@ -69,7 +60,6 @@ export class ServicesService {
         },
       },
       select: {
-        bannerImage: true,
         category: true,
         createdAt: true,
         description: true,
@@ -114,7 +104,16 @@ export class ServicesService {
     });
     if (!service)
       throw new HttpException('No Service Found.', HttpStatus.NOT_FOUND);
-    return service;
+    const totalReviews = await this.p.review.count({
+      where: {
+        service: {
+          id: service.id,
+        },
+      },
+    });
+    const totalRating = await this.p
+      .$queryRaw`SELECT sum(rating) AS total FROM "public"."Review" WHERE "serviceId" = ${service.id}`;
+    return { ...service, totalRating: totalRating[0].total, totalReviews };
   }
   async getServices(username: string, take?: string) {
     const toTake = Number.isNaN(parseInt(take)) ? 10 : parseInt(take);
@@ -125,6 +124,8 @@ export class ServicesService {
             equals: username,
             mode: 'insensitive',
           },
+          profileCompleted: true,
+          kycCompleted: true,
         },
       },
       select: {
@@ -142,7 +143,6 @@ export class ServicesService {
         title: true,
         createdAt: true,
         description: true,
-        bannerImage: true,
         package: {
           select: {
             price: true,
@@ -154,7 +154,6 @@ export class ServicesService {
             },
           ],
         },
-        rating: true,
         tags: {
           select: {
             name: true,
@@ -162,7 +161,7 @@ export class ServicesService {
             slug: true,
           },
         },
-        ratedBy: true,
+        images: true,
       },
       take: toTake,
       skip: toTake > 10 ? toTake - 10 : undefined,
@@ -172,7 +171,7 @@ export class ServicesService {
         },
       ],
     });
-    if (data.length === 0) throw new HttpException('No services found', 404);
+
     if (data.length > 10) {
       return {
         services: data,
@@ -209,7 +208,6 @@ export class ServicesService {
         title: true,
         createdAt: true,
         description: true,
-        bannerImage: true,
         package: {
           select: {
             price: true,
@@ -221,7 +219,6 @@ export class ServicesService {
             },
           ],
         },
-        rating: true,
         tags: {
           select: {
             name: true,
@@ -229,7 +226,7 @@ export class ServicesService {
             slug: true,
           },
         },
-        ratedBy: true,
+        images: true,
       },
       take: toTake,
       skip: toTake > 10 ? toTake - 10 : undefined,

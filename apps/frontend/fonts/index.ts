@@ -1,4 +1,5 @@
 import { Inter, Outfit, Sen, Space_Grotesk } from "next/font/google";
+import local from "next/font/local";
 
 export const inter = Inter({
   weight: ["400", "500", "600", "700"],
@@ -22,4 +23,9 @@ export const sen = Sen({
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "700", "800"],
+});
+
+export const satoshi = local({
+  src: "../public/fonts/Satoshi-Variable.ttf",
+  display: "swap",
 });

@@ -1,10 +1,8 @@
-import { IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import Textarea from "@components/input/textarea";
 import { MetaTags } from "@components/meta";
 import { outfit } from "@fonts";
 import {
   Button,
-  Divider,
   FileButton,
   Group,
   Image,
@@ -13,32 +11,28 @@ import {
   NumberInput,
   Paper,
   Select,
-  SimpleGrid,
-  Stepper,
   Text,
   TextInput,
-  Title,
   useMantineColorScheme,
   Textarea as T,
   Checkbox,
-  Menu,
   ButtonProps,
-  Badge,
+  Table,
+  Modal,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import clsx from "clsx";
-import React, { useEffect, useMemo, useState } from "react";
-import { DatePicker } from "@mantine/dates";
+import { useEffect, useMemo, useState } from "react";
 import useHydrateUserContext from "@hooks/hydrate/user";
 import {
+  IconArrowLeft,
+  IconArrowRight,
   IconCheck,
-  IconCross,
   IconPlus,
-  IconTrash,
   IconUpload,
   IconX,
 } from "@tabler/icons-react";
-import { uploadFile, uploadFiles } from "@helpers/upload";
+import { uploadFiles } from "@helpers/upload";
 import { readCookie } from "@helpers/cookie";
 import { showNotification } from "@mantine/notifications";
 import axios from "axios";
@@ -46,30 +40,32 @@ import { URLBuilder } from "@utils/url";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useUser } from "@hooks/user";
-import Editor from "@components/editor";
 import { DELIVERY_DAYS } from "~/constants";
 import { createService } from "../../services/services.service";
 import { AnswerType } from "~/types/answer";
+import { Carousel } from "react-responsive-carousel";
+
+type Form = {
+  title: string;
+  description: string;
+  price: string;
+  category: string;
+  packages?: {
+    name: string;
+    price: number;
+    description: string;
+    deliveryDays: number;
+  }[];
+  questions: {
+    question: string;
+    type: keyof typeof AnswerType;
+    required: boolean;
+  }[];
+  tags: string[];
+};
 
 function CreateService() {
-  const formState = useForm<{
-    title: string;
-    description: string;
-    price: string;
-    category: string;
-    packages?: {
-      name: string;
-      price: number;
-      description: string;
-      deliveryDays: number;
-    }[];
-    questions: {
-      question: string;
-      type: keyof typeof AnswerType;
-      required: boolean;
-    }[];
-    tags: string[];
-  }>({
+  const formState = useForm<Form>({
     initialValues: {
       title: "I will ",
       description: "",
@@ -77,7 +73,19 @@ function CreateService() {
       category: "",
       packages: [
         {
-          name: "Package",
+          name: "Basic",
+          price: 0,
+          description: "",
+          deliveryDays: 0,
+        },
+        {
+          name: "Standard",
+          price: 0,
+          description: "",
+          deliveryDays: 0,
+        },
+        {
+          name: "Premium",
           price: 0,
           description: "",
           deliveryDays: 0,
@@ -112,7 +120,12 @@ function CreateService() {
           : null,
     },
   });
-  const [tags, setTags] = useState<{ value: string; label: string }[]>([]);
+  const [tags] = useState<{ value: string; label: string }[]>([]);
+  const addNewFeatureFormState = useForm<{ name: string }>({
+    initialValues: {
+      name: "",
+    },
+  });
   const { data, refetch } = useQuery<{ id: string; name: string }[]>({
     queryKey: ["categories"],
     queryFn: async () => {
@@ -122,18 +135,11 @@ function CreateService() {
   });
   const [features, setFeatures] = useState<
     { name: string; includedIn: string[] }[]
-  >([
-    {
-      name: "",
-      includedIn: [],
-    },
-  ]);
+  >([]);
   const [active, setActive] = useState(0);
   const { colorScheme: theme } = useMantineColorScheme();
-  const { username } = useUser();
-  const { push, isReady } = useRouter();
+  const { push } = useRouter();
   useHydrateUserContext("replace", true);
-  const [bannerImage, setBannerImage] = useState<File>();
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState<File[]>([]);
 
@@ -148,7 +154,7 @@ function CreateService() {
         <Button
           onClick={() => setActive((prev) => prev + 1)}
           variant="filled"
-          className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
+          className={clsx("bg-primary hover:bg-primary/90 text-black")}
           {...props}
         >
           {props.children || "Next Step"}
@@ -157,7 +163,9 @@ function CreateService() {
       []
     );
   const [loadingVisible, setLoadingVisible] = useState(false);
+  const [addNewFeatureModal, setAddNewFeatureModal] = useState(false);
   const handleSubmit = async (values: typeof formState.values) => {
+    console.log("called");
     const token = readCookie("token");
     if (!token)
       return showNotification({
@@ -167,29 +175,51 @@ function CreateService() {
         icon: <IconX />,
       });
     setLoadingVisible(true);
-
-    if (!bannerImage) {
-      setLoadingVisible(false);
-      return showNotification({
-        title: "Banner Image is required",
-        message: "Please upload a banner image",
-        color: "red",
-        icon: <IconX />,
-      });
-    }
-    const upload = await uploadFile(bannerImage, token, "bannerImage").catch(
-      (err) => null
-    );
-    if (upload === null) {
+    if (values.description.length < 100) {
       setLoadingVisible(false);
       return showNotification({
         title: "Error",
-        message: "Something went wrong while uploading the banner image",
+        message: "Description should be atleast 100 characters long",
         color: "red",
         icon: <IconX />,
       });
     }
-    const { path: bannerImagePath } = upload.data;
+    if (values.title.length < 20) {
+      setLoadingVisible(false);
+      return showNotification({
+        title: "Error",
+        message: "Title should be atleast 20 characters long",
+        color: "red",
+        icon: <IconX />,
+      });
+    }
+    if (values.title.length > 100) {
+      setLoadingVisible(false);
+      return showNotification({
+        title: "Error",
+        message: "Title should be less than 100 characters long",
+        color: "red",
+        icon: <IconX />,
+      });
+    }
+    if (features.length < 1) {
+      setLoadingVisible(false);
+      return showNotification({
+        title: "Error",
+        message: "Please add atleast one feature",
+        color: "red",
+        icon: <IconX />,
+      });
+    }
+    if (!values.category) {
+      setLoadingVisible(false);
+      return showNotification({
+        title: "Error",
+        message: "Please select a category",
+        color: "red",
+        icon: <IconX />,
+      });
+    }
     let imagePaths: string[] = [];
     if (images.length > 0) {
       const uploads = await uploadFiles(images, token, "serviceImages").catch(
@@ -208,7 +238,6 @@ function CreateService() {
     }
     createService(
       {
-        bannerImage: bannerImagePath,
         category: values.category,
         description: values.description,
         features,
@@ -256,389 +285,280 @@ function CreateService() {
         title="Create Service | Lend My Skill"
         description="Create a service to get hired and earn money."
       />
-      <div className={clsx("flex flex-col p-20")}>
-        <LoadingOverlay visible={loadingVisible} />
-        <div className="flex flex-row flex-wrap xl:items-center justify-center  gap-4">
-          {active === 0 ? (
-            <div className={clsx("mr-20")}>
-              <Title
-                order={1}
-                className={clsx("text-center", {
-                  [outfit.className]: true,
-                })}
-              >
-                Let&apos;s Create A Service!
-              </Title>
-              <Text
-                className={clsx("text-lg font-bold ", {
-                  [outfit.className]: true,
-                })}
-              >
-                We&apos;ll try to find buyers for your service.
-              </Text>
-            </div>
-          ) : null}
-          <div className={clsx("flex flex-col")}>
-            <form
-              onSubmit={formState.onSubmit((d) => {
-                handleSubmit(d);
-              })}
+      <LoadingOverlay visible={loadingVisible} />
+      <div
+        className={clsx("flex justify-center", {
+          "h-screen": active != 3,
+        })}
+      >
+        <form
+          onSubmit={formState.onSubmit((d) => handleSubmit(d))}
+          className="flex flex-1 justify-center h-full items-center"
+        >
+          <div
+            className={clsx(
+              "flex flex-col lg:flex-row items-center justify-center flex-1 lg:p-8",
+              {
+                "flex-row": active != 2,
+                "flex-col": active == 2,
+              }
+            )}
+          >
+            <div
+              className={clsx(
+                "flex flex-col items-center justify-center lg:flex-[0.5] flex-1 w-[95%] lg:w-auto mb-0 lg:mb-8",
+                {
+                  "lg:hidden flex": active > 1,
+                }
+              )}
             >
-              <Stepper
-                active={active}
-                color="green"
-                onStepClick={setActive}
-                breakpoint="sm"
-                classNames={{
-                  stepLabel: clsx("", {
-                    [outfit.className]: true,
-                  }),
-                  stepDescription: clsx("", {
-                    [outfit.className]: true,
-                  }),
-                }}
-                completedIcon={<IconCheck />}
-                orientation="horizontal"
+              <h1 className={clsx("text-2xl font-bold", outfit.className)}>
+                Create a Service
+              </h1>
+              <p className={clsx("text-center", outfit.className)}>
+                Create a service to get hired and earn money.
+              </p>
+            </div>
+            <div
+              className={clsx("lg:flex-[0.5] flex-1 w-[95%] lg:w-[unset]", {})}
+            >
+              <div
+                className={clsx({
+                  hidden: active !== 0,
+                })}
               >
-                <Stepper.Step label="Overview" allowStepSelect={active > 0}>
-                  <Paper radius={"md"} p="xl" className={clsx("max-w-3xl ")}>
-                    <>
-                      <div>
-                        <Textarea
-                          required
-                          id="title"
-                          labelString="Title"
-                          placeholder="Enter the title of your service"
-                          labelProps={{
-                            className: clsx({
-                              [outfit.className]: true,
-                            }),
-                          }}
-                          {...formState.getInputProps("title")}
-                          classNames={{
-                            input: clsx("border-0", {}),
-                          }}
-                          minLength={20}
-                          maxLength={1000}
-                          wordsComponent={
-                            <span
-                              className={clsx("text-sm ml-auto pr-3 my-2 ", {
-                                "text-[#6c757d]":
-                                  formState.values.title.length < 20,
-                                "text-[#28a745]":
-                                  formState.values.title.length >= 20 &&
-                                  formState.values.title.length < 1000,
-                              })}
-                            >
-                              {formState.values.title.length}/1000
-                            </span>
-                          }
-                        />
-                      </div>
-
-                      <div>
-                        <LoadingOverlay overlayBlur={2} visible={loading} />
-
-                        <Select
-                          mt="md"
-                          data={
-                            data
-                              ? data?.map((d) => ({
-                                  value: d.id,
-                                  label: d.name,
-                                }))
-                              : []
-                          }
-                          {...formState.getInputProps("category")}
-                          label="Category"
-                          placeholder="Select a category"
-                          searchable
-                          clearable
-                          required
-                          creatable
-                          getCreateLabel={(query) => `Create "${query}"`}
-                          labelProps={{
-                            className: clsx("text-sm font-bold ", {
-                              [outfit.className]: true,
-                              "text-[#495057]": theme === "light",
-                            }),
-                          }}
-                          onCreate={(query) => {
-                            setLoading(true);
-                            axios
-                              .post(
-                                URLBuilder(`/categories/create`),
-                                {
-                                  name: query,
-                                },
-                                {
-                                  headers: {
-                                    authorization: `Bearer ${readCookie(
-                                      "token"
-                                    )}`,
-                                  },
-                                }
-                              )
-                              .then((d) =>
-                                refetch().then(() => setLoading(false))
-                              )
-                              .catch((err) => {
-                                showNotification({
-                                  color: "red",
-                                  message:
-                                    err?.response?.data?.message ||
-                                    "An error occured",
-                                });
-                                setLoading(false);
-                              });
-                            return null;
-                          }}
-                        />
-                      </div>
-                      <MultiSelect
-                        mt="md"
-                        data={
-                          tagsData
-                            ? tagsData.map((d) => ({
-                                value: d.id,
-                                label: d.name,
-                              }))
-                            : []
-                        }
-                        {...formState.getInputProps("tags")}
-                        label="Tags"
-                        labelProps={{
-                          className: clsx("text-sm font-bold ", {
-                            [outfit.className]: true,
-                            "text-[#495057]": theme === "light",
-                          }),
-                        }}
-                        placeholder="Enter tags"
-                        searchable
-                        clearable
-                        creatable={tags.length < 5}
-                        getCreateLabel={(query) => `+ Create ${query}`}
-                        onCreate={(query) => {
-                          setLoading(true);
-                          axios
-                            .post(
-                              URLBuilder(`/tags/create`),
-                              {
-                                name: query,
-                              },
-                              {
-                                headers: {
-                                  authorization: `Bearer ${readCookie(
-                                    "token"
-                                  )}`,
-                                },
-                              }
-                            )
-                            .then((d) =>
-                              tagsRefetch().then(() => setLoading(false))
-                            )
-                            .catch((err) => {
-                              showNotification({
-                                color: "red",
-                                message:
-                                  err?.response?.data?.message ||
-                                  "An error occured",
-                              });
-                            });
-                          setLoading(false);
-                          return null;
-                        }}
-                        maxSelectedValues={5}
-                        classNames={{
-                          input: "focus:outline-none",
-                        }}
-                      />
-                      <Group position="center" mt="xl">
-                        <Button
-                          variant="default"
-                          disabled
-                          className="cursor-not-allowed"
-                        >
-                          Back
-                        </Button>
-                        <NextButton />
-                      </Group>
-                    </>
-                  </Paper>
-                </Stepper.Step>
-                <Stepper.Step label="Features">
-                  <div className="flex flex-col items-center justify-center mt-3   gap-4 w-full">
-                    <Text
-                      align="center"
-                      className={clsx("text-lg font-bold text-center", {
-                        [outfit.className]: true,
-                      })}
-                    >
-                      List the features of your Service.
-                    </Text>
-                    <span className="text-sm text-[#6c757d]">
-                      You&apos;ll be asked to choose the features that are
-                      included in your service
-                    </span>
-                    <div className="mt-5 w-full">
-                      {features.map((feature, id) => (
-                        <div
-                          className="flex flex-row gap-2 w-full my-2"
-                          key={id}
-                        >
-                          <TextInput
-                            value={feature.name}
-                            onChange={(e) => {
-                              setFeatures(
-                                features.map((f, index) =>
-                                  index === id
-                                    ? {
-                                        name: e.target.value,
-                                        includedIn: f.includedIn,
-                                      }
-                                    : f
-                                )
-                              );
-                            }}
-                            placeholder="Feature"
-                            className="w-full"
-                          />
-                          <Button
-                            variant="filled"
-                            className="bg-[#e53935] hover:bg-[#d32f2f]"
-                            onClick={() => {
-                              formState.removeListItem("features", id);
-                            }}
-                          >
-                            <IconX />
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="mt-10">
-                    <Group position="center">
-                      <Button
-                        onClick={() => setActive(0)}
-                        variant="filled"
-                        className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
-                      >
-                        Back
-                      </Button>
-                      <Button
-                        color="purple"
-                        className={clsx("bg-purple-600 hover:bg-purple-700")}
-                        onClick={() => {
-                          setFeatures((f) => [
-                            ...f,
-                            { name: "", includedIn: [] },
-                          ]);
-                        }}
-                      >
-                        Add feature
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          if (features.length === 0) {
-                            return showNotification({
-                              color: "red",
-                              message: "You must add at least one feature",
-                            });
-                          }
-                          setActive(2);
-                        }}
-                        variant="filled"
-                        className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
-                      >
-                        Next step
-                      </Button>
-                    </Group>
-                  </div>
-                </Stepper.Step>
-                <Stepper.Step label="Packages" allowStepSelect={active > 1}>
-                  <div className="flex flex-row gap-4 mt-8">
-                    <div className="flex flex-col">
-                      <Text
-                        className={clsx("text-lg font-bold", {
-                          [outfit.className]: true,
-                          "text-black": theme === "light",
-                        })}
-                      >
-                        Packages
-                      </Text>
-                      <Button
-                        onClick={() => {
-                          formState.insertListItem("packages", {
-                            name: "Package",
-                            price: 0,
-                            description: "",
-                          });
-                        }}
-                        disabled={formState.values.packages!.length === 3}
-                        variant="filled"
-                        className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
-                      >
-                        <IconPlus />
-                      </Button>
-                    </div>
-                    <SimpleGrid
-                      cols={
-                        formState.values.packages!.length === 1
-                          ? 1
-                          : formState.values.packages!.length === 2
-                          ? 2
-                          : 3
+                <TextInput
+                  label="Title"
+                  required
+                  placeholder="Title of your service"
+                  {...formState.getInputProps("title")}
+                  size="md"
+                  classNames={{
+                    input: clsx(outfit.className, "border-0", "bg-inputs"),
+                  }}
+                />
+                <div className="flex">
+                  <span
+                    className={clsx(
+                      "ml-auto text-sm text-gray-500",
+                      outfit.className,
+                      {
+                        "text-red-500":
+                          formState.values.title.length < 20 ||
+                          formState.values.title.length > 100,
                       }
-                      className="w-full"
-                    >
-                      {formState.values.packages?.map((p, index) => (
-                        <div
-                          className={clsx(
-                            "flex flex-col border-l-[1px] w-full border-gray-400 pl-3"
-                          )}
-                          key={index}
-                        >
-                          <Text
-                            className={clsx("text-sm font-bold text-center", {
-                              [outfit.className]: true,
-                            })}
-                          >
-                            {formState.values.packages![index].name}
-                          </Text>
+                    )}
+                  >
+                    {formState.values.title.length}/100
+                  </span>
+                </div>
+                <Select
+                  mt="md"
+                  data={
+                    data
+                      ? data?.map((d) => ({
+                          value: d.id,
+                          label: d.name,
+                        }))
+                      : []
+                  }
+                  {...formState.getInputProps("category")}
+                  label="Category"
+                  placeholder="Select a category"
+                  searchable
+                  clearable
+                  required
+                  creatable
+                  getCreateLabel={(query) => `Create "${query}"`}
+                  labelProps={{
+                    className: clsx("text-sm font-bold ", {
+                      [outfit.className]: true,
+                      "text-[#495057]": theme === "light",
+                    }),
+                  }}
+                  onCreate={(query) => {
+                    setLoading(true);
+                    axios
+                      .post(
+                        URLBuilder(`/categories/create`),
+                        {
+                          name: query,
+                        },
+                        {
+                          headers: {
+                            authorization: `Bearer ${readCookie("token")}`,
+                          },
+                        }
+                      )
+                      .then((d) => refetch().then(() => setLoading(false)))
+                      .catch((err) => {
+                        showNotification({
+                          color: "red",
+                          message:
+                            err?.response?.data?.message || "An error occured",
+                        });
+                        setLoading(false);
+                      });
+                    return null;
+                  }}
+                />
+                <MultiSelect
+                  mt="md"
+                  data={
+                    tagsData
+                      ? tagsData.map((d) => ({
+                          value: d.id,
+                          label: d.name,
+                        }))
+                      : []
+                  }
+                  {...formState.getInputProps("tags")}
+                  label="Tags"
+                  labelProps={{
+                    className: clsx("text-sm font-bold ", {
+                      [outfit.className]: true,
+                      "text-[#495057]": theme === "light",
+                    }),
+                  }}
+                  placeholder="Enter tags"
+                  searchable
+                  clearable
+                  creatable={tags.length < 5}
+                  getCreateLabel={(query) => `+ Create ${query}`}
+                  onCreate={(query) => {
+                    setLoading(true);
+                    axios
+                      .post(
+                        URLBuilder(`/tags/create`),
+                        {
+                          name: query,
+                        },
+                        {
+                          headers: {
+                            authorization: `Bearer ${readCookie("token")}`,
+                          },
+                        }
+                      )
+                      .then((d) => tagsRefetch().then(() => setLoading(false)))
+                      .catch((err) => {
+                        showNotification({
+                          color: "red",
+                          message:
+                            err?.response?.data?.message || "An error occured",
+                        });
+                      });
+                    setLoading(false);
+                    return null;
+                  }}
+                  maxSelectedValues={5}
+                  classNames={{
+                    input: "focus:outline-none",
+                  }}
+                />
+              </div>
+              <div
+                className={clsx({
+                  hidden: active !== 1,
+                })}
+              >
+                <Textarea
+                  {...formState.getInputProps("description")}
+                  placeholder="Description of your service(supports markdown)"
+                  required
+                  classNames={{
+                    input: clsx(outfit.className, "border-0", "bg-inputs"),
+                  }}
+                  labelString="Description"
+                  id="description"
+                  minRows={10}
+                />
+              </div>
+              <div
+                className={clsx({
+                  hidden: active !== 2,
+                })}
+              >
+                <h1
+                  className={clsx(
+                    "text-2xl font-bold my-8 text-center",
+                    outfit.className
+                  )}
+                >
+                  Pricing Plans
+                </h1>
+                <Table
+                  horizontalSpacing="xl"
+                  verticalSpacing="xs"
+                  withBorder
+                  withColumnBorders
+                >
+                  <thead>
+                    <tr>
+                      <th>Plan Name</th>
+                      {formState.values.packages?.map((p, i) => (
+                        <th key={i}>
                           <TextInput
-                            placeholder="Package name"
+                            {...formState.getInputProps(`packages.${i}.name`)}
+                            placeholder="Basic"
                             required
-                            {...formState.getInputProps(
-                              `packages.${index}.name`
-                            )}
+                            classNames={{
+                              input: clsx(
+                                outfit.className,
+                                "border-[1px]",
+                                "bg-transparent"
+                              ),
+                            }}
                           />
-                          <Divider className={"my-2"} />
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Description</td>
+                      {formState.values.packages?.map((p, i) => (
+                        <td key={i}>
                           <T
-                            placeholder="Package description"
-                            required
                             {...formState.getInputProps(
-                              `packages.${index}.description`
+                              `packages.${i}.description`
                             )}
-                          />
-                          <Select
-                            label="Delivery Days"
-                            {...formState.getInputProps(
-                              `packages.${index}.deliveryDays`
-                            )}
+                            placeholder="Description of your service"
                             required
-                            data={DELIVERY_DAYS as any}
-                            placeholder="Select an Option"
+                            rows={10}
+                            classNames={{
+                              input: clsx(
+                                outfit.className,
+                                "border-[1px]",
+                                "bg-transparent"
+                              ),
+                            }}
                           />
-                          <Text
-                            className={clsx(
-                              "text-sm font-bold text-center mt-2",
-                              {
-                                [outfit.className]: true,
-                              }
-                            )}
-                          >
-                            Features
-                          </Text>
+                        </td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Price</td>
+                      {formState.values.packages?.map((p, i) => (
+                        <td key={i}>
+                          <NumberInput
+                            {...formState.getInputProps(`packages.${i}.price`)}
+                            placeholder="100"
+                            required
+                            classNames={{
+                              input: clsx(
+                                outfit.className,
+                                "border-[1px]",
+                                "bg-transparent"
+                              ),
+                            }}
+                          />
+                        </td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Features</td>
+                      {formState.values.packages?.map((p, i) => (
+                        <td key={i}>
                           {features.map((feature, id) => (
                             <div
                               className="flex flex-row gap-2 w-full my-2"
@@ -678,244 +598,263 @@ function CreateService() {
                                       )
                                     );
                                   }
-                                  console.log(feature);
                                 }}
                                 className="w-full"
                                 label={feature.name}
                               />
                             </div>
                           ))}
-                          <TextInput
-                            placeholder="Price "
-                            required
-                            label="Price in USD"
-                            {...formState.getInputProps(
-                              `packages.${index}.price`
+                          <Button
+                            fullWidth
+                            className={clsx(
+                              "bg-green-400 hover:bg-green-400/90 text-black"
                             )}
-                            type="number"
-                          />
-                        </div>
+                            onClick={() => {
+                              setAddNewFeatureModal(true);
+                            }}
+                          >
+                            <IconPlus />
+                          </Button>
+                        </td>
                       ))}
-                    </SimpleGrid>
-                  </div>
-                  <div className="flex flex-row gap-4 items-center justify-center mt-4">
-                    <Button
-                      onClick={() => setActive(1)}
-                      variant="filled"
-                      className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
-                    >
-                      Back
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        if (formState.values.packages!.length === 0) {
-                          return showNotification({
-                            color: "red",
-                            message: "You must add at least one package",
-                          });
-                        }
-                        setActive(3);
-                      }}
-                      variant="filled"
-                      className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
-                    >
-                      Next step
-                    </Button>
-                  </div>
-                </Stepper.Step>
-                <Stepper.Step label="Description" allowStepSelect={active > 2}>
-                  <Editor
-                    onSubmit={(d) => {
-                      if (d.length < 100) {
-                        return showNotification({
-                          color: "red",
-                          message:
-                            "Description must be at least 100 characters long",
-                        });
-                      }
-                      formState.setFieldValue("description", d);
-                      setActive((o) => o + 1);
-                    }}
-                    setActive={setActive}
-                  />
-                </Stepper.Step>
-                <Stepper.Step label={"Assets"}>
-                  <Text
-                    align="center"
-                    className={clsx("text-lg font-bold mt-4", {
-                      [outfit.className]: true,
-                      "text-black": theme === "light",
-                    })}
-                  >
-                    Add some images to your service to make it more appealing
-                    and stand out.
-                  </Text>
-                  <div className="flex flex-row gap-5 flex-wrap">
+                    </tr>
+                    <tr>
+                      <td>Delivery Days</td>
+                      {formState.values.packages?.map((p, i) => (
+                        <td key={i}>
+                          <Select
+                            data={
+                              DELIVERY_DAYS.map((d) => ({
+                                value: d.value,
+                                label: d.label,
+                              })) as any
+                            }
+                            {...formState.getInputProps(
+                              `packages.${i}.deliveryDays`
+                            )}
+                            placeholder="Select Delivery Duration"
+                            searchable
+                            clearable
+                            required
+                            classNames={{
+                              input: clsx(
+                                outfit.className,
+                                "border-[1px]",
+                                "bg-transparent"
+                              ),
+                            }}
+                          />
+                        </td>
+                      ))}
+                    </tr>
+                  </tbody>
+                </Table>
+              </div>
+              <div
+                className={clsx({
+                  hidden: active !== 3,
+                })}
+              >
+                <h1
+                  className={clsx(
+                    "text-2xl font-bold my-8 text-center",
+                    outfit.className
+                  )}
+                >
+                  Images
+                </h1>
+                <div className="flex flex-row gap-4">
+                  <div className="flex flex-col gap-4 flex-1 items-center justify-center">
+                    <div className="mt-4">
+                      {images.length > 0 ? (
+                        <div className="container relative max-w-[400px] h-fit bg-inputs">
+                          <Carousel
+                            autoPlay={false}
+                            interval={5000}
+                            infiniteLoop
+                            showThumbs={false}
+                            renderArrowNext={(
+                              onClickHandler,
+                              hasNext,
+                              label
+                            ) => (
+                              <button
+                                type="button"
+                                onClick={onClickHandler}
+                                title={label}
+                                className="absolute top-[45%] right-0 z-10  text-4xl text-white bg-black rounded-full shadow-lg"
+                                style={{ padding: "10px" }}
+                              >
+                                <IconArrowRight />
+                              </button>
+                            )}
+                            renderArrowPrev={(
+                              onClickHandler,
+                              hasNext,
+                              label
+                            ) => (
+                              <button
+                                type="button"
+                                onClick={onClickHandler}
+                                title={label}
+                                className="absolute top-[45%] left-0 z-10  text-4xl text-white bg-black rounded-full shadow-lg"
+                                style={{ padding: "10px" }}
+                              >
+                                <IconArrowLeft />
+                              </button>
+                            )}
+                          >
+                            {images.map((i) => (
+                              <div
+                                key={URL.createObjectURL(i)}
+                                className="max-w-[400px] aspect-square "
+                              >
+                                {i.name.endsWith(".mp4") ? (
+                                  <video
+                                    src={URL.createObjectURL(i)}
+                                    className="cursor-pointer my-6 max-h-[400px] aspect-square"
+                                    controls
+                                    onClick={() => {
+                                      window.open(URL.createObjectURL(i));
+                                    }}
+                                  />
+                                ) : (
+                                  <Image
+                                    src={URL.createObjectURL(i)}
+                                    alt="Image"
+                                    className="cursor-pointer  max-w-[400px] aspect-square"
+                                    classNames={{
+                                      image:
+                                        "rounded-md max-w-[400px] aspect-square",
+                                    }}
+                                    onClick={() => {
+                                      window.open(URL.createObjectURL(i));
+                                    }}
+                                  />
+                                )}
+                              </div>
+                            ))}
+                          </Carousel>
+                        </div>
+                      ) : null}
+                    </div>
                     <FileButton
-                      onChange={(d) => {
-                        if (d) {
-                          if (d.type.includes("image")) {
-                            setBannerImage(d);
-                          }
-                        }
+                      onChange={(i) => {
+                        setImages((im) => [...im, ...i]);
                       }}
+                      multiple
                     >
                       {(props) => (
                         <>
-                          {bannerImage ? (
-                            <div
-                              className={clsx(
-                                "flex flex-col gap-4 w-full items-center justify-center"
-                              )}
-                            >
-                              <Image
-                                className="cursor-pointer rounded-md"
-                                src={URL.createObjectURL(bannerImage)}
-                                onClick={props.onClick}
-                                classNames={{
-                                  image: "object-cover  rounded-md",
-                                }}
-                                alt="Banner image"
-                              />
-                              <span
-                                className={clsx("text-sm  cursor-pointer", {
-                                  [outfit.className]: true,
-                                })}
-                              >
-                                Banner Image
-                              </span>
+                          <Paper
+                            withBorder
+                            p="md"
+                            radius="md"
+                            onClick={props.onClick}
+                            className="max-w-fit cursor-pointer"
+                          >
+                            <div className="flex flex-col items-center justify-center">
+                              <IconUpload className="w-16 h-16 text-gray-500" />
+                              <Text className="text-gray-500">
+                                Upload Images{" "}
+                              </Text>
+                              <p className="text-gray-500">
+                                These images will be shown as slideshow on your
+                                service&apos;s page
+                              </p>
                             </div>
-                          ) : (
-                            <div className="flex flex-col w-full items-center mt-4 justify-center">
-                              <Paper
-                                withBorder
-                                p="md"
-                                radius="md"
-                                mb="md"
-                                onClick={props.onClick}
-                                className="max-w-fit cursor-pointer"
-                              >
-                                <div className="flex flex-col items-center justify-center">
-                                  <IconUpload className="w-16 h-16 text-gray-500" />
-                                  <Text className="text-gray-500">
-                                    Upload Banner Image{" "}
-                                  </Text>
-                                  <p className="text-gray-500">
-                                    This image will be shown when client will
-                                    search for services.
-                                  </p>
-                                </div>
-                              </Paper>
-                            </div>
-                          )}
+                          </Paper>
                         </>
                       )}
                     </FileButton>
                   </div>
-                  <div className="flex flex-row flex-wrap gap-4">
-                    {images.map((i, index) => (
-                      <div
-                        className="flex flex-col items-center justify-center gap-2"
-                        key={index}
-                      >
-                        <div className="relative">
-                          <Image
-                            className="cursor-pointer rounded-md"
-                            width={100}
-                            height={100}
-                            src={URL.createObjectURL(i)}
-                            onClick={() => {
-                              setImages(images.filter((_, i2) => i2 !== index));
-                            }}
-                            classNames={{
-                              image: "object-cover  rounded-md",
-                            }}
-                            alt="Image"
-                          />
-                          <div className="absolute top-0 right-0">
-                            <Button
-                              onClick={() => {
-                                setImages(
-                                  images.filter((_, i2) => i2 !== index)
-                                );
-                              }}
-                              variant="filled"
-                              compact
-                              className={clsx(
-                                "p-0 rounded-full bg-red-500 hover:bg-red-500/90"
-                              )}
-                            >
-                              <IconX />
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                    <div className="flex flex-col items-center justify-center mt-8 w-full">
-                      <FileButton
-                        onChange={(i) => {
-                          setImages((im) => [...im, ...i]);
-                        }}
-                        multiple
-                      >
-                        {(props) => (
-                          <>
-                            <Paper
-                              withBorder
-                              p="md"
-                              radius="md"
-                              onClick={props.onClick}
-                              className="max-w-fit cursor-pointer"
-                            >
-                              <div className="flex flex-col items-center justify-center">
-                                <IconUpload className="w-16 h-16 text-gray-500" />
-                                <Text className="text-gray-500">
-                                  Upload Showcase Images{" "}
-                                </Text>
-                                <p className="text-gray-500">
-                                  Showcase images will be shown as slideshow on
-                                  your service&apos;s page
-                                </p>
-                              </div>
-                            </Paper>
-                          </>
-                        )}
-                      </FileButton>
-                    </div>
-                  </div>
-                  <Group position="center" mt="md">
-                    <Button
-                      onClick={() => {
-                        setActive((o) => o - 1);
-                      }}
-                      variant="filled"
-                      className={clsx("bg-[#1e88e5] hover:bg-[#1976d2]")}
-                    >
-                      Back
-                    </Button>
-                    <NextButton
-                      type="submit"
-                      className={clsx("bg-green-500 hover:bg-green-500/90")}
-                      onClick={() => {
-                        const error =
-                          formState.errors[Object.keys(formState.errors)[0]];
-                        if (error) {
-                          showNotification({
-                            message: error,
-                            color: "red",
-                          });
-                        }
-                      }}
-                    >
-                      Create
-                    </NextButton>
-                  </Group>
-                </Stepper.Step>
-              </Stepper>
+                </div>
+              </div>
+              <Group
+                align="center"
+                mt="md"
+                className="flex flex-row items-center justify-center gap-4"
+              >
+                <Button
+                  disabled={active === 0}
+                  onClick={() => setActive((prev) => prev - 1)}
+                  variant="outline"
+                  color="gray"
+                >
+                  Back
+                </Button>
+                {active === 3 ? (
+                  <Button
+                    variant="filled"
+                    type="submit"
+                    className={clsx(
+                      "bg-primary hover:bg-primary/90 text-black"
+                    )}
+                  >
+                    Create Service
+                  </Button>
+                ) : (
+                  <NextButton
+                    onClick={
+                      active === 3
+                        ? undefined
+                        : () => {
+                            setActive((prev) => prev + 1);
+                          }
+                    }
+                    type={active === 3 ? "submit" : "button"}
+                  >
+                    {active === 3 ? "Create Service" : "Next"}
+                  </NextButton>
+                )}
+              </Group>
+            </div>
+          </div>
+        </form>
+      </div>
+      <Modal
+        opened={addNewFeatureModal}
+        onClose={() => setAddNewFeatureModal((d) => !d)}
+        centered
+        title="Add New Feature"
+      >
+        <div className="p-4">
+          <div className="flex flex-row justify-between items-center">
+            <form
+              onSubmit={addNewFeatureFormState.onSubmit((d) => {
+                setFeatures((f) => [...f, { name: d.name, includedIn: [] }]);
+                setAddNewFeatureModal(false);
+                addNewFeatureFormState.reset();
+              })}
+              className="flex flex-col gap-4 flex-1"
+            >
+              <TextInput
+                {...addNewFeatureFormState.getInputProps("name")}
+                placeholder="Feature Name"
+                required
+                classNames={{
+                  input: clsx(
+                    outfit.className,
+                    "border-[1px]",
+                    "bg-transparent"
+                  ),
+                }}
+              />
+              <div className="flex flex-row gap-2 mt-4">
+                <Button
+                  type="submit"
+                  className={clsx(
+                    "bg-green-400 hover:bg-green-400/90 text-black"
+                  )}
+                  fullWidth
+                >
+                  <IconCheck />
+                </Button>
+              </div>
             </form>
           </div>
         </div>
-      </div>
+      </Modal>
     </>
   );
 }

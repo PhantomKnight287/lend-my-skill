@@ -1,21 +1,20 @@
 .heading {
   font-weight: 500;
-  //   font-family: "kanit" !important;
-  font-size: large;
+  font-size: x-large;
+  @apply mt-5  mb-3;
   &::after {
     content: "";
     display: block;
     width: 50px;
     height: 4px;
-    background: #1e88e5;
-    margin-top: 5px;
+    margin-top: 3px;
+    @apply bg-primary;
   }
 }
 
 .subheading {
   font-size: x-large;
   font-weight: bold;
-  //   font-family: "kanit" !important;
   &::after {
     content: "";
     display: block;
@@ -28,7 +27,6 @@
 
 .initialHeading {
   font-weight: bolder;
-  //   font-family: "Whyte";
   text-align: center;
   font-size: 1.5rem; /* 24px */
   line-height: 2rem; /* 32px */
@@ -54,7 +52,7 @@
     }
   }
   & code {
-    background-color: #eaeaea;
+    @apply bg-gray-800 text-white;
     padding: 0 0.3%;
     border-radius: 5px;
   }

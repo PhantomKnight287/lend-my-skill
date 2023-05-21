@@ -10,7 +10,7 @@ interface UserContextType {
     name: string;
     username: string;
     avatarUrl?: string;
-    userType?: "Client" | "Freelancer";
+    role?: "Client" | "Freelancer";
     profileCompleted?: boolean;
   };
   setUser: (action: {

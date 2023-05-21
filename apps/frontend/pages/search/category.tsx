@@ -137,7 +137,7 @@ function SearchUsingCategory() {
                 type="submit"
                 leftIcon={<IconSearch size={20} />}
                 className={clsx(
-                  "transition-all duration-[110ms] hover:scale-105 hover:bg-purple-700 bg-purple-500",
+                  "transition-all duration-[110ms] hover:scale-105 hover:bg-primary/90 bg-primary",
                   outfit.className
                 )}
               >
@@ -169,9 +169,7 @@ function SearchUsingCategory() {
                         >
                           <PostCard
                             description={j.description}
-                            image={
-                              "https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
-                            }
+                            images={j.images}
                             title={j.title}
                             slug={j.slug}
                             type="job"
@@ -195,7 +193,7 @@ function SearchUsingCategory() {
                         >
                           <PostCard
                             description={s.description}
-                            image={s.bannerImage}
+                            images={s.images}
                             title={s.title}
                             slug={s.slug}
                             type="service"

@@ -36,7 +36,7 @@ export default function Textarea({
           <span className="text-red-500">*</span>
         </span>
       </label>
-      <div className={clsx("bg-[#25262b]  rounded-md flex flex-col", {})}>
+      <div className={clsx("bg-inputs rounded-md flex flex-col", {})}>
         <T
           required
           placeholder="Enter the description of your job post"
@@ -47,7 +47,7 @@ export default function Textarea({
           }}
           {...props}
           classNames={{
-            input: clsx("border-0", {}),
+            input: clsx("border-0 bg-secondary", {}),
             ...props.classNames,
           }}
           minLength={20}

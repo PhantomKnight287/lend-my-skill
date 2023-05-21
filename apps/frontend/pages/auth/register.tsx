@@ -40,6 +40,7 @@ export default function Register() {
       username: "",
       confirmPass: "",
       country: "",
+      role: "",
     },
 
     validate: {
@@ -58,13 +59,13 @@ export default function Register() {
   const dispatch = useSetUser();
   const { isReady, replace } = useRouter();
   const { id } = useUser();
-  const [userType, setUserType] = useState<"Client" | "Freelancer" | "">("");
-  const [checked, setChecked] = useState<"Client" | "Freelancer" | "">("");
   const [loading, setLoading] = useState(false);
   useHydrateUserContext();
   function handleSubmit(values: typeof form.values) {
     setLoading(true);
-    const { confirmPass, email, name, password, username, country } = values;
+    const { confirmPass, email, name, password, username, country, role } =
+      values;
+    console.log(values);
     axios
       .post<RegisterResponse>(URLBuilder(`/auth/register`), {
         confirmPassword: confirmPass,
@@ -73,7 +74,7 @@ export default function Register() {
         password,
         username,
         country,
-        role: userType,
+        role,
       })
       .then((d) => d.data)
       .then((d) => {
@@ -82,7 +83,6 @@ export default function Register() {
           payload: {
             ...d.user,
             avatarUrl: profileImageRouteGenerator(d.user.username),
-            userType: userType as "Client" | "Freelancer",
           },
         });
         createCookie("token", d.token);
@@ -110,214 +110,125 @@ export default function Register() {
     if (id) replace("/dashboard");
   }, [isReady, id]);
 
-  if (!userType)
-    return (
+  return (
+    <>
+      <MetaTags
+        title="Register | Lend My Skill"
+        description="Register to Lend Your Skill to world and start earning money"
+      />
       <Container className={clsx("mt-20")} my={40}>
-        <MetaTags
-          title="Register | Lend My Skill"
-          description="Register to Lend Your Skill to world and start earning money"
-        />
-        <Text
-          size="lg"
-          weight={500}
-          className={clsx("text-center text-2xl font-bold mb-4", {
+        <h1
+          className={clsx("text-center text-3xl font-bold mb-4", {
             [outfit.className]: true,
             "text-white": colorScheme === "dark",
           })}
         >
-          Join as a <br />
-          <span className="text-center bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] bg-clip-text text-transparent">
-            Client
-          </span>{" "}
-          or{" "}
-          <span className="text-center bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] bg-clip-text text-transparent">
-            Freelancer
-          </span>
-        </Text>
+          Welcome to <br />
+          <span className="gradient-text">Lend My Skill</span>
+        </h1>
 
-        <Paper radius="md" p="xl" withBorder>
-          <Group position="center" className="flex flex-col gap-4 flex-wrap">
-            <div className="flex flex-row gap-4 items-center justify-center flex-wrap">
-              <Paper
-                radius={"md"}
-                withBorder
-                p="xl"
+        <Paper radius="md" p="xl" withBorder className="max-w-[500px] mx-auto">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit(form.values);
+            }}
+          >
+            <Stack>
+              <TextInput
+                label="Name"
+                placeholder="Your name"
+                required
+                {...form.getInputProps("name")}
+              />
+
+              <TextInput
+                required
+                label="Email"
+                placeholder="johndoe@mail.com"
+                type={"email"}
+                {...form.getInputProps("email")}
+              />
+
+              <TextInput
+                required
+                label="Username"
+                placeholder="johndoe123"
+                {...form.getInputProps("username")}
+              />
+
+              <PasswordInput
+                required
+                label="Password"
+                placeholder="Your password"
+                {...form.getInputProps("password")}
+              />
+
+              <Select
+                data={Countries}
+                required
+                label="Country"
+                searchable
+                placeholder="Select your country"
+                {...form.getInputProps("country")}
+                maxDropdownHeight={280}
+              />
+              <Select
+                data={["Freelancer", "Client"]}
+                required
+                label="Role"
+                placeholder="Select your role"
+                {...form.getInputProps("role")}
+                maxDropdownHeight={280}
+              />
+              <Checkbox
+                label={
+                  <>
+                    I agree to the{" "}
+                    <Link
+                      href="/terms"
+                      className={"text-[#3b82f6] hover:underline"}
+                    >
+                      Terms and Conditions
+                    </Link>
+                  </>
+                }
+                checked={form.values.terms}
+                onChange={(event) =>
+                  form.setFieldValue("terms", event.currentTarget.checked)
+                }
+              />
+            </Stack>
+
+            <Group position="apart" mt="xl">
+              <Anchor
+                component={Link}
+                href="/auth/login"
+                type="button"
+                size="xs"
+                className="text-[#3b82f6] hover:underline"
+              >
+                Already have an account? Login
+              </Anchor>
+              <Button
+                type="submit"
+                fullWidth
+                color="black"
                 className={clsx(
-                  "hover:border-[1px] cursor-pointer text-lg hover:border-pink-400",
+                  "focus:outline-none bg-primary hover:bg-primary/90 font-medium rounded-lg text-sm px-5  mb-2 text-black",
                   {
                     [outfit.className]: true,
-                    "text-white": colorScheme === "dark",
-                    "border-[1px] border-pink-400": checked === "Client",
                   }
                 )}
-                onClick={() => {
-                  setChecked("Client");
-                }}
+                disabled={!form.values.terms || loading}
+                loading={loading}
               >
-                <img src="/icons/customer-50.png" alt="Client" />I am a Client,
-                I want to hire a Freelancer
-              </Paper>
-              <Paper
-                radius={"md"}
-                withBorder
-                p="xl"
-                className={clsx(
-                  "hover:border-[1px] cursor-pointer text-lg hover:border-pink-400",
-                  {
-                    [outfit.className]: true,
-                    "text-white": colorScheme === "dark",
-                    "border-[1px] border-pink-400": checked === "Freelancer",
-                  }
-                )}
-                onClick={() => {
-                  setChecked("Freelancer");
-                }}
-              >
-                <img src="/icons/Freelancer-50.png" alt="Freelancer" />I am a
-                Freelancer, I want to work for Clients
-              </Paper>
-            </div>
-            <Button
-              variant="filled"
-              className={clsx("bg-pink-400 hover:bg-pink-500")}
-              onClick={() => {
-                setUserType(checked);
-              }}
-            >
-              Confirm
-            </Button>
-          </Group>
+                Register
+              </Button>
+            </Group>
+          </form>
         </Paper>
       </Container>
-    );
-
-  if (userType === "Client" || userType === "Freelancer")
-    return (
-      <>
-        <MetaTags
-          title="Register | Lend My Skill"
-          description="Register to Lend Your Skill to world and start earning money"
-        />
-        <Container className={clsx("mt-20")} my={40}>
-          <Text
-            size="lg"
-            weight={500}
-            className={clsx("text-center text-2xl font-bold mb-4", {
-              [outfit.className]: true,
-              "text-white": colorScheme === "dark",
-            })}
-          >
-            Welcome to <br />
-            <span className="text-center bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] bg-clip-text text-transparent">
-              Lend My Skill
-            </span>
-          </Text>
-
-          <Paper radius="md" p="xl" withBorder>
-            <Text
-              className={clsx("text-center text-2xl font-bold mb-4", {
-                [outfit.className]: true,
-                "text-white": colorScheme === "dark",
-              })}
-            >
-              {userType === "Client"
-                ? "Sign Up to Hire Freelancers"
-                : "Sign Up to Start Earning Money"}
-            </Text>
-            <form onSubmit={form.onSubmit((d) => handleSubmit(d))}>
-              <Stack>
-                <TextInput
-                  label="Name"
-                  placeholder="Your name"
-                  required
-                  {...form.getInputProps("name")}
-                />
-
-                <TextInput
-                  required
-                  label="Email"
-                  placeholder="johndoe@mail.com"
-                  type={"email"}
-                  {...form.getInputProps("email")}
-                />
-
-                <TextInput
-                  required
-                  label="Username"
-                  placeholder="johndoe123"
-                  {...form.getInputProps("username")}
-                />
-
-                <PasswordInput
-                  required
-                  label="Password"
-                  placeholder="Your password"
-                  {...form.getInputProps("password")}
-                />
-                <PasswordInput
-                  required
-                  label="Confirm Password"
-                  placeholder="Your password"
-                  {...form.getInputProps("confirmPass")}
-                />
-                <Select
-                  data={Countries}
-                  required
-                  label="Country"
-                  searchable
-                  placeholder="Select your country"
-                  {...form.getInputProps("country")}
-                  maxDropdownHeight={280}
-                />
-
-                <Checkbox
-                  label={
-                    <>
-                      I agree to the{" "}
-                      <Link
-                        href="/terms"
-                        className={"text-[#3b82f6] hover:underline"}
-                      >
-                        Terms and Conditions
-                      </Link>
-                    </>
-                  }
-                  checked={form.values.terms}
-                  onChange={(event) =>
-                    form.setFieldValue("terms", event.currentTarget.checked)
-                  }
-                />
-              </Stack>
-
-              <Group position="apart" mt="xl">
-                <Anchor
-                  component={Link}
-                  href="/auth/login"
-                  type="button"
-                  size="xs"
-                  className="text-[#3b82f6] hover:underline"
-                >
-                  Already have an account? Login
-                </Anchor>
-                <Button
-                  type="submit"
-                  fullWidth
-                  color="black"
-                  className={clsx(
-                    "focus:outline-none text-white bg-purple-700 hover:bg-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 ",
-                    {
-                      [outfit.className]: true,
-                    }
-                  )}
-                  disabled={!form.values.terms}
-                  loading={loading}
-                >
-                  Register
-                </Button>
-              </Group>
-            </form>
-          </Paper>
-        </Container>
-      </>
-    );
+    </>
+  );
 }

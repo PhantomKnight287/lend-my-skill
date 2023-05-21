@@ -1,3 +1,6 @@
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import morgan from 'morgan';
@@ -6,7 +9,7 @@ import { PORT } from './constants';
 import helmet from 'helmet';
 import { PrismaService } from './services/prisma/prisma.service';
 import '@total-typescript/ts-reset';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -28,9 +31,12 @@ async function bootstrap() {
   app.enableCors();
   app.get(PrismaService).enableShutdownHooks(app);
   app.useGlobalPipes(new ValidationPipe());
-
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+  });
   await app.listen(PORT);
-
+  (globalThis.fetch as any) = require('node-fetch');
   console.log(`Application is running on: http://localhost:${PORT}`);
 }
 bootstrap();

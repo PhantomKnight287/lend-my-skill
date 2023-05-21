@@ -2,25 +2,17 @@ import { Footer } from "@components/footer";
 import { Hero } from "@components/hero";
 import { MetaTags } from "@components/meta";
 import useHydrateUserContext from "@hooks/hydrate/user";
-import useIssueNewAuthToken from "@hooks/jwt";
 import type { NextPage } from "next";
 
 const Home: NextPage = () => {
-  const data = useHydrateUserContext();
-  useIssueNewAuthToken({
-    successAction: data,
-    method: "replace",
-    redirect: false,
-    to: "/dashboard",
-  });
-
+  useHydrateUserContext();
   return (
     <div>
       <MetaTags
         description="An Open Source Freelance Platform For Everyone."
         title="Lend My Skill"
       />
-      <Hero />
+      <Hero  />
 
       <Footer
         links={[

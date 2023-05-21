@@ -39,8 +39,11 @@ model User {
   updatedAt           DateTime       @updatedAt
   jobPosts            JobPost[]      @relation(name: "jobposts")
   claimedJobPosts     JobPost[]      @relation(name: "claimedjobposts")
-  transactionsCreated Transactions[] @relation(name: "createdby")
+  transactionsCreated Transactions[] @relation(name: "transactionsCreated")
   transactionsPaidTo  Transactions[] @relation(name: "paidto")
+  ordersRecieved      Order[]        @relation(name: "ordersRecieved")
+  ordersCreated       Order[]        @relation(name: "ordersCreated")
+  messages            Message[]
 }
 
 // This will be helpful to moderate the content and also get rid of it when it is not required
@@ -55,12 +58,13 @@ model Uploads {
 }
 
 model Category {
-  id        String    @id @unique @default(cuid())
-  name      String
-  createdAt DateTime  @default(now())
-  slug      String    @unique
-  services  Service[]
-  jobPost   JobPost[]
+  id          String    @id @unique @default(cuid())
+  name        String
+  createdAt   DateTime  @default(now())
+  slug        String    @unique
+  services    Service[]
+  jobPost     JobPost[]
+  description String?
 }
 
 model Tags {
@@ -74,25 +78,21 @@ model Tags {
 }
 
 model Service {
-  id          String   @id @unique @default(cuid())
+  id          String    @id @unique @default(cuid())
   title       String
   description String
-  slug        String   @unique
-  category    Category @relation(fields: [categoryId], references: [id])
+  slug        String    @unique
+  category    Category  @relation(fields: [categoryId], references: [id])
   categoryId  String
-  bannerImage String
   images      String[]
-  rating      Int      @default(0)
-  ratedBy     Int      @default(0)
-
-  tags     Tags[]
-  package  Package[]
-  features Feature[]
-  review   Review[]
-  user     User?     @relation(fields: [userId], references: [id])
-  userId   String?
-
-  createdAt DateTime @default(now())
+  tags        Tags[]
+  package     Package[]
+  features    Feature[]
+  review      Review[]
+  user        User?     @relation(fields: [userId], references: [id])
+  userId      String?
+  createdAt   DateTime  @default(now())
+  orders      Order[]
 }
 
 model Package {
@@ -101,11 +101,11 @@ model Package {
   price        Int
   description  String?
   deliveryDays Int
-  service      Service   @relation(fields: [serviceId], references: [id])
+  service      Service   @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   features     Feature[]
   serviceId    String
-
-  createdAt DateTime @default(now())
+  createdAt    DateTime  @default(now())
+  orders       Order[]
 }
 
 model Feature {
@@ -113,33 +113,35 @@ model Feature {
   name       String
   packages   Package[]
   includedIn String[]
-  service    Service?  @relation(fields: [serviceId], references: [id])
+  service    Service?  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   serviceId  String?
-
-  createdAt DateTime @default(now())
+  createdAt  DateTime  @default(now())
 }
 
 model Review {
-  id        String  @id @unique @default(cuid())
-  ratedBy   User    @relation(fields: [userId], references: [id])
+  id        String   @id @unique @default(cuid())
+  ratedBy   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  rating    Int
+  rating    Float
   review    String
-  service   Service @relation(fields: [serviceId], references: [id])
+  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   serviceId String
+  createdAt DateTime @default(now())
 }
 
 model Transactions {
   id              String            @id @unique @default(cuid())
-  orderId         String?
+  order           Order?
   amount          Int
   type            TransactionType
   status          TransactionStatus
   createdAt       DateTime          @default(now())
-  createdBy       User              @relation(fields: [createdByUserId], references: [id], name: "createdby")
+  createdBy       User              @relation(fields: [createdByUserId], references: [id], name: "transactionsCreated")
   createdByUserId String
   paidTo          User?             @relation(fields: [paidToUserId], references: [id], name: "paidto")
   paidToUserId    String?
+  orderId         String?           @unique
+  gatewayOrderId  String
 }
 
 enum TransactionType {
@@ -181,9 +183,81 @@ model CouponCode {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
   type      DiscountType
+  enabled   Boolean      @default(true)
+  orders    Order[]
+  expiresAt DateTime?
 }
 
 enum DiscountType {
   Percentage
   Flat
+}
+
+model Order {
+  id                       String       @id @unique @default(cuid())
+  client                   User         @relation(fields: [clientId], references: [id], name: "ordersCreated")
+  freelancer               User         @relation(fields: [freelancerId], references: [id], name: "ordersRecieved")
+  clientId                 String
+  freelancerId             String
+  orderState               OrderState
+  service                  Service?     @relation(fields: [serviceId], references: [id])
+  serviceId                String?
+  couponCode               CouponCode?  @relation(fields: [couponCodeId], references: [id])
+  couponCodeId             String?
+  transaction              Transactions @relation(fields: [transactionId], references: [id])
+  transactionId            String       @unique
+  chat                     Chat?
+  createdAt                DateTime     @default(now())
+  package                  Package?     @relation(fields: [packageId], references: [id])
+  packageId                String?
+  markedAsDoneByFreelancer Boolean      @default(false)
+  markedAsDoneByClient     Boolean      @default(false)
+}
+
+enum OrderState {
+  Created
+  Completed
+  Cancelled
+}
+
+model ConversionRate {
+  id        String   @id @unique @default(cuid())
+  to        String   @unique
+  rate      Float
+  createdAt DateTime @default(now())
+}
+
+model Chat {
+  id        String    @id @unique @default(cuid())
+  createdAt DateTime  @default(now())
+  order     Order     @relation(fields: [orderId], references: [id])
+  orderId   String    @unique
+  messages  Message[]
+}
+
+model Message {
+  id           String        @id @unique @default(cuid())
+  sender       MessageSender
+  content      String
+  createdAt    DateTime      @default(now())
+  author       User?         @relation(fields: [authorId], references: [id])
+  authorId     String?
+  chat         Chat?         @relation(fields: [chatId], references: [id])
+  chatId       String?
+  type         MessageType
+  // this will either be Freelance and Client to show the Buttons based on the sender, the will be null for any other message except the prompt
+  promptSender String?
+}
+
+enum MessageSender {
+  Client
+  Freelancer
+  System
+}
+
+enum MessageType {
+  // normal text, supports markdown
+  Text
+  // prompt to mark the order as completed
+  Prompt
 }

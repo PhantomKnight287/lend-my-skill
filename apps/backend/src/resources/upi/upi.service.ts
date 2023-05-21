@@ -22,21 +22,26 @@ export class UpiService {
     type: TransactionType,
     notes: Record<any, any>,
   ) {
-    const transaction = await this.p.transactions.create({
+    const { id } = await this.r.orders.create({
+      amount: amount * 100,
+      currency: 'INR',
+      notes,
+    });
+    await this.p.transactions.create({
       data: {
         amount,
         status: 'Created',
         type,
+        createdBy: {
+          connect: {
+            id: notes.userId,
+          },
+        },
+        gatewayOrderId: id,
       },
       select: {
         id: true,
       },
-    });
-    const { id } = await this.r.orders.create({
-      amount: amount * 100,
-      currency: 'INR',
-      receipt: transaction.id,
-      notes,
     });
     return {
       id,

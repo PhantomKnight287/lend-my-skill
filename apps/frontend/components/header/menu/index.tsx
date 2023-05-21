@@ -16,7 +16,7 @@ import {
 } from "@tabler/icons-react";
 
 export default function HeaderMenu() {
-  const { avatarUrl, username, userType, profileCompleted } = useUser();
+  const { avatarUrl, username, role, profileCompleted } = useUser();
   const dispatch = useSetUser();
   const { push } = useRouter();
   return (
@@ -42,29 +42,19 @@ export default function HeaderMenu() {
           >
             Home
           </Menu.Item>
-          {userType === "Client" ? (
-            <Menu.Item
-              color="green"
-              onClick={() => {
-                push("/create/job-post");
-              }}
-              icon={<IconBrandCashapp size={20} />}
-            >
-              Post a Job Request
-            </Menu.Item>
-          ) : (
-            <>
-              {userType === "Freelancer" ? (
-                <Menu.Item
-                  color="green"
-                  onClick={() => push(`/create/service`)}
-                  icon={<IconBrandCashapp size={20} />}
-                >
-                  Post a Service
-                </Menu.Item>
-              ) : null}
-            </>
-          )}
+
+          <>
+            {role === "Freelancer" ? (
+              <Menu.Item
+                color="green"
+                onClick={() => push(`/create/service`)}
+                icon={<IconBrandCashapp size={20} />}
+              >
+                Post a Service
+              </Menu.Item>
+            ) : null}
+          </>
+
           <Menu.Item
             onClick={() => {
               push(`/profile/${username}`);

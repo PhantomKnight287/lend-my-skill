@@ -120,7 +120,6 @@ export class SearchService {
         title: true,
         createdAt: true,
         description: true,
-        bannerImage: true,
         package: {
           select: {
             price: true,
@@ -132,7 +131,7 @@ export class SearchService {
             },
           ],
         },
-        rating: true,
+
         tags: {
           select: {
             name: true,
@@ -140,7 +139,8 @@ export class SearchService {
             slug: true,
           },
         },
-        ratedBy: true,
+
+        images: true,
       },
       take: toTake,
       skip: toTake > 10 ? toTake - 10 : undefined,
@@ -287,7 +287,6 @@ export class SearchService {
         title: true,
         createdAt: true,
         description: true,
-        bannerImage: true,
         package: {
           select: {
             price: true,
@@ -299,7 +298,7 @@ export class SearchService {
             },
           ],
         },
-        rating: true,
+
         tags: {
           select: {
             name: true,
@@ -307,7 +306,8 @@ export class SearchService {
             slug: true,
           },
         },
-        ratedBy: true,
+
+        images: true,
       },
       take: toTake,
       skip: toTake > 10 ? toTake - 10 : undefined,
@@ -460,7 +460,6 @@ export class SearchService {
         title: true,
         createdAt: true,
         description: true,
-        bannerImage: true,
         package: {
           select: {
             price: true,
@@ -472,7 +471,6 @@ export class SearchService {
             },
           ],
         },
-        rating: true,
         tags: {
           select: {
             name: true,
@@ -481,7 +479,7 @@ export class SearchService {
           },
         },
 
-        ratedBy: true,
+        images: true,
       },
       take: toTake,
       skip: toTake > 10 ? toTake - 10 : undefined,

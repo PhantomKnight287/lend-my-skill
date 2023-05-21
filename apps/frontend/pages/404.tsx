@@ -77,7 +77,7 @@ const useStyles = createStyles((theme) => ({
 
 export default function NothingFoundBackground() {
   const { classes } = useStyles();
-  const { id } = useUser();
+
   return (
     <Container className={classes.root}>
       <div className={classes.inner}>
@@ -95,10 +95,13 @@ export default function NothingFoundBackground() {
             this is an error contact support.
           </Text>
           <Group position="center">
-            <Link href={id ? "/dashboard" : "/"}>
-              <Button size="md"
-                className="transition-all duration-[110ms] hover:scale-105 hover:bg-purple-700 bg-purple-500"
-              >Take me back to home page</Button>
+            <Link href={"/dashboard"}>
+              <Button
+                size="md"
+                className="transition-all duration-[110ms] hover:scale-105 hover:bg-primary/90 bg-primary"
+              >
+                Take me back to home page
+              </Button>
             </Link>
           </Group>
         </div>

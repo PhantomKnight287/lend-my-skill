@@ -21,6 +21,16 @@ import { UserMiddleware } from './resources/auth/middleware/auth/auth.middleware
 import { UpiModule } from './resources/upi/upi.module';
 import { JobPostModule } from './resources/job-post/job-post.module';
 import { SearchModule } from './resources/search/search.module';
+import { PackageModule } from './resources/package/package.module';
+import { ConversionService } from './services/conversion/conversion.service';
+import { PurchaseModule } from './resources/purchase/purchase.module';
+import { RazorpayService } from './services/razorpay/razorpay.service';
+import { WebhookModule } from './resources/webhook/webhook.module';
+import { OrdersModule } from './resources/orders/orders.module';
+import { ChatModule } from './resources/chat/chat.module';
+import { MessagesModule } from './resources/messages/messages.module';
+import { ChatGateway } from './gateways/chat/chat.gateway';
+import { WebhookService } from './services/webhook/webhook.service';
 
 @Module({
   controllers: [AppController],
@@ -29,6 +39,10 @@ import { SearchModule } from './resources/search/search.module';
     PrismaService,
     { provide: APP_GUARD, useClass: ThrottlerGuard },
     AuthService,
+    ConversionService,
+    RazorpayService,
+    ChatGateway,
+    WebhookService,
   ],
   imports: [
     ThrottlerModule.forRoot({
@@ -45,44 +59,55 @@ import { SearchModule } from './resources/search/search.module';
     UpiModule,
     JobPostModule,
     SearchModule,
+    PackageModule,
+    PurchaseModule,
+    WebhookModule,
+    OrdersModule,
+    ChatModule,
+    MessagesModule,
   ],
-  exports: [PrismaService],
+  exports: [PrismaService, RazorpayService, WebhookService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(UserMiddleware)
       .exclude(
-        'auth/(.*)',
+        '/v1/auth/(.*)',
         {
           method: RequestMethod.GET,
-          path: 'categories/(.*) ',
+          path: '/v1/categories/(.*) ',
         },
         {
           method: RequestMethod.GET,
-          path: 'job-post/(.*)',
+          path: '/v1/job-post/(.*)',
         },
         {
           method: RequestMethod.GET,
-          path: 'job-post',
+          path: '/v1/job-post',
         },
         {
           method: RequestMethod.GET,
-          path: 'profile/:username',
+          path: '/v1/profile/:username',
         },
-        'search/(.*)',
-        'search',
-        'services/:slug',
-        'services/user/:username',
+        '/v1/search/(.*)',
+        '/v1/search',
+        '/v1/services/:slug',
+        '/v1/services/user/:username',
         {
-          path: 'services',
+          path: '/v1/services',
           method: RequestMethod.GET,
         },
-        'static/(.*)',
-        'upload/(.*)',
-        'upi/(.*)',
-        'categories',
-        'tags',
+        '/v1/static/(.*)',
+        '/v1/upload/(.*)',
+        '/v1/upi/(.*)',
+        '/v1/categories',
+        '/v1/tags',
+        '/v1',
+        '/v1/package/(.*)',
+        '/',
+        '/v1/webhook/(.*)',
+        '/v1/socket.io/(.*)',
       )
       .forRoutes('*');
   }

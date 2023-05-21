@@ -9,8 +9,12 @@ export function Header() {
   const { username } = useUser();
   const { asPath } = useRouter();
   return (
-    <div className="h-[70px] border-0 ">
-      <div className="container md:mx-auto mx-[unset]">
+    <header
+      className={clsx("h-[70px] border-0 ", {
+        "border-b border-gray-200": asPath != "/" && asPath != "/home",
+      })}
+    >
+      <div className="md:mx-auto mx-[unset] lg:container">
         <div className="pt-2 w-full flex justify-around items-center">
           <div
             className={clsx({
@@ -22,7 +26,7 @@ export function Header() {
             </Link>
           </div>
           <div
-            className={clsx("flex-row mx-auto items-center px-5", {
+            className={clsx("flex-row mx-auto items-center px-5 hidden", {
               hidden: username,
               "md:flex": !username,
             })}
@@ -64,7 +68,7 @@ export function Header() {
             <Link
               href="/auth/register"
               className={clsx(
-                "p-3 font-medium rounded-3xl py-2 text-white bg-gray-900  px-4  "
+                "p-3 font-medium rounded-3xl py-2 text-black bg-primary  px-4  "
               )}
             >
               Signup
@@ -79,6 +83,6 @@ export function Header() {
           </div>
         </div>
       </div>
-    </div>
+    </header>
   );
 }

@@ -1,5 +1,4 @@
 export interface Service {
-  bannerImage: string;
   category: Category;
   createdAt: string;
   description: string;
@@ -10,6 +9,8 @@ export interface Service {
   slug: string;
   title: string;
   tags: { name: string; slug: string; id: string }[];
+  totalRating: string;
+  totalReviews: number;
 }
 
 export interface Category {
@@ -31,7 +32,7 @@ export interface Freelancer {
 export interface Package {
   deliveryDays: number;
   description: any;
-  features: any[];
+  features: { id: string; name: string; includedIn: string[] }[];
   id: string;
   name: string;
   price: number;
@@ -59,8 +60,8 @@ export interface AllServicesResponse {
       }
     ];
     rating: number;
-    bannerImage: string;
     ratedBy: number;
+    images: string[];
   }[];
   next?: number;
 }
