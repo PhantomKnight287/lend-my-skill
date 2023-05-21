@@ -3,7 +3,6 @@ import { URLBuilder } from "@utils/url";
 import axios, { AxiosError, isCancel } from "axios";
 import {
   ChatDetails,
-  ChatQuestions,
 } from "../pages/profile/[username]/order/[id]/chat";
 
 export async function fetchChatDetails(
@@ -50,27 +49,27 @@ export async function isChatQuestionsAnswered(
     });
 }
 
-export async function fetchChatQuestions(
-  chatId: string,
-  token: string,
-  successHandler: (d: ChatQuestions[]) => void,
-  failureHandler: (err: AxiosError) => void,
-  signal: AbortSignal
-) {
-  return axios
-    .get<ChatQuestions[]>(URLBuilder(`/chat/${chatId}/questions`), {
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
-      signal,
-    })
-    .then((d) => d.data)
-    .then(successHandler)
-    .catch((err) => {
-      if (isCancel(err)) return;
-      failureHandler(err);
-    });
-}
+// export async function fetchChatQuestions(
+//   chatId: string,
+//   token: string,
+//   successHandler: (d: ChatQuestions[]) => void,
+//   failureHandler: (err: AxiosError) => void,
+//   signal: AbortSignal
+// ) {
+//   return axios
+//     .get<ChatQuestions[]>(URLBuilder(`/chat/${chatId}/questions`), {
+//       headers: {
+//         authorization: `Bearer ${token}`,
+//       },
+//       signal,
+//     })
+//     .then((d) => d.data)
+//     .then(successHandler)
+//     .catch((err) => {
+//       if (isCancel(err)) return;
+//       failureHandler(err);
+//     });
+// }
 
 export async function fetchChatMessagesCount(
   chatId: string,
