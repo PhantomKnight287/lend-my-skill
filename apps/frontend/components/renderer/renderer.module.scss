@@ -54,6 +54,8 @@
 }
 
 .renderer {
+  word-wrap: break-word;
+
   img {
     width: auto;
     height: auto;
@@ -61,7 +63,6 @@
     max-width: 400px;
     aspect-ratio: 1/1;
   }
-  @apply break-all;
   video {
     width: auto;
     height: auto;

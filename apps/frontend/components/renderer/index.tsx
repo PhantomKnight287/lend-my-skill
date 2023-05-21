@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @next/next/no-img-element */
 import { FC, useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import { SpecialComponents } from "react-markdown/lib/ast-to-react";
@@ -92,6 +94,19 @@ export const Renderer: FC<{
       ),
       ol: ({ node, ...props }) => (
         <ol {...props} className={"list-decimal ml-4"} />
+      ),
+      img: ({ node, ...props }) => (
+        <>
+          {/\b\.(?:mp4|mov|avi|flv|wmv|mkv|webm)\b$/.test(props.src!) ? (
+            <video
+              {...(props as any)}
+              controls
+              className={clsx("rounded-md", styles.video)}
+            />
+          ) : (
+            <img {...props} />
+          )}
+        </>
       ),
     };
   }, []);
