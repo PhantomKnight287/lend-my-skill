@@ -56,6 +56,7 @@ export type message = {
   createdAt: string;
   type: "Text" | "Prompt";
   sender: "System" | "Client" | "Freelancer";
+  promptSender?: "Client" | "Freelancer";
 };
 
 const ChatContainer = (prop: Props) => {
@@ -96,6 +97,10 @@ const ChatContainer = (prop: Props) => {
           behavior: "smooth",
           block: "end",
         });
+        if (timeout) {
+          clearTimeout(timeout);
+          setTyping({});
+        }
       });
       io.on("typing", (d: { userType: "Freelancer" | "Client" }) => {
         if (timeout) clearTimeout(timeout);
@@ -205,7 +210,7 @@ const ChatContainer = (prop: Props) => {
       inline: "nearest",
     });
   }, []);
-  const { userType } = useUser();
+  const { role } = useUser();
   function acceptHandler() {
     io?.emit("prompt");
   }
@@ -219,11 +224,11 @@ const ChatContainer = (prop: Props) => {
   const [uploadWorkModal, setUploadWorkModal] = useState(false);
   return (
     <>
-      <div className="hidden lg:block relative max-h-screen overflow-y-scroll">
+      <div className="relative max-h-screen overflow-y-scroll">
         <div ref={chatContainerRef}>
           {messages?.length < count && (
             <Group position="center">
-              {userType == "Freelancer" && !prop.completed ? (
+              {role == "Freelancer" && Boolean(prop.completed) === false ? (
                 <Button
                   variant="outline"
                   onClick={() => {
@@ -255,7 +260,7 @@ const ChatContainer = (prop: Props) => {
                   Mark as Done
                 </Button>
               )}
-              {userType === "Client" && prop.completed === true ? (
+              {role === "Client" && prop.completed === true ? (
                 <Button
                   variant="outline"
                   onClick={() => {
@@ -279,58 +284,54 @@ const ChatContainer = (prop: Props) => {
                 acceptHandler={acceptHandler}
                 rejectHandler={rejectHandler}
                 createdAt={m.createdAt}
+                promptSender={m.promptSender}
               />
-              {i === messages.length - 1 ? (
-                <>
-                  <div className="w-full h-[10px] mb-[60px]" ref={ref} />
-                  <div className="sticky bottom-0 w-full mt-auto">
-                    <div className="flex flex-row items-center justify-between flex-1 p-2 bg-inputs border-t border-gray-200 rounded-md w-full">
-                      <form
-                        onSubmit={formState.onSubmit((d) => {
-                          io?.emit("message", d);
-                          formState.reset();
-                        })}
-                        className="flex flex-col  items-center justify-between w-full"
-                      >
-                        {typing.userType ? (
-                          <div className="flex flex-row mb-1 text-xs w-full ">
-                            {upperFirst(typing.userType)}
-                            <span className="ml-1"> is typing...</span>
-                          </div>
-                        ) : null}
-                        <div className="flex flex-row w-full items-center">
-                          <IconPlus
-                            className="cursor-pointer mr-2"
-                            onClick={() => setAttachmentModalOpened((o) => !o)}
-                          />
-                          <input
-                            {...formState.getInputProps("message")}
-                            className={clsx(
-                              "w-full bg-inputs border-none outline-none rounded-md p-2 focus:ring-2 focus:ring-blue focus:ring-opacity-50  ",
-                              outfit.className
-                            )}
-                            required
-                            autoFocus
-                            placeholder="Type your message here..."
-                            onChange={(e) => {
-                              formState.setFieldValue(
-                                "message",
-                                e.target.value
-                              );
-                              io?.emit("typing");
-                            }}
-                            disabled={disabled}
-                            ref={inputRef}
-                          />
-                          <input type="hidden" name="send" />
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </>
-              ) : null}
             </>
           ))}
+          <>
+            <div className="w-full h-[10px] mb-[60px]" ref={ref} />
+            <div className="sticky bottom-0 w-full mt-auto">
+              <div className="flex flex-row items-center justify-between flex-1 p-2 bg-inputs border-t border-gray-200 rounded-md w-full">
+                <form
+                  onSubmit={formState.onSubmit((d) => {
+                    io?.emit("message", d);
+                    formState.reset();
+                  })}
+                  className="flex flex-col  items-center justify-between w-full"
+                >
+                  {typing.userType ? (
+                    <div className="flex flex-row mb-1 text-xs w-full ">
+                      {upperFirst(typing.userType)}
+                      <span className="ml-1"> is typing...</span>
+                    </div>
+                  ) : null}
+                  <div className="flex flex-row w-full items-center">
+                    <IconPlus
+                      className="cursor-pointer mr-2"
+                      onClick={() => setAttachmentModalOpened((o) => !o)}
+                    />
+                    <input
+                      {...formState.getInputProps("message")}
+                      className={clsx(
+                        "w-full bg-inputs border-none outline-none rounded-md p-2 focus:ring-2 focus:ring-blue focus:ring-opacity-50  ",
+                        outfit.className
+                      )}
+                      required
+                      autoFocus
+                      placeholder="Type your message here..."
+                      onChange={(e) => {
+                        formState.setFieldValue("message", e.target.value);
+                        io?.emit("typing");
+                      }}
+                      disabled={disabled}
+                      ref={inputRef}
+                    />
+                    <input type="hidden" name="send" />
+                  </div>
+                </form>
+              </div>
+            </div>
+          </>
         </div>
 
         <Modal
@@ -377,14 +378,15 @@ const ChatContainer = (prop: Props) => {
               });
               if (data === null) return setLoading(false);
               const urls = data.data.paths;
-              formState.setFieldValue(
-                "message",
-                `${formState.values.message}\n${urls
-                  .map((u) => `![image.png]${assetURLBuilder(u)}`)
-                  .join("\n")}`
-              );
+              io?.emit("message", {
+                message: `${formState.values.message}\n${urls
+                  .map((u) => `![image.png](${assetURLBuilder(u)})`)
+                  .join("\n")}`,
+              });
               setLoading(false);
+              formState.reset();
               setAttachmentModalOpened(false);
+              setAttachments([]);
             }}
           >
             <FileInput
@@ -422,7 +424,7 @@ const ChatContainer = (prop: Props) => {
             </h1>
             <p className="text-gray-500 text-center">
               Marking this job as done will require consent of both parties.
-              This chat will be closed.
+              This chat will be closed if both parties agree.
             </p>
             <Group position="center">
               <Button
@@ -437,6 +439,7 @@ const ChatContainer = (prop: Props) => {
                 className="bg-green-500 hover:bg-green-600"
                 onClick={() => {
                   io?.emit("prompt");
+                  setDoneModalOpened(false);
                 }}
               >
                 Mark as Done
@@ -450,7 +453,7 @@ const ChatContainer = (prop: Props) => {
           freelancerUsername={prop.freelancerUsername}
         />
       </div>
-      {userType !== "Client" && !prop.completed ? null : (
+      {role === "Client" || Boolean(prop.completed) == true ? null : (
         <Modal
           centered
           opened={uploadWorkModal}
@@ -477,12 +480,10 @@ const ChatContainer = (prop: Props) => {
               if (data === null) return setLoading(false);
               const urls = data.data.paths;
               io?.emit("message", {
-                message: urls,
+                message: `Here is my work\n${urls
+                  .map((u) => `![image.png](${assetURLBuilder(u)})`)
+                  .join("\n")}`,
                 attachment: true,
-              });
-              io?.emit("message", {
-                message: "Here is my work",
-                attachment: false,
               });
               setLoading(false);
               setUploadWorkModal(false);
