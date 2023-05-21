@@ -28,10 +28,9 @@ const AboutPage = () => {
           make the best platform for freelancers who provide the best services
           and solutions to their customers. We believe people should not
           necessarily need to pay to big agencies abroad or in high prices, when
-          the talented developers are already here in India. Our mission is to
-          connect the best developers and designers to respective customers.
+          the talented developers are already here in India.
         </h2>
-        <h1
+        {/* <h1
           className={clsx("font-bold text-3xl text-center mt-10", {
             [outfit.className]: true,
           })}
@@ -117,7 +116,26 @@ const AboutPage = () => {
               </h2>
             </div>
           </div>
-        </SimpleGrid>
+        </SimpleGrid> */}
+        <h1
+          className={clsx("font-bold text-3xl text-center mt-10", {
+            [outfit.className]: true,
+          })}
+        >
+          Our Contributors
+        </h1>
+        <p>
+          As this is an open source project, we are always looking for people to
+          contribute to this project. Here are some of our contributors:
+          <a
+            href="https://github.com/phantomknight287/lend-my-skill/graphs/contributors"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center"
+          >
+            <img src="https://contrib.rocks/image?repo=phantomknight287/lend-my-skill" />
+          </a>
+        </p>
       </Container>
     </>
   );
