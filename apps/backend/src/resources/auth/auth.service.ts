@@ -6,12 +6,13 @@ import { SIGN_SECRET } from 'src/constants';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-auth.dto';
 import { LoginUserDto } from './dto/login.dto';
+import { WebhookService } from 'src/services/webhook/webhook.service';
 
 type UserPayload = Pick<User, 'id' | 'role'>;
 
 @Injectable()
 export class AuthService {
-  constructor(protected p: PrismaService) {}
+  constructor(protected p: PrismaService, protected w: WebhookService) {}
 
   async create(c: CreateUserDto): Promise<{
     token: string;
@@ -55,6 +56,15 @@ export class AuthService {
       },
       SIGN_SECRET,
     );
+    await this.w.sendWebhook({
+      content: 'New User Registered',
+      embeds: [
+        {
+          title: 'New User Registered',
+          description: `A User named \`${user.name}\` registered under \`${user.username}\` username as \`${user.role}\``,
+        },
+      ],
+    });
     return {
       token,
       user: {
