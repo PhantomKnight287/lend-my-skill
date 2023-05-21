@@ -17,11 +17,7 @@ export class MessagesService {
       count: count,
     };
   }
-  async getMessages(
-    orderId: string,
-    skip?: string,
-    take?: string,
-  ) {
+  async getMessages(orderId: string, skip?: string, take?: string) {
     const toTake = Number.isNaN(Number(take)) ? 30 : Number(take);
     const toSkip = Number.isNaN(Number(skip)) ? 0 : Number(skip);
     const msgs = await this.p.message.findMany({
@@ -32,7 +28,6 @@ export class MessagesService {
           },
         },
       },
-
       select: {
         id: true,
         content: true,
@@ -47,6 +42,7 @@ export class MessagesService {
         sender: true,
         createdAt: true,
         type: true,
+        promptSender: true,
       },
       orderBy: {
         createdAt: 'desc',

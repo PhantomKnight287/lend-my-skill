@@ -49,7 +49,7 @@ export class ChatGateway implements OnGatewayConnection {
     const message = await this.prisma.message.create({
       data: {
         content: payload.message,
-        sender: data.userType === 'Client' ? 'Client' : 'Freelancer',
+        sender: data.role === 'Client' ? 'Client' : 'Freelancer',
         chat: {
           connect: {
             id: chatId as string,
@@ -98,7 +98,7 @@ export class ChatGateway implements OnGatewayConnection {
       return client.disconnect(true);
     }
     client.to(client.handshake.query.orderId as string).emit('typing', {
-      userType: data.userType,
+      userType: data.role,
     });
   }
 
@@ -132,7 +132,12 @@ export class ChatGateway implements OnGatewayConnection {
     if (orderStatus.orderState === 'Completed') {
       return client.emit('error', 'Order is already completed');
     }
-    if (data.userType === 'Client') {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id: data.id,
+      },
+    })!;
+    if (data.role === 'Client') {
       if (orderStatus.markedAsDoneByFreelancer) {
         await this.prisma.order.update({
           where: {
@@ -147,13 +152,13 @@ export class ChatGateway implements OnGatewayConnection {
         const msg = await this.prisma.message.create({
           data: {
             sender: 'System',
-            content: 'Order has been completed',
+            content: '# Order has been completed',
             chat: {
               connect: {
                 id: client.handshake.query.chatId as string,
               },
             },
-            type: 'Prompt',
+            type: 'Text',
           },
           select: {
             id: true,
@@ -180,11 +185,14 @@ export class ChatGateway implements OnGatewayConnection {
           .to(client.handshake.query.orderId as string)
           .emit('completed');
       }
+
       const message = await this.prisma.message.create({
         data: {
           sender: 'System',
           type: 'Prompt',
-          content: 'Are you sure you want to mark this order as completed?',
+          content: `# ${user.name} wants to mark this order as completed. 
+Marking this order as completed required consent of both parties. Are you sure you want to mark this as completed?`,
+          promptSender: data.role,
           chat: {
             connect: {
               id: client.handshake.query.chatId as string,
@@ -220,7 +228,7 @@ export class ChatGateway implements OnGatewayConnection {
         .to(client.handshake.query.orderId as string)
         .emit('message', message);
     }
-    if (data.userType === 'Freelancer') {
+    if (data.role === 'Freelancer') {
       if (orderStatus.markedAsDoneByClient) {
         await this.prisma.order.update({
           where: {
@@ -235,7 +243,7 @@ export class ChatGateway implements OnGatewayConnection {
         const msg = await this.prisma.message.create({
           data: {
             sender: 'System',
-            content: 'Order has been completed',
+            content: '# Order has been completed',
             chat: {
               connect: {
                 id: client.handshake.query.chatId as string,
@@ -273,7 +281,10 @@ export class ChatGateway implements OnGatewayConnection {
         data: {
           sender: 'System',
           type: 'Prompt',
-          content: 'Are you sure you want to mark this order as completed?',
+          promptSender: data.role,
+
+          content: `# ${user.name} wants to mark this order as completed. 
+Marking this order as completed required consent of both parties. Are you sure you want to mark this as completed?`,
           chat: {
             connect: {
               id: client.handshake.query.chatId as string,
