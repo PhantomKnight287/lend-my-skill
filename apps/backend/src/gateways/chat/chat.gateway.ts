@@ -8,14 +8,16 @@ import { Socket } from 'socket.io';
 import { SIGN_SECRET } from 'src/constants';
 import { DecodedJWT } from 'src/decorators/token/token.decorator';
 import { PrismaService } from 'src/services/prisma/prisma.service';
+import { WebhookService } from 'src/services/webhook/webhook.service';
 
 @WebSocketGateway({
   cors: true,
   transports: ['websocket'],
+  // this is due to api versioning
   path: '/v1/socket.io',
 })
 export class ChatGateway implements OnGatewayConnection {
-  constructor(protected prisma: PrismaService) {}
+  constructor(protected prisma: PrismaService, protected w: WebhookService) {}
   handleConnection(client: Socket) {
     const token = client.handshake.auth.token;
     const orderId = client.handshake.query.orderId;
@@ -181,6 +183,15 @@ export class ChatGateway implements OnGatewayConnection {
           .to(client.handshake.query.orderId as string)
           .emit('message', msg);
         client.emit('completed');
+        this.w.sendWebhook({
+          content: 'Order has been completed',
+          embeds: [
+            {
+              title: 'Order has been completed',
+              description: `Order with id \`${client.handshake.query.orderId}\` has been completed.`,
+            },
+          ],
+        });
         return client
           .to(client.handshake.query.orderId as string)
           .emit('completed');
@@ -268,6 +279,15 @@ Marking this order as completed required consent of both parties. Are you sure y
           },
         });
         client.emit('message', msg);
+        this.w.sendWebhook({
+          content: 'Order has been completed',
+          embeds: [
+            {
+              title: 'Order has been completed',
+              description: `Order with id \`${client.handshake.query.orderId}\` has been completed.`,
+            },
+          ],
+        });
         client
           .to(client.handshake.query.orderId as string)
           .emit('message', msg);
