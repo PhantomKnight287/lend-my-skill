@@ -159,7 +159,7 @@ const OrderPage = () => {
               <tr>
                 <td>Amount Paid</td>
                 <td>
-                  <Badge color="green" size="lg" >
+                  <Badge color="green" size="lg">
                     &#x20B9;
                     {order.transaction.amount / 100}
                   </Badge>

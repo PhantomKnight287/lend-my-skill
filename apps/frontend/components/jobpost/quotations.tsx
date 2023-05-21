@@ -94,7 +94,7 @@ const Quotations = ({ slug, username }: Props) => {
           color="blue"
           onClick={() => fetchNextPage()}
           disabled={!hasNextPage || isFetchingNextPage}
-          className={clsx("",{
+          className={clsx("", {
             "cursor-not-allowed": !hasNextPage || isFetchingNextPage,
           })}
         >

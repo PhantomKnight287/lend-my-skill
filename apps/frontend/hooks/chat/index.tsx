@@ -5,7 +5,6 @@ export function useChatScroll<T>(dep: T): MutableRefObject<HTMLDivElement> {
   useEffect(() => {
     if (ref.current) {
       ref.current.addEventListener("DOMNodeInserted", (event: any) => {
-
         const { currentTarget: target } = event;
         target?.scroll({ top: target?.scrollHeight, behavior: "smooth" });
       });

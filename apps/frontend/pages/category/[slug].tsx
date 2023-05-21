@@ -34,25 +34,20 @@ const ContentRelatedToCategory: NextPage<
 > = (props) => {
   const { colorScheme } = useMantineColorScheme();
   useHydrateUserContext();
-  const {
-    data,
-    status,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery<JobPosts>({
-    queryKey: ["category", props.id, props.name],
-    queryFn: async ({ pageParam = 10 }) => {
-      const data = await fetch(
-        URLBuilder(`/categories/${props.id}/jobs?take=${pageParam}`)
-      );
-      if (!data.ok) {
-        throw new Error("Error fetching data");
-      }
-      return await data.json();
-    },
-    getNextPageParam: (lastPage) => lastPage.next,
-  });
+  const { data, status, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery<JobPosts>({
+      queryKey: ["category", props.id, props.name],
+      queryFn: async ({ pageParam = 10 }) => {
+        const data = await fetch(
+          URLBuilder(`/categories/${props.id}/jobs?take=${pageParam}`)
+        );
+        if (!data.ok) {
+          throw new Error("Error fetching data");
+        }
+        return await data.json();
+      },
+      getNextPageParam: (lastPage) => lastPage.next,
+    });
   const { query, push } = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const { entry, ref } = useIntersection({
@@ -109,7 +104,7 @@ const ContentRelatedToCategory: NextPage<
         className="mt-10"
       >
         <Tabs.List grow>
-        <Tabs.Tab value="services">Services</Tabs.Tab>
+          <Tabs.Tab value="services">Services</Tabs.Tab>
           <Tabs.Tab value="jobs">Jobs</Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel value="jobs">
