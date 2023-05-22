@@ -100,10 +100,26 @@ export class ServicesService {
             id: true,
           },
         },
+        review: {
+          select: {
+            createdAt: true,
+            id: true,
+            ratedBy: {
+              select: {
+                name: true,
+                username: true,
+                avatarUrl: true,
+              },
+            },
+            rating: true,
+            review: true,
+          },
+        },
       },
     });
     if (!service)
       throw new HttpException('No Service Found.', HttpStatus.NOT_FOUND);
+
     const totalReviews = await this.p.review.count({
       where: {
         service: {
@@ -113,6 +129,7 @@ export class ServicesService {
     });
     const totalRating = await this.p
       .$queryRaw`SELECT sum(rating) AS total FROM "public"."Review" WHERE "serviceId" = ${service.id}`;
+
     return { ...service, totalRating: totalRating[0].total, totalReviews };
   }
   async getServices(username: string, take?: string) {
