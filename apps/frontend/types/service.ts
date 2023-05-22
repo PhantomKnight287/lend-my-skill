@@ -11,6 +11,17 @@ export interface Service {
   tags: { name: string; slug: string; id: string }[];
   totalRating: string;
   totalReviews: number;
+  review: {
+    createdAt: string;
+    id: string;
+    ratedBy: {
+      name: string;
+      username: string;
+      avatarUrl: string;
+    };
+    rating: number;
+    review: string;
+  }[];
 }
 
 export interface Category {
