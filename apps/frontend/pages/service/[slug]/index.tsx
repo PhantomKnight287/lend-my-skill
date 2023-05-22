@@ -27,6 +27,7 @@ import { MetaTags } from "@components/meta";
 import { IconCheck, IconClockCheck } from "@tabler/icons-react";
 import { upperFirst } from "@mantine/hooks";
 import { Renderer } from "@components/renderer";
+import Review from "@components/review";
 
 const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   service
@@ -150,10 +151,22 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
             </div>
           ) : null}
         </div>
-        <article className="hidden lg:block">
-          <p className="text-lg font-semibold my-4 ">About The Service</p>
-          <Renderer children={service.description} />
-        </article>
+        <div className="hidden lg:block">
+          <article>
+            <p className="text-lg font-semibold my-4 ">About The Service</p>
+            <Renderer children={service.description} />
+          </article>
+          <div
+            className={clsx("mt-10 p-4", {
+              hidden: service.review.length == 0,
+            })}
+          >
+            <h1 className="text-2xl font-bold mb-8">Reviews</h1>
+            {service.review.map((r) => (
+              <Review key={r.id} {...r} />
+            ))}
+          </div>
+        </div>
       </Container>
       <div
         className="mt-8 flex-1 lg:sticky top-10 lg:flex-[0.4] h-screen"
@@ -273,10 +286,22 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
           ))}
         </Tabs>
       </div>
-      <article className="lg:hidden">
-        <p className="text-lg font-semibold my-4 ">About The Service</p>
-        <Renderer children={service.description} />
-      </article>
+      <div className="lg:hidden">
+        <article>
+          <p className="text-lg font-semibold my-4 ">About The Service</p>
+          <Renderer children={service.description} />
+        </article>
+        <div
+          className={clsx("mt-10 p-4", {
+            hidden: service.review.length == 0,
+          })}
+        >
+          <h1 className="text-2xl font-bold">Reviews</h1>
+          {service.review.map((r) => (
+            <Review key={r.id} {...r} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
